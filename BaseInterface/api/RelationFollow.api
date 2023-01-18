@@ -1,0 +1,31 @@
+// 社交方向
+// 关系操作
+type RelationActionHandlerRequest {
+	StatusCode int32 `json:"StatusCode"`
+}
+
+type RelationActionHandlerResponse {
+	StatusCode string `json:"UserName"`
+	StatusMsg  string `json:"StatusMsg"`
+}
+
+// 用户关注列表
+type RelationFollowListHandlerRequest {
+	StatusCode int32 `json:"StatusCode"`
+}
+
+type RelationFollowListHandlerResponse {
+	StatusCode string `json:"UserName"`
+	StatusMsg  string `json:"StatusMsg"`
+}
+
+// 用户粉丝列表
+type RelationFollowerListHandlerRequest {
+	StatusCode int32 `json:"StatusCode"`
+}
+
+type RelationFollowerListHandlerResponse {
+	StatusCode string `json:"UserName"`
+	StatusMsg  string `json:"StatusMsg"`
+}
+
