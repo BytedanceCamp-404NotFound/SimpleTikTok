@@ -1,0 +1,150 @@
+import (
+	"CommAction.api"			// 互动方向
+	"RelationFollow.api"		// 社交方向
+)
+// 基础接口
+// 视频流接口
+type FeedHandlerRequest {
+	LastestTime int64  `json:"LastestTime"`
+	Token       string `json:"Token"`
+}
+
+type FeedHandlerResponse {
+	StatusCode int32  `json:"StatusCode""`
+	StatusMsg  string `json:"StatusMsg"`
+	VideoList  Video  `json:"VideoList"`
+	NextTime   int64  `json:""NextTime"`
+}
+
+type Video {
+	Id            int64  `json:"Id"`
+	Author        User   `json:"Author"`
+	PlayUrl       string `json:"PlayUrl"`
+	CoverUrl      string `json:"CoverUrl"`
+	FavoriteCount int64  `json:"FavoriteCount"`
+	CommentCount  int64  `json:"CommentCount"`
+	IsFavotite    bool   `json:"IsFavotite"`
+	Title         string `json:"Title"`
+}
+
+type User {
+	Id            int64  `json:"Id"`
+	Name          string `json:"Name"`
+	FollowCount   string `json:"FollowCount"`
+	FollowerCount string `json:"FollowerCount"`
+	IsFollow      string `json:"IsFollow"`
+}
+
+// 用户登录接口
+type UserRegisterHandlerRequest {
+	UserName string `json:"UserName"`
+	PassWord string `json:"PassWord"`
+}
+
+type UserRegisterHandlerResponse {
+	StatusCode int32  `json:"StatusCode"`
+	StatusMsg  string `json:"StatusMsg"`
+	UserID     int64  `json:"UserID"`
+	Token      string `json:"token"`
+}
+
+// 用户注册接口
+type UserloginHandlerRequest {
+	StatusCode int32 `json:"StatusCode"`
+}
+
+type UserloginHandlerResponse {
+	UserName string `json:"UserName"`
+}
+
+// 用户信息
+type UserHandlerRequest {
+	StatusCode int32 `json:"StatusCode"`
+}
+
+type UserHandlerResponse {
+	UserName string `json:"UserName"`
+}
+
+// 视频投稿
+type PublishActionHandlerRequest {
+	Token string `json:"Token"`
+	Data  int32  `json:"Data"` // 存疑bytes
+	Title string `json:"Title"`
+}
+
+type PublishActionHandlerResponse {
+	StatusCode string `json:"UserName"`
+	StatusMsg  string `json:"StatusMsg"`
+}
+
+// 发布列表
+type PublishListHandlerRequest {
+	StatusCode int32 `json:"StatusCode"`
+}
+
+type PublishListHandlerResponse {
+	StatusCode string `json:"UserName"`
+	StatusMsg  string `json:"StatusMsg"`
+}
+
+service BaseInterface-api {
+	// 基础接口
+	// 视频流接口
+	@handler FeedHandler
+	get /douyin/feed(FeedHandlerRequest) returns (FeedHandlerResponse)
+	// 用户登录接口
+	@handler UserRegisterHandler
+	post /douyin/user/register(UserRegisterHandlerRequest) returns (UserRegisterHandlerResponse)
+	// 用户注册接口
+	@handler UserloginHandler
+	get /douyin/user/login(UserloginHandlerRequest) returns (UserloginHandlerResponse)
+	// 用户信息
+	@handler UserHandler
+	get /douyin/user(UserHandlerRequest) returns (UserHandlerResponse)
+	// 视频投稿
+	@handler PublishActionHandler
+	post /douyin/publish/action(PublishActionHandlerRequest) returns (PublishActionHandlerResponse)
+	// 发布列表
+	@handler PublishListHandler
+	get /douyin/publish/list(PublishListHandlerRequest) returns (PublishListHandlerResponse)
+	
+	// 互动接口
+	// // 赞接口
+	// @handler FavoriteActionHandler
+	// post /douyin/favorite/action(PublishListHandlerRequest) returns (PublishListHandlerResponse)
+	// // 喜欢列表
+	// @handler FavoriteListRegisterHandler
+	// get /douyin/favorite/list(FavoriteListRegisterHandlerRequest) returns (FavoriteListRegisterHandlerResponse)
+	// 评论操作
+	@handler CommmentActionHandler
+	post /douyin/commment/action(CommmentActionHandlerRequest) returns (CommmentActionHandlerResponse)
+	// 视频评论列表
+	@handler CommmentListHandler
+	get /douyin/commment/list(CommmentListHandlerRequest) returns (CommmentListHandlerResponse)
+	
+	// // 社交接口
+	// // 关系操作
+	@handler RelationActionHandler
+	post /douyin/relation/action(RelationActionHandlerRequest) returns (RelationActionHandlerResponse)
+	// 用户关注列表
+	@handler RelationFollowListHandler
+	get /douyin/relation/follow/list(RelationFollowListHandlerRequest) returns (RelationFollowListHandlerResponse)
+	// 用户粉丝列表
+	@handler RelationFollowerListHandler
+	get /douyin/relation/follower/list(RelationFollowerListHandlerRequest) returns (RelationFollowerListHandlerResponse)
+	// // 用户好友列表
+	// @handler RelationFriendListHandler
+	// get /douyin/relation/friend/list(RelationFriendListHandlerRequest) returns (RelationFriendListHandlerResponse)
+	
+	// // 方案一
+	// // socket消息服务中心
+	
+	// // 方案二
+	// // 聊天记录
+	// @handler MessageChatHandler
+	// get /douyin/message/chat(CommmentListHandlerRequest) returns (CommmentListHandlerResponse)
+	// // 消息操作
+	// @handler MessageActionHandler
+	// get /douyin/message/action(CommmentListHandlerRequest) returns (CommmentListHandlerResponse)
+}
