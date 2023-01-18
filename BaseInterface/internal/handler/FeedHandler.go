@@ -3,10 +3,11 @@ package handler
 import (
 	"net/http"
 
+	"SimpleTikTok/BaseInterface/internal/logic"
+	"SimpleTikTok/BaseInterface/internal/svc"
+	"SimpleTikTok/BaseInterface/internal/types"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"go-zero-demo/BaseInterface/internal/logic"
-	"go-zero-demo/BaseInterface/internal/svc"
-	"go-zero-demo/BaseInterface/internal/types"
 )
 
 func FeedHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
