@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"go-zero-demo/BaseInterface/internal/svc"
+	"SimpleTikTok/BaseInterface/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"go-zero-demo/BaseInterface/internal/svc"
-	"go-zero-demo/BaseInterface/internal/types"
+	"SimpleTikTok/BaseInterface/internal/svc"
+	"SimpleTikTok/BaseInterface/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"go-zero-demo/BaseInterface/internal/config"
-	"go-zero-demo/BaseInterface/internal/handler"
-	"go-zero-demo/BaseInterface/internal/svc"
+	"SimpleTikTok/BaseInterface/internal/config"
+	"SimpleTikTok/BaseInterface/internal/handler"
+	"SimpleTikTok/BaseInterface/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

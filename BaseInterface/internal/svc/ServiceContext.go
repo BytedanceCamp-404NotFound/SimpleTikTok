@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"go-zero-demo/BaseInterface/internal/config"
+	"SimpleTikTok/BaseInterface/internal/config"
 )
 
 type ServiceContext struct {

@@ -2,16 +2,17 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
 # 可以用做CI/CD持续集成，可以测试代码的问题
-name: 404NotFound-go-zero-test
+name: 404NotFound-SimpleTikTok
 # 触发 workflow 的事件,workflow就是叫这个名字
-on:
-  workflow_dispatch:  # 手动触发工作流程
-#   schedule:  # 事件允许您在计划的时间触发工作流程。
-#     # 代表国际标准时间4点0分，北京时间需要+8小时，代表北京时间中午12点运行
-#     - cron: '0 16 * * *'
-  push: # 当推送到指定分支的时候，触发构建流程
-    branches:
-      - 'main'
+# on:
+#   workflow_dispatch:  # 手动触发工作流程
+# #   schedule:  # 事件允许您在计划的时间触发工作流程。
+# #     # 代表国际标准时间4点0分，北京时间需要+8小时，代表北京时间中午12点运行
+# #     - cron: '0 16 * * *'
+#   push: # 当推送到指定分支的时候，触发构建流程
+#     branches:
+#       - 'main'
+on: [push, pull_request] # push事件或pull_request事件都可以触发 workflow
 jobs:
 #将工作流程中运行的所有作业组合在一起
   # go-zero-first这个就是job_id
