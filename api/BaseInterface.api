@@ -5,8 +5,8 @@ import (
 // 基础接口
 // 视频流接口
 type FeedHandlerRequest {
-	LastestTime int64  `from:"lastest_time"`
-	Token       string `from:"token"`
+	LastestTime int64  `form:"lastest_time"`
+	Token       string `form:"token"`
 }
 
 type FeedHandlerResponse {

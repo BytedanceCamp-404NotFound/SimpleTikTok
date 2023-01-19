@@ -2,8 +2,8 @@
 package types
 
 type FeedHandlerRequest struct {
-	LastestTime int64  `from:"LastestTime"`
-	Token       string `from:"token"`
+	LastestTime int64  `form:"lastest_time"`
+	Token       string `form:"token"`
 }
 
 type FeedHandlerResponse struct {
