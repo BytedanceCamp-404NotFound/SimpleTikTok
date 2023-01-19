@@ -5,87 +5,94 @@ import (
 // 基础接口
 // 视频流接口
 type FeedHandlerRequest {
-	LastestTime int64  `json:"LastestTime"`
-	Token       string `json:"Token"`
+	LastestTime int64  `json:"lastest_time"`
+	Token       string `json:"token"`
 }
 
 type FeedHandlerResponse {
-	StatusCode int32  `json:"StatusCode""`
-	StatusMsg  string `json:"StatusMsg"`
-	VideoList  Video  `json:"VideoList"`
-	NextTime   int64  `json:""NextTime"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	VideoList  Video  `json:"video_list"`
+	NextTime   int64  `json:"next_time"`
 }
 
 type Video {
-	Id            int64  `json:"Id"`
-	Author        User   `json:"Author"`
-	PlayUrl       string `json:"PlayUrl"`
-	CoverUrl      string `json:"CoverUrl"`
-	FavoriteCount int64  `json:"FavoriteCount"`
-	CommentCount  int64  `json:"CommentCount"`
-	IsFavotite    bool   `json:"IsFavotite"`
-	Title         string `json:"Title"`
+	Id            int64  `json:"id"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url"`
+	CoverUrl      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsFavotite    bool   `json:"is_favorite"`
+	Title         string `json:"title"`
 }
 
 type User {
-	Id            int64  `json:"Id"`
-	Name          string `json:"Name"`
-	FollowCount   string `json:"FollowCount"`
-	FollowerCount string `json:"FollowerCount"`
-	IsFollow      string `json:"IsFollow"`
-}
-
-// 用户登录接口
-type UserRegisterHandlerRequest {
-	UserName string `json:"UserName"`
-	PassWord string `json:"PassWord"`
-}
-
-type UserRegisterHandlerResponse {
-	StatusCode int32  `json:"StatusCode"`
-	StatusMsg  string `json:"StatusMsg"`
-	UserID     int64  `json:"UserID"`
-	Token      string `json:"token"`
+	Id            int64  `json:"id"`
+	Name          string `json:"name"`
+	FollowCount   string `json:"follow_count"`
+	FollowerCount string `json:"follower_count"`
+	IsFollow      string `json:"is_follow"`
 }
 
 // 用户注册接口
+type UserRegisterHandlerRequest {
+	UserName string `json:"username"`
+	PassWord string `json:"password"`
+}
+
+type UserRegisterHandlerResponse {
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
+}
+
+// 用户登陆接口
 type UserloginHandlerRequest {
-	StatusCode int32 `json:"StatusCode"`
+	UserName string `json:"username"`
+	PassWord string `json:"password"`
 }
 
 type UserloginHandlerResponse {
-	UserName string `json:"UserName"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
 }
 
 // 用户信息
 type UserHandlerRequest {
-	StatusCode int32 `json:"StatusCode"`
+	UserID int64  `json:"user_id"`
+	Token  string `json:"token"`
 }
 
 type UserHandlerResponse {
-	UserName string `json:"UserName"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	User       User   `json:"user"`
 }
 
 // 视频投稿
 type PublishActionHandlerRequest {
-	Token string `json:"Token"`
-	Data  int32  `json:"Data"` // 存疑bytes
-	Title string `json:"Title"`
+	Token string `json:"token"`
+	Data  int32  `json:"data"` // 存疑bytes
+	Title string `json:"title"`
 }
 
 type PublishActionHandlerResponse {
-	StatusCode string `json:"UserName"`
-	StatusMsg  string `json:"StatusMsg"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 // 发布列表
 type PublishListHandlerRequest {
-	StatusCode int32 `json:"StatusCode"`
+	StatusCode int32 `json:"status_code"`
 }
 
 type PublishListHandlerResponse {
-	StatusCode string `json:"UserName"`
-	StatusMsg  string `json:"StatusMsg"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 service BaseInterface-api {
@@ -93,12 +100,12 @@ service BaseInterface-api {
 	// 视频流接口
 	@handler FeedHandler
 	get /douyin/feed(FeedHandlerRequest) returns (FeedHandlerResponse)
-	// 用户登录接口
+	// 用户登陆接口
 	@handler UserRegisterHandler
-	post /douyin/user/register(UserRegisterHandlerRequest) returns (UserRegisterHandlerResponse)
-	// 用户注册接口
+	post /douyin/user/register/:url (UserRegisterHandlerRequest) returns (UserRegisterHandlerResponse)
+	// 用户登录接口
 	@handler UserloginHandler
-	get /douyin/user/login(UserloginHandlerRequest) returns (UserloginHandlerResponse)
+	post /douyin/user/login(UserloginHandlerRequest) returns (UserloginHandlerResponse)
 	// 用户信息
 	@handler UserHandler
 	get /douyin/user(UserHandlerRequest) returns (UserHandlerResponse)

@@ -6,7 +6,6 @@ import (
 	"SimpleTikTok/BaseInterface/internal/logic"
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

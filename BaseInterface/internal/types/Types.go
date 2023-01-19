@@ -2,82 +2,89 @@
 package types
 
 type FeedHandlerRequest struct {
-	LastestTime int64  `json:"LastestTime"`
-	Token       string `json:"Token"`
+	LastestTime int64  `json:"lastest_time"`
+	Token       string `json:"token"`
 }
 
 type FeedHandlerResponse struct {
-	StatusCode int32  `json:"StatusCode""`
-	StatusMsg  string `json:"StatusMsg"`
-	VideoList  Video  `json:"VideoList"`
-	NextTime   int64  `json:""NextTime"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	VideoList  Video  `json:"video_list"`
+	NextTime   int64  `json:"next_time"`
 }
 
 type Video struct {
-	Id            int64  `json:"Id"`
-	Author        User   `json:"Author"`
-	PlayUrl       string `json:"PlayUrl"`
-	CoverUrl      string `json:"CoverUrl"`
-	FavoriteCount int64  `json:"FavoriteCount"`
-	CommentCount  int64  `json:"CommentCount"`
-	IsFavotite    bool   `json:"IsFavotite"`
-	Title         string `json:"Title"`
+	Id            int64  `json:"id"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url"`
+	CoverUrl      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsFavotite    bool   `json:"is_favorite"`
+	Title         string `json:"title"`
 }
 
 type User struct {
-	Id            int64  `json:"Id"`
-	Name          string `json:"Name"`
-	FollowCount   string `json:"FollowCount"`
-	FollowerCount string `json:"FollowerCount"`
-	IsFollow      string `json:"IsFollow"`
+	Id            int64  `json:"id"`
+	Name          string `json:"name"`
+	FollowCount   string `json:"follow_count"`
+	FollowerCount string `json:"follower_count"`
+	IsFollow      string `json:"is_follow"`
 }
 
 type UserRegisterHandlerRequest struct {
-	UserName string `json:"UserName"`
-	PassWord string `json:"PassWord"`
+	UserName string `json:"username"`
+	PassWord string `json:"password"`
 }
 
 type UserRegisterHandlerResponse struct {
-	StatusCode int32  `json:"StatusCode"`
-	StatusMsg  string `json:"StatusMsg"`
-	UserID     int64  `json:"UserID"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
 }
 
 type UserloginHandlerRequest struct {
-	StatusCode int32 `json:"StatusCode"`
+	UserName string `json:"username"`
+	PassWord string `json:"password"`
 }
 
 type UserloginHandlerResponse struct {
-	UserName string `json:"UserName"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
 }
 
 type UserHandlerRequest struct {
-	StatusCode int32 `json:"StatusCode"`
+	UserID int64  `json:"user_id"`
+	Token  string `json:"token"`
 }
 
 type UserHandlerResponse struct {
-	UserName string `json:"UserName"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	User       User   `json:"user"`
 }
 
 type PublishActionHandlerRequest struct {
-	Token string `json:"Token"`
-	Data  int32  `json:"Data"` // 存疑bytes
-	Title string `json:"Title"`
+	Token string `json:"token"`
+	Data  int32  `json:"data"` // 存疑bytes
+	Title string `json:"title"`
 }
 
 type PublishActionHandlerResponse struct {
-	StatusCode string `json:"UserName"`
-	StatusMsg  string `json:"StatusMsg"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type PublishListHandlerRequest struct {
-	StatusCode int32 `json:"StatusCode"`
+	StatusCode int32 `json:"status_code"`
 }
 
 type PublishListHandlerResponse struct {
-	StatusCode string `json:"UserName"`
-	StatusMsg  string `json:"StatusMsg"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type CommmentActionHandlerRequest struct {
