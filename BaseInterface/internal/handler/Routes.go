@@ -19,7 +19,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/douyin/user/register",
+				Path:    "/douyin/user/register/:url",
 				Handler: UserRegisterHandler(serverCtx),
 			},
 			{
