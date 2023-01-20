@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -69,4 +70,10 @@ func CheckToke(TokenString string) (flag bool, id int) {
 		return true, claims.Id
 	}
 	return false, -1
+}
+
+
+func main(){
+	fmt.Println("123token:", CreateToken(123))
+	fmt.Println("321token:", CreateToken(321))
 }

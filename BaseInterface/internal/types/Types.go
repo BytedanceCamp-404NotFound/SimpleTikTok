@@ -7,84 +7,84 @@ type FeedHandlerRequest struct {
 }
 
 type FeedHandlerResponse struct {
-	StatusCode int64  `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
-	VideoList  Video  `from:"video_list"`
-	NextTime   int64  `from:"next_time"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	VideoList  Video  `json:"video_list"`
+	NextTime   int64  `json:"next_time"`
 }
 
 type Video struct {
-	Id            int64  `from:"id"`
-	Author        User   `from:"author"`
-	PlayUrl       string `from:"play_url"`
-	CoverUrl      string `from:"cover_url"`
-	FavoriteCount int64  `from:"favorite_count"`
-	CommentCount  int64  `from:"comment_count"`
-	IsFavotite    bool   `from:"is_favorite"`
-	Title         string `from:"title"`
+	Id            int64  `form:"id"`
+	Author        User   `form:"author"`
+	PlayUrl       string `form:"play_url"`
+	CoverUrl      string `form:"cover_url"`
+	FavoriteCount int64  `form:"favorite_count"`
+	CommentCount  int64  `form:"comment_count"`
+	IsFavotite    bool   `form:"is_favorite"`
+	Title         string `form:"title"`
 }
 
 type User struct {
-	Id            int64  `from:"id"`
-	Name          string `from:"name"`
-	FollowCount   string `from:"follow_count"`
-	FollowerCount string `from:"follower_count"`
-	IsFollow      string `from:"is_follow"`
-}
-
-type UserRegisterHandlerRequest struct {
-	UserName string `from:"username"`
-	PassWord string `from:"password"`
-}
-
-type UserRegisterHandlerResponse struct {
-	StatusCode int64  `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
-	Token      string `from:"token"`
-	UserID     int64  `from:"user_id"`
-}
-
-type UserloginHandlerRequest struct {
-	UserName string `from:"username"`
-	PassWord string `from:"password"`
-}
-
-type UserloginHandlerResponse struct {
-	StatusCode int64  `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
-	Token      string `from:"token"`
-	UserID     int64  `from:"user_id"`
+	Id            int64  `form:"id"`
+	Name          string `form:"name"`
+	FollowCount   int64  `form:"follow_count"`
+	FollowerCount int64  `form:"follower_count"`
+	IsFollow      bool   `form:"is_follow"`
 }
 
 type UserHandlerRequest struct {
-	UserID int64  `from:"user_id"`
-	Token  string `from:"token"`
+	UserID int64  `form:"user_id"`
+	Token  string `form:"token"`
 }
 
 type UserHandlerResponse struct {
-	StatusCode int32  `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
-	User       User   `from:"user"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	User       User   `json:"user"`
+}
+
+type UserRegisterHandlerRequest struct {
+	UserName string `form:"username"`
+	PassWord string `form:"password"`
+}
+
+type UserRegisterHandlerResponse struct {
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
+}
+
+type UserloginHandlerRequest struct {
+	UserName string `form:"username"`
+	PassWord string `form:"password"`
+}
+
+type UserloginHandlerResponse struct {
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
 }
 
 type PublishActionHandlerRequest struct {
-	Token string `from:"token"`
-	Data  int32  `from:"data"` // 存疑bytes
-	Title string `from:"title"`
+	Token string `form:"token"`
+	Data  int32  `form:"data"` // 存疑bytes
+	Title string `form:"title"`
 }
 
 type PublishActionHandlerResponse struct {
-	StatusCode int32  `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type PublishListHandlerRequest struct {
-	StatusCode int32 `from:"status_code"`
+	StatusCode int32 `form:"status_code"`
 }
 
 type PublishListHandlerResponse struct {
-	StatusCode string `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type CommmentActionHandlerRequest struct {
