@@ -1,13 +1,4 @@
 # SimpleTikTok
-测试传代码
-
-
-变量命名使用大驼峰
-### 编译
-```shell
-cd greet
-go build greet.go 
-```
 
 ### 调试
 在任何位置启动F5都可以使用，但是需要先编译
@@ -21,13 +12,12 @@ go mod tidy
 ```
 
 ### 修改API
-goctl api go -api api/BaseInterface.api -dir .. -style GoZero
+./GoZeroUse.sh create
 
+### 编译
+./GoZeroUse.sh build
 ### 启动go-zero
-```shell
-cd BasicInterface
-go run BasicInterface-Api.go -f etc/BasicInterface-Api.yaml
-```
+./GoZeroUse.sh run
 ### 测试go-zero
 ```shell
 curl -i -X GET http://localhost:8888/from/you
@@ -35,7 +25,7 @@ curl -i -X GET http://localhost:8888/from/you
 浏览器中打开
 http://[自己IP地址]:8080/from/you
 
-
+logrus
 
 
 # 临时放在这里的环境配置

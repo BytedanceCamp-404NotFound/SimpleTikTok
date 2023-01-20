@@ -33,5 +33,5 @@ jobs:
     
       - name: Build   # 构建go
         run: |
-          ./build-go-zero.sh
+          ./GoZeroUse.sh build
 # go run greet.go -f etc/greet-api.yaml

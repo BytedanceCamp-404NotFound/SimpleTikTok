@@ -1,21 +1,21 @@
 // 互动方向
 // 评论操作
 type CommmentActionHandlerRequest {
-	StatusCode int32 `json:"StatusCode"`
+	StatusCode int32 `from:"StatusCode"`
 }
 
 type CommmentActionHandlerResponse {
-	StatusCode string `json:"UserName"`
-	StatusMsg  string `json:"StatusMsg"`
+	StatusCode string `from:"UserName"`
+	StatusMsg  string `from:"StatusMsg"`
 }
 
 // 视频评论列表
 type CommmentListHandlerRequest {
-	StatusCode int32 `json:"StatusCode"`
+	StatusCode int32 `from:"StatusCode"`
 }
 
 type CommmentListHandlerResponse {
-	StatusCode string `json:"UserName"`
-	StatusMsg  string `json:"StatusMsg"`
+	StatusCode string `from:"UserName"`
+	StatusMsg  string `from:"StatusMsg"`
 }
 
