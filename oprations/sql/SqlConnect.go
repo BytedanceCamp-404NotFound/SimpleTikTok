@@ -2,7 +2,6 @@ package sql
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -19,10 +18,12 @@ import (
  */
 func SqlConnect() *gorm.DB {
 	//配置MySQL连接参数
-	viper.SetConfigFile("oprations/sql/sqlConfig.yaml")
-	content, err := ioutil.ReadFile("oprations/sql/sqlConfig.yaml")
+	//oprations/sql/sqlConfig.yaml
+	viper.SetConfigFile("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
+	content, err := os.ReadFile("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
 	if err != nil {
 		fmt.Println("ioutil获取配置文件失败！")
+		fmt.Println(err)
 	}
 	err = viper.ReadConfig(strings.NewReader(os.ExpandEnv(string(content))))
 	if err != nil {
