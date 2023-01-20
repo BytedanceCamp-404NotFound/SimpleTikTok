@@ -30,7 +30,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 	fmt.Println(req)
 	uid := sql.CreateUser(req.UserName, req.PassWord)
 	fmt.Println(uid)
-	if uid != -1 {
+	if uid == -1 {
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: -1,
 			StatusMsg:  "注册失败",
