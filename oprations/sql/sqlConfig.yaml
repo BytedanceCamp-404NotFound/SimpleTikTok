@@ -1,0 +1,12 @@
+database:
+ username: root
+ password: toor
+ host: 127.0.0.1
+ port: 3306
+ dbname: SimpleTikTok
+ timeout: 10s
+
+gormpool:
+ MaxIdleConns: 25
+ MaxOpenConns: 25
+ ConnMaxLifetime: 5
