@@ -76,13 +76,13 @@ type UserloginHandlerResponse {
 // 视频投稿
 type PublishActionHandlerRequest {
 	Token string `form:"token"`
-	Data  int32  `form:"data"` // 存疑bytes
+	Data  byte   `form:"data"` // 存放视频数据
 	Title string `form:"title"`
 }
 
 type PublishActionHandlerResponse {
-	StatusCode int32  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+	StatusCode int32  `form:"status_code,default=400"`
+	StatusMsg  string `form:"status_msg,optional"`
 }
 
 // 发布列表
@@ -102,7 +102,7 @@ service BaseInterface-api {
 	get /douyin/feed(FeedHandlerRequest) returns (FeedHandlerResponse)
 	// 用户登陆接口
 	@handler UserRegisterHandler
-	post /douyin/test(UserRegisterHandlerRequest) returns (UserRegisterHandlerResponse)
+	post /douyin/user/register(UserRegisterHandlerRequest) returns (UserRegisterHandlerResponse)
 	// 用户登录接口
 	@handler UserloginHandler
 	post /douyin/user/login(UserloginHandlerRequest) returns (UserloginHandlerResponse)

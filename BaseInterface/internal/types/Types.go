@@ -69,13 +69,13 @@ type UserloginHandlerResponse struct {
 
 type PublishActionHandlerRequest struct {
 	Token string `form:"token"`
-	Data  int32  `form:"data"` // 存疑bytes
+	Data  byte   `form:"data"` // 存放视频数据
 	Title string `form:"title"`
 }
 
 type PublishActionHandlerResponse struct {
-	StatusCode int32  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+	StatusCode int32  `form:"status_code,default=400"`
+	StatusMsg  string `form:"status_msg,optional"`
 }
 
 type PublishListHandlerRequest struct {
