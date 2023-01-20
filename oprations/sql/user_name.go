@@ -21,7 +21,7 @@ type User_name struct {
  */
 func CreateUser(UserName string, password string) int {
 	id := -1
-	db := SqlConnect()
+	db, _ := SqlConnect()
 	user := User_name{UserName: UserName, UserPwd: password, RegisterDate: time.Now()}
 	db.Table("user_name").Create(&user)
 	db.Table("user_name").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
@@ -39,7 +39,7 @@ func CreateUser(UserName string, password string) int {
  */
 func CheckUser(UserName string, password string) int {
 	id := -1
-	db := SqlConnect()
+	db, _ := SqlConnect()
 	db.Table("user_name").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
 	fmt.Println(id)
 

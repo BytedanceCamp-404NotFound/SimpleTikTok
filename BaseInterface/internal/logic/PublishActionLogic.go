@@ -32,6 +32,8 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	logrus.Debug("debug msg")
 	_ = minio.MinioFileUploader()
 	fmt.Print("-------------------------")
+	
+	logrus.Debugf("Data: %s, Title: %v", req.Data, req.Title)
 
 	return &types.PublishActionHandlerResponse{
 		StatusCode: 0,
