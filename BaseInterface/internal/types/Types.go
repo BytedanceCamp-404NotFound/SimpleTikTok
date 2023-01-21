@@ -69,7 +69,6 @@ type UserloginHandlerResponse struct {
 
 type PublishActionHandlerRequest struct {
 	Token string `form:"token"`
-	Data  byte   `form:"data"` // 存放视频数据
 	Title string `form:"title"`
 }
 
@@ -105,43 +104,43 @@ type CommmentListHandlerResponse struct {
 	StatusMsg  string `from:"StatusMsg"`
 }
 
-
 type RelationActionHandlerRequest struct {
-	Token string `form:"token"`
-	To_user_id int32  `form:"to_user_id"`
-	Sction_type int32 `form:"action_type"`
+	Token       string `form:"token"`
+	To_user_id  int32  `form:"to_user_id"`
+	Sction_type int32  `form:"action_type"`
 }
 
 type RelationActionHandlerResponse struct {
-	StatusCode int32 `from:"status_code"`
+	StatusCode int32  `from:"status_code"`
 	StatusMsg  string `from:"status_msg"`
 }
 
 type RelationFollowListHandlerRequest struct {
-	Token string `form:"token"`
+	Token  string `form:"token"`
 	UserId int32  `form:"user_id"`
 }
 
 type RelationFollowListHandlerResponse struct {
-	StatusCode int32 `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
-	UserList []RelationUser `from:"user_list"`
+	StatusCode int32          `from:"status_code"`
+	StatusMsg  string         `from:"status_msg"`
+	UserList   []RelationUser `from:"user_list"`
 }
 
 type RelationFollowerListHandlerRequest struct {
-	Token string `form:"token"`
+	Token  string `form:"token"`
 	UserId int32  `form:"user_id"`
 }
 
 type RelationFollowerListHandlerResponse struct {
-	StatusCode int32 `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
-	UserList []RelationUser `from:"user_list"`
+	StatusCode int32          `from:"status_code"`
+	StatusMsg  string         `from:"status_msg"`
+	UserList   []RelationUser `from:"user_list"`
 }
+
 type RelationUser struct {
 	Id            int64  `from:"id" gorm:"column:user_id"`
 	Name          string `from:"name" gorm:"column:user_nick_name"`
-	FollowCount   int32 `from:"follow_count" gorm:"column:follow_count" `
-	FollowerCount int32 `from:"follower_count" gorm:"column:follower_count"`
-	IsFollow      bool `from:"is_follow"`
+	FollowCount   int32  `form:"follow_count" gorm:"column:follow_count"`
+	FollowerCount int32  `from:"follower_count" gorm:"column:follower_count"`
+	IsFollow      bool   `from:"is_follow"`
 }

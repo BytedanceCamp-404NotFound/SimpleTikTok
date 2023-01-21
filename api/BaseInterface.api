@@ -76,7 +76,7 @@ type UserloginHandlerResponse {
 // 视频投稿
 type PublishActionHandlerRequest {
 	Token string `form:"token"`
-	Data  byte   `form:"data"` // 存放视频数据
+	// Data  []byte `form:"data"` // 存放视频数据
 	Title string `form:"title"`
 }
 
