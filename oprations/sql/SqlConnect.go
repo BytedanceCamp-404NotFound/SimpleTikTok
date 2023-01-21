@@ -2,7 +2,6 @@ package sql
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	//"path/filepath"
@@ -32,10 +31,10 @@ func SqlConnect() (*gorm.DB, error) {
 	//返回上级目录
 	//yamlFile := filepath.Dir(exePath)
 	//yamlFile = filepath.Dir(yamlFile)
-	outputDir := fmt.Sprintf("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
+	//outputDir := fmt.Sprintf("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
 	//配置MySQL连接参数
-	viper.SetConfigFile(outputDir)
-	content, err := ioutil.ReadFile(outputDir)
+	viper.SetConfigFile("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
+	content, err := os.ReadFile("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
 	if err != nil {
 		logx.Errorf("SqlConnect ioutil获取配置文件失败！")
 	}
