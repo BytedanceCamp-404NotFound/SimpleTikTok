@@ -88,6 +88,7 @@ type PublishListHandlerResponse struct {
 }
 
 type Comment struct {
+	Id         string `form:"_id" bson:"_id"`
 	VideoId    int64  `form:"video_id" bson:"video_id"` //视频id
 	User       User   `form:"user" bson:"user"`
 	Content    string `form:"content" bson:"content"`
@@ -99,7 +100,7 @@ type CommmentActionHandlerRequest struct {
 	VideoId     int64  `form:"video_id"`
 	ActionType  int32  `form:"action_type"`
 	CommentText string `form:"comment_text"`
-	CommentId   int64  `form:"comment_id,optional"`
+	CommentId   int64  `form:"comment_id"`
 }
 
 type CommmentActionHandlerResponse struct {
