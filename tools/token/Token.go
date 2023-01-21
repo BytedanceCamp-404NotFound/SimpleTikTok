@@ -72,7 +72,7 @@ func CheckToke(TokenString string) (flag bool, id int) {
 	return false, -1
 }
 
-
+// TODO: 添加Test
 func main(){
 	fmt.Println("123token:", CreateToken(123))
 	fmt.Println("321token:", CreateToken(321))
