@@ -105,29 +105,43 @@ type CommmentListHandlerResponse struct {
 	StatusMsg  string `from:"StatusMsg"`
 }
 
+
 type RelationActionHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token string `form:"token"`
+	To_user_id int32  `form:"to_user_id"`
+	Sction_type int32 `form:"action_type"`
 }
 
 type RelationActionHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32 `from:"status_code"`
+	StatusMsg  string `from:"status_msg"`
 }
 
 type RelationFollowListHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token string `form:"token"`
+	UserId int32  `form:"user_id"`
 }
 
 type RelationFollowListHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32 `from:"status_code"`
+	StatusMsg  string `from:"status_msg"`
+	UserList []RelationUser `from:"user_list"`
 }
 
 type RelationFollowerListHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token string `form:"token"`
+	UserId int32  `form:"user_id"`
 }
 
 type RelationFollowerListHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32 `from:"status_code"`
+	StatusMsg  string `from:"status_msg"`
+	UserList []RelationUser `from:"user_list"`
+}
+type RelationUser struct {
+	Id            int64  `from:"id" gorm:"column:user_id"`
+	Name          string `from:"name" gorm:"column:user_nick_name"`
+	FollowCount   int32 `from:"follow_count" gorm:"column:follow_count" `
+	FollowerCount int32 `from:"follower_count" gorm:"column:follower_count"`
+	IsFollow      bool `from:"is_follow"`
 }
