@@ -25,11 +25,11 @@ type Video struct {
 }
 
 type User struct {
-	Id            int64  `form:"id"`
-	Name          string `form:"name"`
-	FollowCount   int64  `form:"follow_count"`
-	FollowerCount int64  `form:"follower_count"`
-	IsFollow      bool   `form:"is_follow"`
+	UserId        int64  `gorm:"user_id" form:"user_id" bson:"user_id"`
+	Name          string `gorm:"user_nick_name" form:"name" bson:"name"`
+	FollowCount   int64  `gorm:"follow_count" form:"follow_count" bson:"follow_count"`
+	FollowerCount int64  `gorm:"follower_count" form:"follower_count" bson:"follower_count"`
+	IsFollow      bool   `form:"is_follow" bson:"is_follow"`
 }
 
 type UserHandlerRequest struct {
@@ -69,13 +69,12 @@ type UserloginHandlerResponse struct {
 
 type PublishActionHandlerRequest struct {
 	Token string `form:"token"`
-	Data  int32  `form:"data"` // 存疑bytes
 	Title string `form:"title"`
 }
 
 type PublishActionHandlerResponse struct {
-	StatusCode int32  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+	StatusCode int32  `form:"status_code,default=400"`
+	StatusMsg  string `form:"status_msg,optional"`
 }
 
 type PublishListHandlerRequest struct {
@@ -88,47 +87,75 @@ type PublishListHandlerResponse struct {
 	StatusMsg  string `json:"status_msg"`
 }
 
+type Comment struct {
+	VideoId    int64  `form:"video_id" bson:"video_id"` //视频id
+	User       User   `form:"user" bson:"user"`
+	Content    string `form:"content" bson:"content"`
+	CreateDate string `form:"create_date" bson:"create_date"`
+}
+
 type CommmentActionHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token       string `form:"token"`
+	VideoId     int64  `form:"video_id"`
+	ActionType  int32  `form:"action_type"`
+	CommentText string `form:"comment_text"`
+	CommentId   int64  `form:"comment_id,optional"`
 }
 
 type CommmentActionHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg"`
+	Comment    Comment `json:"comment"`
 }
 
 type CommmentListHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token   string `form:"token"`
+	VideoId int64  `form:"video_id"`
 }
 
 type CommmentListHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode  int32   `json:"status_code"`
+	StatusMsg   string  `json:"status_msg"`
+	CommentList Comment `json:"comment_list"`
 }
 
 type RelationActionHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token       string `form:"token"`
+	To_user_id  int32  `form:"to_user_id"`
+	Sction_type int32  `form:"action_type"`
 }
 
 type RelationActionHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32  `from:"status_code"`
+	StatusMsg  string `from:"status_msg"`
 }
 
 type RelationFollowListHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token  string `form:"token"`
+	UserId int32  `form:"user_id"`
 }
 
 type RelationFollowListHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32          `from:"status_code"`
+	StatusMsg  string         `from:"status_msg"`
+	UserList   []RelationUser `from:"user_list"`
 }
 
 type RelationFollowerListHandlerRequest struct {
-	StatusCode int32 `from:"StatusCode"`
+	Token  string `form:"token"`
+	UserId int32  `form:"user_id"`
 }
 
 type RelationFollowerListHandlerResponse struct {
-	StatusCode string `from:"UserName"`
-	StatusMsg  string `from:"StatusMsg"`
+	StatusCode int32          `from:"status_code"`
+	StatusMsg  string         `from:"status_msg"`
+	UserList   []RelationUser `from:"user_list"`
+}
+
+type RelationUser struct {
+	Id            int64  `from:"id" gorm:"column:user_id"`
+	Name          string `from:"name" gorm:"column:user_nick_name"`
+	FollowCount   int32  `form:"follow_count" gorm:"column:follow_count"`
+	FollowerCount int32  `from:"follower_count" gorm:"column:follower_count"`
+	IsFollow      bool   `from:"is_follow"`
 }

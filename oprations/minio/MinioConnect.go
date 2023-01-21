@@ -1,14 +1,17 @@
 package minio
 
 import (
-	"log"
+	"encoding/base64"
+	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/minio/minio-go/v6"
 	"github.com/sirupsen/logrus"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 func MinioConnect() (*minio.Client, error) {
-	Endpoint := "39.106.72.165:9001"  // 用的API端口，不是Console
+	Endpoint := "39.106.72.165:9001" // 用的API端口，不是Console
 	AccessKeyID := "minio"
 	SecretAccessKey := "minio123"
 	UseSSL := false
@@ -19,37 +22,46 @@ func MinioConnect() (*minio.Client, error) {
 		return nil, err
 	}
 
-	log.Printf("%#v\n", minioClient) // minioClient初使化成功
+	logx.Infof("%v", minioClient) // minioClient初使化成功
 	return minioClient, nil
 }
 
-func MinioFileUploader() error {
-	minioClient, err := MinioConnect()
+func MinioMakeBucket() error {
 	// 创建一个叫mymusic的存储桶。
-	bucketName := "test-minio"
-	location := "yzx_bucket"
+	// bucketName := "test-minio"
+	// location := "yzx_bucket" // 存储桶被创建的region
 
-	err = minioClient.MakeBucket(bucketName, location)
-	if err != nil {
-		// 检查存储桶是否已经存在。
-		exists, err := minioClient.BucketExists(bucketName)
-		if err == nil && exists {
-			logrus.Debug("We already own %s\n", bucketName)
-		} else {
-			logrus.Error(err)
-			return err
-		}
-	}
-	logrus.Debug("Successfully created %s\n", bucketName)
+	// err := minioClient.MakeBucket(bucketName, location)
+	// if err != nil {
+	// 	// 检查存储桶是否已经存在。
+	// 	exists, err := minioClient.BucketExists(bucketName)
+	// 	if err == nil && exists {
+	// 		logx.Debug("We already own %s\n", bucketName)
+	// 	} else {
+	// 		logx.Error(err)
+	// 		return err
+	// 	}
+	// }
+	// logx.Debug("Successfully created %s\n", bucketName)
+	return nil
+}
+func MinioFileUploader(minioClient *minio.Client, bucketName string, objectPre string, filePath string) (string, error) {
+	newfilePath := filepath.Base(filePath)
+	newfilePath = uuid.New().String() + "-" + newfilePath
+	logx.Infof("%s", newfilePath)
 
-	objectName := "yzx_file1.zip"	// 要上传的文件的名字
-	filePath := "./yzx_file1.zip"	// 本地文件的路径
-	contentType := "application/zip"	// 类型
+	objectName := objectPre + newfilePath // 要上传的文件的名字
+	logx.Infof("MinioFileUploader, objectName:%s, newfilePath:%s", objectName, newfilePath)
+	contentType := "video/mp4" // 类型
 
 	n, err := minioClient.FPutObject(bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
-		logrus.Error(err)
+		logx.Error(err)
+		return "", err
 	}
-	logrus.Error("Successfully uploaded %s of size %d\n", objectName, n)
-	return nil
+	logx.Infof("Successfully uploaded %s of size %d\n", objectName, n)
+	str := bucketName + "_" + objectName
+	strbytes := []byte(str)
+	bucket_filepath := "minio_" + base64.StdEncoding.EncodeToString(strbytes)
+	return bucket_filepath, nil
 }

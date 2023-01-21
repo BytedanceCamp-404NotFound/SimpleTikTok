@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/sql"
@@ -41,7 +40,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 	TokenString := tools.CreateToken(uid)
 	return &types.UserloginHandlerResponse{
 		StatusCode: 0,
-		StatusMsg:  "注册成功",
+		StatusMsg:  "登录成功",
 		UserID:     int64(uid),
 		Token:      TokenString,
 	}, err

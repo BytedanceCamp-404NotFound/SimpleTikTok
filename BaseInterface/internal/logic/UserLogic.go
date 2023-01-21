@@ -45,7 +45,7 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 		StatusCode: 0,
 		StatusMsg:  "查询成功！",
 		User:       types.User{
-						Id:             ui.User.UserID, 
+						UserId:         ui.User.UserID, 
 						Name:           ui.User.UserName, 
 						FollowCount:    ui.User.FollowCount, 
 						FollowerCount:  ui.User.FollowerCount, 
