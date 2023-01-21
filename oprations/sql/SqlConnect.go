@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path/filepath"
+	//"path/filepath"
 	"strings"
 	"time"
 
@@ -30,9 +30,9 @@ func SqlConnect() (*gorm.DB, error) {
 		return nil, err
 	}
 	//返回上级目录
-	yamlFile := filepath.Dir(exePath)
-	yamlFile = filepath.Dir(yamlFile)
-	outputDir := fmt.Sprintf("%s/oprations/sql/sqlConfig.yaml", yamlFile)
+	//yamlFile := filepath.Dir(exePath)
+	//yamlFile = filepath.Dir(yamlFile)
+	outputDir := fmt.Sprintf("/home/ss/Desktop/environment/gopath/src/github.com/SimpleTikTok/oprations/sql/sqlConfig.yaml")
 	//配置MySQL连接参数
 	viper.SetConfigFile(outputDir)
 	content, err := ioutil.ReadFile(outputDir)
