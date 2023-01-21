@@ -1,7 +1,7 @@
 database:
  username: root
- password: "123456"
- host: localhost
+ password: "85808353j"
+ host: 192.168.31.132
  port: 3306
  dbname: SimpleTikTok
  timeout: 10s
