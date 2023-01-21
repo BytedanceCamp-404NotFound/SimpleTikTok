@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	_"path/filepath"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -21,16 +21,15 @@ import (
  */
 func SqlConnect() (*gorm.DB, error) {
 	// 获取当前可执行文件位置
-	// exePath, err := os.Executable()
-	// if err != nil {
-	// 	logx.Errorf("%v %v", exePath, err)
-	// 	return nil, err
-	// }
-	// //返回上级目录
-	// yamlFile := filepath.Dir(exePath)
-	// yamlFile = filepath.Dir(yamlFile)
-	// outputDir := fmt.Sprintf("%s/oprations/sql/sqlConfig.yaml", yamlFile)
-	outputDir := "/home/bytedance/Golang/goCode/src/SimpleTikTok/oprations/sql/sqlConfig.yaml"
+	exePath, err := os.Executable()
+	if err != nil {
+		logx.Errorf("%v %v", exePath, err)
+		return nil, err
+	}
+	//返回上级目录
+	yamlFile := filepath.Dir(exePath)
+	yamlFile = filepath.Dir(yamlFile)
+	outputDir := fmt.Sprintf("%s/oprations/sql/sqlConfig.yaml", yamlFile)
 	//配置MySQL连接参数
 	viper.SetConfigFile(outputDir)
 	content, err := ioutil.ReadFile(outputDir)
