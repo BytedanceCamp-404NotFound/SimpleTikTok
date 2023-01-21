@@ -29,13 +29,14 @@ type Video {
 
 //用户信息接口
 type User {
-	Id            int64  `form:"id"`
-	Name          string `form:"name"`
-	FollowCount   int64  `form:"follow_count"`
-	FollowerCount int64  `form:"follower_count"`
-	IsFollow      bool   `form:"is_follow"`
+	UserId        int64  `gorm:"user_id" form:"user_id" bson:"user_id"`
+	Name          string `gorm:"user_nick_name" form:"name" bson:"name"`
+	FollowCount   int64  `gorm:"follow_count" form:"follow_count" bson:"follow_count"`
+	FollowerCount int64  `gorm:"follower_count" form:"follower_count" bson:"follower_count"`
+	IsFollow      bool   `form:"is_follow" bson:"is_follow"`
 }
 
+// 用户信息请求与响应接口
 type UserHandlerRequest {
 	UserID int64  `form:"user_id"`
 	Token  string `form:"token"`
@@ -54,10 +55,10 @@ type UserRegisterHandlerRequest {
 }
 
 type UserRegisterHandlerResponse {
-	StatusCode int64  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
-	Token      string `json:"token"`
-	UserID     int64  `json:"user_id"`
+	StatusCode int64  `form:"status_code"`
+	StatusMsg  string `form:"status_msg"`
+	Token      string `form:"token"`
+	UserID     int64  `form:"user_id"`
 }
 
 // 用户登陆接口
@@ -87,13 +88,14 @@ type PublishActionHandlerResponse {
 
 // 发布列表
 type PublishListHandlerRequest {
-	UserID int64  `form:"user_id"`
-	Token  string `form:"token"`
+	UserID int64 `form:"user_id"`
+ 	Token string `form:"token"`
 }
 
 type PublishListHandlerResponse {
 	StatusCode string `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
+	
 }
 
 service BaseInterface-api {
