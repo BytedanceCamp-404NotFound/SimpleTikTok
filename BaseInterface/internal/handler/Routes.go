@@ -3,6 +3,7 @@ package handler
 
 import (
 	"net/http"
+
 	"SimpleTikTok/BaseInterface/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -18,7 +19,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/douyin/user/register",
+				Path:    "/douyin/test",
 				Handler: UserRegisterHandler(serverCtx),
 			},
 			{

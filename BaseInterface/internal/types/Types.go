@@ -79,7 +79,8 @@ type PublishActionHandlerResponse struct {
 }
 
 type PublishListHandlerRequest struct {
-	StatusCode int32 `form:"status_code"`
+	UserID int64 `form:"user_id"`
+ 	Token string `form:"token"`
 }
 
 type PublishListHandlerResponse struct {

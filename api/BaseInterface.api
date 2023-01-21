@@ -87,12 +87,14 @@ type PublishActionHandlerResponse {
 
 // 发布列表
 type PublishListHandlerRequest {
-	StatusCode int32 `form:"status_code"`
+	UserID int64 `form:"user_id"`
+ 	Token string `form:"token"`
 }
 
 type PublishListHandlerResponse {
 	StatusCode string `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
+	
 }
 
 service BaseInterface-api {
