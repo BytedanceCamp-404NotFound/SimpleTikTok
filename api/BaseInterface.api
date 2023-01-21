@@ -55,10 +55,10 @@ type UserRegisterHandlerRequest {
 }
 
 type UserRegisterHandlerResponse {
-	StatusCode int64  `form:"status_code"`
-	StatusMsg  string `form:"status_msg"`
-	Token      string `form:"token"`
-	UserID     int64  `form:"user_id"`
+	StatusCode int64  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	Token      string `json:"token"`
+	UserID     int64  `json:"user_id"`
 }
 
 // 用户登陆接口
@@ -82,20 +82,19 @@ type PublishActionHandlerRequest {
 }
 
 type PublishActionHandlerResponse {
-	StatusCode int32  `form:"status_code,default=400"`
-	StatusMsg  string `form:"status_msg,optional"`
+	StatusCode int32  `json:"status_code,default=400"`
+	StatusMsg  string `json:"status_msg,optional"`
 }
 
 // 发布列表
 type PublishListHandlerRequest {
-	UserID int64 `form:"user_id"`
- 	Token string `form:"token"`
+	UserID int64  `form:"user_id"`
+	Token  string `form:"token"`
 }
 
 type PublishListHandlerResponse {
 	StatusCode string `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
-	
 }
 
 service BaseInterface-api {
