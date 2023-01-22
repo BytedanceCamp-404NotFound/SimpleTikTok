@@ -11,8 +11,8 @@ type CommmentActionHandlerRequest {
 	Token  		string `form:"token"`
 	VideoId 	int64  `form:"video_id"`
 	ActionType  int32  `form:"action_type"`
-	CommentText string `form:"comment_text"`
-	CommentId 	int64  `form:"comment_id"`
+	CommentText string `form:"comment_text,optional"`
+	CommentId 	int64  `form:"comment_id,optional"`
 }
 
 type CommmentActionHandlerResponse {
@@ -28,8 +28,8 @@ type CommmentListHandlerRequest {
 }
 
 type CommmentListHandlerResponse {
-	StatusCode  int32   `json:"status_code"`
-	StatusMsg   string  `json:"status_msg"`
-	CommentList Comment `json:"comment_list"`
+	StatusCode  int32     `json:"status_code"`
+	StatusMsg   string    `json:"status_msg"`
+	CommentList []Comment `json:"comment_list"`
 }
 
