@@ -25,11 +25,11 @@ type Video struct {
 }
 
 type User struct {
-	UserId        int64  `gorm:"user_id" form:"user_id" bson:"user_id"`
-	Name          string `gorm:"user_nick_name" form:"name" bson:"name"`
-	FollowCount   int64  `gorm:"follow_count" form:"follow_count" bson:"follow_count"`
-	FollowerCount int64  `gorm:"follower_count" form:"follower_count" bson:"follower_count"`
-	IsFollow      bool   `form:"is_follow" bson:"is_follow"`
+	UserId        int64  `gorm:"column:user_id" form:"user_id" bson:"user_id"`
+	Name          string `gorm:"column:user_nick_name" form:"name" bson:"name"`
+	FollowCount   int64  `gorm:"column:follow_count" form:"follow_count" bson:"follow_count"`
+	FollowerCount int64  `gorm:"column:follower_count" form:"follower_count" bson:"follower_count"`
+	IsFollow      bool   `form:"column:is_follow" bson:"is_follow"`
 }
 
 type UserHandlerRequest struct {
@@ -87,6 +87,7 @@ type PublishListHandlerResponse struct {
 }
 
 type Comment struct {
+	Id         int64  `form:"_id" bson:"_id"`
 	VideoId    int64  `form:"video_id" bson:"video_id"` //视频id
 	User       User   `form:"user" bson:"user"`
 	Content    string `form:"content" bson:"content"`
@@ -97,7 +98,7 @@ type CommmentActionHandlerRequest struct {
 	Token       string `form:"token"`
 	VideoId     int64  `form:"video_id"`
 	ActionType  int32  `form:"action_type"`
-	CommentText string `form:"comment_text"`
+	CommentText string `form:"comment_text,optional"`
 	CommentId   int64  `form:"comment_id,optional"`
 }
 
