@@ -114,9 +114,9 @@ type CommmentListHandlerRequest struct {
 }
 
 type CommmentListHandlerResponse struct {
-	StatusCode  int32   `json:"status_code"`
-	StatusMsg   string  `json:"status_msg"`
-	CommentList Comment `json:"comment_list"`
+	StatusCode  int32     `json:"status_code"`
+	StatusMsg   string    `json:"status_msg"`
+	CommentList []Comment `json:"comment_list"`
 }
 
 type RelationActionHandlerRequest struct {

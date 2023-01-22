@@ -50,8 +50,8 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 
 	actionType := req.ActionType
 	videoId := req.VideoId
-	//delete comment
 	if actionType == 2 {
+		//delete comment
 		commentId := req.CommentId
 		filter := bson.D{{
 			Key:   "_id",
@@ -68,6 +68,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		resp.StatusCode = 0
 		resp.StatusMsg = fmt.Sprintf("delete success")
 	} else {
+		//insert comment
 		db, err := sql.SqlConnect()
 		if err != nil {
 			return nil, err
@@ -82,7 +83,6 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		date := time.Now()
 		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
 		id, err:= mongodb.GetId(collection)
-		fmt.Println("00000000000000000000000000000", id)
 		if err != nil {
 			return nil, err
 		}
@@ -93,16 +93,13 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			Content:    content,
 			CreateDate: createDate,
 		}
-		fmt.Println("dddddddddddddd")
 		_, err = collection.InsertOne(context.Background(), comment)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println("===================================")
 		resp.StatusCode = 0
 		resp.StatusMsg = "insert success"
 		resp.Comment = comment
-		fmt.Println("hhhhhhhhhhhhhhhhhhhhhh")
 	}
 	return
 }

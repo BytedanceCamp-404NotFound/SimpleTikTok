@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,7 +15,6 @@ func GetId(collection *mongo.Collection) (int64, error) {
 	}}
 	var temp autoIncrement
 	err := collection.FindOne(context.Background(), filter).Decode(&temp)
-	fmt.Println("===============================:", temp)
 	if err != nil {
 		return -1, err
 	}
