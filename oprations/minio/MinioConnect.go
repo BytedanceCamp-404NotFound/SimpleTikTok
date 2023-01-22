@@ -4,6 +4,8 @@ import (
 	"encoding/base64"
 	"path/filepath"
 
+	"SimpleTikTok/oprations/viperconfigread"
+
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v6"
 	"github.com/sirupsen/logrus"
@@ -11,12 +13,13 @@ import (
 )
 
 func MinioConnect() (*minio.Client, error) {
-	Endpoint := "39.106.72.165:9001" // 用的API端口，不是Console
-	AccessKeyID := "minio"
-	SecretAccessKey := "minio123"
-	UseSSL := false
-
-	minioClient, err := minio.New(Endpoint, AccessKeyID, SecretAccessKey, UseSSL)
+	minioConfig, err := viperconfigread.ConfigReadToMinio()
+	if err != nil {
+		logx.Errorf("MinioConnect error:%v", err)
+		return nil, err
+	}
+	minioClient, err := minio.New(minioConfig.Endpoint, minioConfig.AccessKeyID,
+		minioConfig.SecretAccessKey, minioConfig.UseSSL)
 	if err != nil {
 		logrus.Error(err)
 		return nil, err
@@ -45,6 +48,8 @@ func MinioMakeBucket() error {
 	// logx.Debug("Successfully created %s\n", bucketName)
 	return nil
 }
+
+
 func MinioFileUploader(minioClient *minio.Client, bucketName string, objectPre string, filePath string) (string, error) {
 	newfilePath := filepath.Base(filePath)
 	newfilePath = uuid.New().String() + "-" + newfilePath

@@ -25,10 +25,12 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 
 func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandlerResponse, err error) {
 	// todo: add your logic here and delete this line
+	
+
 
 	return &types.FeedHandlerResponse{
-		StatusCode: 0,
-		StatusMsg:  "123",
+		StatusCode: 200,
+		StatusMsg:  "feed video success",
 		NextTime:   123,
 	}, nil
 }
