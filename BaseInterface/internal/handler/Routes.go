@@ -44,6 +44,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/douyin/favorite/action",
+				Handler: FavoriteActionHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/douyin/favorite/list",
+				Handler: FavoriteListRegisterHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/douyin/commment/action",
 				Handler: CommmentActionHandler(serverCtx),
 			},

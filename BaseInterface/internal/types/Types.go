@@ -87,7 +87,7 @@ type PublishListHandlerResponse struct {
 }
 
 type Comment struct {
-	Id         int64  `form:"_id" bson:"_id"`
+	Id         int64 `form:"_id" bson:"_id"`
 	VideoId    int64  `form:"video_id" bson:"video_id"` //视频id
 	User       User   `form:"user" bson:"user"`
 	Content    string `form:"content" bson:"content"`
@@ -158,4 +158,26 @@ type RelationUser struct {
 	FollowCount   int32  `form:"follow_count" gorm:"column:follow_count"`
 	FollowerCount int32  `from:"follower_count" gorm:"column:follower_count"`
 	IsFollow      bool   `from:"is_follow"`
+}
+
+type FavoriteActionHandlerRequest struct {
+	Token      string `form:"token"`
+	VideoId    int64  `form:"video_id"`
+	ActionType int32  `form:"action_type"`
+}
+
+type FavoriteActionHandlerResponse struct {
+	StatusCode int32  `form:"status_code"`
+	StatusMsg  string `form:"status_msg"`
+}
+
+type FavoriteListRegisterHandlerRequest struct {
+	UserID int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FavoriteListRegisterHandlerResponse struct {
+	StatusCode int32  `form:"status_code"`
+	StatusMsg  string `form:"status_msg"`
+	VideoList  Video  `form:"video_list"`
 }
