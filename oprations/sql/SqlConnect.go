@@ -64,7 +64,7 @@ func gormInit(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:                 logger,
 		SkipDefaultTransaction: true, // 跳过默认开启事务模式
-		PrepareStmt:            false, // 使用单数表名，启用该选项后，`User` 表将是`user`
+		PrepareStmt:            false, 
 		AllowGlobalUpdate:      true, // 在没有任何条件的情况下执行批量删除，GORM 不会执行该操作
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, //使用单数表名，启用该选项.
