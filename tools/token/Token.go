@@ -2,6 +2,7 @@ package tools
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -57,6 +58,11 @@ func CheckToke(TokenString string) (flag bool, id int) {
 			log.Fatal("Server unable to start, expected an APP_KEY for JWT auth")
 		}
 	*/
+
+	num := strings.Count(TokenString,".")
+	if num != 2 {
+		return false, -1
+	}
 
 	token, err := jwt.ParseWithClaims(TokenString, &MyCliams{},
 		func(token *jwt.Token) (i interface{}, err error) {

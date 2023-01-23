@@ -1,6 +1,7 @@
 import (
 	"CommAction.api"			// 互动方向
 	"RelationFollow.api"		// 社交方向
+	"FavoriteAction.api"        // 互动方向
 )
 // 基础接口
 // 视频流接口
@@ -116,14 +117,14 @@ service BaseInterface-api {
 	@handler PublishListHandler
 	get /douyin/publish/list(PublishListHandlerRequest) returns (PublishListHandlerResponse)
 	
-	// 互动接口
-	// // 赞接口
-	// @handler FavoriteActionHandler
-	// post /douyin/favorite/action(PublishListHandlerRequest) returns (PublishListHandlerResponse)
-	// // 喜欢列表
-	// @handler FavoriteListRegisterHandler
-	// get /douyin/favorite/list(FavoriteListRegisterHandlerRequest) returns (FavoriteListRegisterHandlerResponse)
-	// 评论操作
+	//互动接口
+	// 赞接口
+	@handler FavoriteActionHandler
+	post /douyin/favorite/action(FavoriteActionHandlerRequest) returns (FavoriteActionHandlerResponse)
+	// 喜欢列表
+	@handler FavoriteListRegisterHandler
+	get /douyin/favorite/list(FavoriteListRegisterHandlerRequest) returns (FavoriteListRegisterHandlerResponse)
+	//评论操作
 	@handler CommmentActionHandler
 	post /douyin/commment/action (CommmentActionHandlerRequest) returns (CommmentActionHandlerResponse)
 	// 视频评论列表

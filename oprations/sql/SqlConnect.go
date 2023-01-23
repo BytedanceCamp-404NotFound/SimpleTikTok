@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"SimpleTikTok/oprations/viperconfigread"
-
+	"gorm.io/gorm/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -34,11 +34,11 @@ func SqlConnect() (*gorm.DB, error) {
 		logx.Errorf("gorm init fail, error:%v", err.Error())
 		return nil, err
 	}
-	err = gormTableInit(db)
-	if err != nil {
-		logx.Errorf("init tables fail, error:%v", err.Error())
-		return nil, err
-	}
+	// err = gormTableInit(db)
+	// if err != nil {
+	// 	logx.Errorf("init tables fail, error:%v", err.Error())
+	// 	return nil, err
+	// }
 
 	return db, nil
 }
@@ -64,8 +64,11 @@ func gormInit(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:                 logger,
 		SkipDefaultTransaction: true, // 跳过默认开启事务模式
-		PrepareStmt:            true, // 使用单数表名，启用该选项后，`User` 表将是`user`
+		PrepareStmt:            false, // 使用单数表名，启用该选项后，`User` 表将是`user`
 		AllowGlobalUpdate:      true, // 在没有任何条件的情况下执行批量删除，GORM 不会执行该操作
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true, //使用单数表名，启用该选项.
+		},
 	})
 	if err != nil {
 		return nil, err
@@ -74,11 +77,11 @@ func gormInit(dsn string) (*gorm.DB, error) {
 	return db, nil
 }
 
-// 通过gorm 创建数据库表
-func gormTableInit(db *gorm.DB) error {
-	if err := db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;").AutoMigrate(&VideoInfo{}, &UserInfo{}); err != nil {
-		logx.Error("opendb fialed", err)
-		return err
-	}
-	return nil
-}
+// // 通过gorm 创建数据库表
+// func gormTableInit(db *gorm.DB) error {
+// 	if err := db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;").AutoMigrate(&VideoInfo{}, &UserInfo{}); err != nil {
+// 		logx.Error("opendb fialed", err)
+// 		return err
+// 	}
+// 	return nil
+// }
