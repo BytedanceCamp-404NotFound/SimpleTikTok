@@ -56,7 +56,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 
 		//直接让表中的数据自增或者自减，用原生的sql语句操作
 		SqlStringAdd := fmt.Sprintf("UPDATE video_info SET favorite_count = favorite_count + 1 WHERE video_id = %d", req.VideoId)
-		SqlStringSub := fmt.Sprintf("UPDATE video_info SET favorite_count = favorite_count + 1 WHERE video_id = %d", req.VideoId)
+		SqlStringSub := fmt.Sprintf("UPDATE video_info SET favorite_count = favorite_count - 1 WHERE video_id = %d", req.VideoId)
 
 		if req.ActionType == 1 { //此时未点赞
 			err1 := db.Create(Favorite_list{Favorite_video_id: req.VideoId,Favorite_user_id:userId,Record_time: time.Now()}).Error //插入点赞数据
