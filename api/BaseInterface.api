@@ -1,6 +1,7 @@
 import (
 	"CommAction.api"			// 互动方向
 	"RelationFollow.api"		// 社交方向
+	"FavoriteAction.api"        // 互动方向
 )
 // 基础接口
 // 视频流接口
@@ -29,11 +30,11 @@ type Video {
 
 //用户信息接口
 type User {
-	UserId        int64  `gorm:"user_id" form:"user_id" bson:"user_id"`
-	Name          string `gorm:"user_nick_name" form:"name" bson:"name"`
-	FollowCount   int64  `gorm:"follow_count" form:"follow_count" bson:"follow_count"`
-	FollowerCount int64  `gorm:"follower_count" form:"follower_count" bson:"follower_count"`
-	IsFollow      bool   `form:"is_follow" bson:"is_follow"`
+	UserId        int64  `gorm:"column:user_id" form:"user_id" bson:"user_id"`
+	Name          string `gorm:"column:user_nick_name" form:"name" bson:"name"`
+	FollowCount   int64  `gorm:"column:follow_count" form:"follow_count" bson:"follow_count"`
+	FollowerCount int64  `gorm:"column:follower_count" form:"follower_count" bson:"follower_count"`
+	IsFollow      bool   `form:"column:is_follow" bson:"is_follow"`
 }
 
 // 用户信息请求与响应接口
@@ -119,14 +120,14 @@ service BaseInterface-api {
 	@handler PublishListHandler
 	get /douyin/publish/list(PublishListHandlerRequest) returns (PublishListHandlerResponse)
 	
-	// 互动接口
-	// // 赞接口
-	// @handler FavoriteActionHandler
-	// post /douyin/favorite/action(PublishListHandlerRequest) returns (PublishListHandlerResponse)
-	// // 喜欢列表
-	// @handler FavoriteListRegisterHandler
-	// get /douyin/favorite/list(FavoriteListRegisterHandlerRequest) returns (FavoriteListRegisterHandlerResponse)
-	// 评论操作
+	//互动接口
+	// 赞接口
+	@handler FavoriteActionHandler
+	post /douyin/favorite/action(FavoriteActionHandlerRequest) returns (FavoriteActionHandlerResponse)
+	// 喜欢列表
+	@handler FavoriteListRegisterHandler
+	get /douyin/favorite/list(FavoriteListRegisterHandlerRequest) returns (FavoriteListRegisterHandlerResponse)
+	//评论操作
 	@handler CommmentActionHandler
 	post /douyin/commment/action (CommmentActionHandlerRequest) returns (CommmentActionHandlerResponse)
 	// 视频评论列表

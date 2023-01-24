@@ -1,0 +1,20 @@
+MySQL:
+ UserName: root
+ PassWord: "123456"
+ Host: localhost
+ Port: 3306
+ DBname: SimpleTikTok
+ TimeOut: 10s
+
+Minio:
+ Endpoint: 39.106.72.165:9001 # 用的API端口，不是Console
+ AccessKeyID: minio
+ SecretAccessKey: minio123
+ UseSSL: false
+
+  
+
+gormpool:
+ MaxIdleConns: 25
+ MaxOpenConns: 25
+ ConnMaxLifetime: 5

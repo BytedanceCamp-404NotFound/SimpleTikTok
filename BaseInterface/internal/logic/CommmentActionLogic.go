@@ -33,11 +33,11 @@ func NewCommmentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Co
 func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerRequest) (resp *types.CommmentActionHandlerResponse, err error) {
 	// todo: add your logic here and delete this line
 	//parse token
+	resp = new(types.CommmentActionHandlerResponse)
 	flag, userId := tools.CheckToke(req.Token)
 	if flag == false {
 		return nil, errors.New("parse Token failed")
 	}
-
 	//get collection from mongodb
 	mongoUser := "admin"
 	mongoPwd := "admin"
@@ -49,12 +49,17 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	}
 
 	actionType := req.ActionType
-	//delete comment
+	videoId := req.VideoId
 	if actionType == 2 {
+		//delete comment
 		commentId := req.CommentId
 		filter := bson.D{{
 			Key:   "_id",
 			Value: commentId,
+		},
+		{
+			Key: "video_id",
+			Value: videoId,
 		}}
 		_, err = collection.DeleteOne(context.Background(), filter)
 		if err != nil {
@@ -63,6 +68,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		resp.StatusCode = 0
 		resp.StatusMsg = fmt.Sprintf("delete success")
 	} else {
+		//insert comment
 		db, err := sql.SqlConnect()
 		if err != nil {
 			return nil, err
@@ -73,11 +79,15 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		if err != nil {
 			return nil, err
 		}
-		videoId := req.VideoId
 		content := req.CommentText
 		date := time.Now()
 		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
+		id, err:= mongodb.GetId(collection)
+		if err != nil {
+			return nil, err
+		}
 		comment := types.Comment{
+			Id:         id,
 			VideoId:    videoId,
 			User:   	user,
 			Content:    content,
