@@ -34,7 +34,7 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 			User:       types.User{},
 		}, err
 	}
-	ui ,ok:=  sql.CheckUserInf(int(req.UserID),id)
+	ui, ok := sql.CheckUserInf(int(req.UserID), id)
 	if !ok {
 		return &types.UserHandlerResponse{
 			StatusCode: -1,
@@ -45,12 +45,12 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 	return &types.UserHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "查询成功！",
-		User:       types.User{
-						UserId:         ui.User.UserID, 
-						Name:           ui.User.UserName, 
-						FollowCount:    ui.User.FollowCount, 
-						FollowerCount:  ui.User.FollowerCount, 
-						IsFollow:       ui.IsFollow,
-					},
+		User: types.User{
+			UserId:        ui.User.UserID,
+			Name:          ui.User.UserNickName,
+			FollowCount:   ui.User.FollowCount,
+			FollowerCount: ui.User.FollowerCount,
+			IsFollow:      ui.IsFollow,
+		},
 	}, err
 }
