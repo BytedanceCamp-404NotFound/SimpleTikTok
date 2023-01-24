@@ -1,16 +1,14 @@
 package logic
 
 import (
-	"context"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/minio"
 	"SimpleTikTok/oprations/sql"
+	"context"
+	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -38,7 +36,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	sourceFile := filepath.Dir(filepath.Dir(exePath))
 	vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
 	pictureFile := fmt.Sprintf("%s/source/pic/pic_test1.png", sourceFile)
-	content, err := ioutil.ReadFile(vidoeFile)
+	content, err := os.ReadFile(vidoeFile)
 	if err != nil {
 		logx.Errorf("ioutil error:%v", err)
 	}

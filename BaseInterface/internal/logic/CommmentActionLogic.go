@@ -65,7 +65,8 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			return nil, err
 		}
 		resp.StatusCode = 0
-		resp.StatusMsg = fmt.Sprintf("delete success")
+		//resp.StatusMsg = fmt.Sprintf("delete success")
+		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
 		db, err := sql.SqlConnect()
