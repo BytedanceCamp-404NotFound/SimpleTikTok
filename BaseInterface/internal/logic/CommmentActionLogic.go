@@ -1,16 +1,15 @@
 package logic
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"time"
-
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/mongodb"
 	"SimpleTikTok/oprations/sql"
 	tools "SimpleTikTok/tools/token"
+	"context"
+	"errors"
+	"fmt"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.mongodb.org/mongo-driver/bson"
@@ -35,7 +34,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	//parse token
 	resp = new(types.CommmentActionHandlerResponse)
 	flag, userId := tools.CheckToke(req.Token)
-	if flag == false {
+	if !flag{
 		return nil, errors.New("parse Token failed")
 	}
 	//get collection from mongodb
