@@ -82,7 +82,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 		FavoriteCount: 0,
 		CommentCount:  0,
 		IsFavotite:    false,
-		Title:         req.Title,
+		VideoTitle:    req.Title,
 	}
 
 	// gorm创建一条信息

@@ -12,7 +12,7 @@ type VideoInfo struct {
 	FavoriteCount int64  // 视频的点赞总数
 	CommentCount  int64  // 视频的评论总数
 	IsFavotite    bool   // true-已点赞
-	Title         string // 视频标题
+	VideoTitle    string // 视频标题
 }
 
 type UserInfo struct {
