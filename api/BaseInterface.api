@@ -93,8 +93,9 @@ type PublishListHandlerRequest {
 }
 
 type PublishListHandlerResponse {
-	StatusCode string `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+	StatusCode  int32   `json:"status_code"`
+	StatusMsg   string  `json:"status_msg"`
+	VideoList	[]Video `json:"video_list"`
 }
 
 service BaseInterface-api {

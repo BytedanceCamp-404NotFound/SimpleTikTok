@@ -73,8 +73,8 @@ type PublishActionHandlerRequest struct {
 }
 
 type PublishActionHandlerResponse struct {
-	StatusCode int32  `json:"status_code,default=400"`
-	StatusMsg  string `json:"status_msg,optional"`
+	StatusCode int32  `form:"status_code,default=400"`
+	StatusMsg  string `form:"status_msg,optional"`
 }
 
 type PublishListHandlerRequest struct {
@@ -82,9 +82,10 @@ type PublishListHandlerRequest struct {
 	Token  string `form:"token"`
 }
 
-type PublishListHandlerResponse struct {
-	StatusCode string `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+type PublishListHandlerResponse struct{
+	StatusCode  int32   `json:"status_code"`
+	StatusMsg   string  `json:"status_msg"`
+	VideoList	[]Video `json:"video_list"`
 }
 
 type Comment struct {
