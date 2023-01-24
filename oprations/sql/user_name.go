@@ -6,14 +6,14 @@ import (
 )
 
 type User_name struct {
-	UserID       int
-	UserName     string
-	UserPwd      string
-	RegisterDate time.Time
+	UserID       int64     `gorm:"cloumn:user_id;primaryKey"`
+	UserName     string    `gorm:"cloumn:user_id;"`
+	UserPwd      string    `gorm:"cloumn:user_id;"`
+	RegisterDate time.Time `gorm:"cloumn:register_date;"`
 }
 
 /*
- *	函数功能 向user_name表中插入新值
+ *	函数功能 向user_login表中插入新值，同时更新user表
  *	输入参数 UserName:用户名
  *           password:密码
  *	返回值 id:新用户的uid
@@ -26,6 +26,7 @@ func CreateUser(UserName string, password string) int {
 	db.Table("user_login").Create(&user)
 	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
 
+	CreateInfo(UserName, int64(id))
 	return id
 }
 

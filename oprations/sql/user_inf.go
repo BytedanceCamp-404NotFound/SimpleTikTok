@@ -2,7 +2,7 @@ package sql
 
 type User struct {
 	UserID        int64  `gorm:"cloumn:user_id;primaryKey"`
-	UserName      string `gorm:"cloumn:user_nick_name"`
+	UserNickName  string `gorm:"cloumn:user_nick_name"`
 	FollowCount   int64  `gorm:"cloumn:follow_count"`
 	FollowerCount int64  `gorm:"cloumn:follower_count"`
 }
@@ -29,4 +29,12 @@ func CheckIsFollow(UserID int, FollowerID int) bool {
 	db.Table("follow_and_follower_list").Where("user_id = ? and follower_id = ?", UserID, FollowerID).Count(&num)
 
 	return num > 0
+}
+
+func CreateInfo(UserName string, uid int64) error {
+	info := User{UserID: int64(uid), UserNickName: UserName, FollowCount: 0, FollowerCount: 0}
+	db, err := SqlConnect()
+	db.Table("user_info").Create(&info)
+
+	return err
 }
