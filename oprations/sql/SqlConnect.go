@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 	"time"
-
 	"SimpleTikTok/oprations/viperconfigread"
+
 	"gorm.io/gorm/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"

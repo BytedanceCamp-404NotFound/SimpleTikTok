@@ -1,6 +1,6 @@
 MySQL:
  UserName: root
- PassWord: root
+ PassWord: "123456"
  Host: localhost
  Port: 3306
  DBname: SimpleTikTok

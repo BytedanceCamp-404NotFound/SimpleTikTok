@@ -58,28 +58,22 @@ func CheckToke(TokenString string) (flag bool, id int) {
 			log.Fatal("Server unable to start, expected an APP_KEY for JWT auth")
 		}
 	*/
-
 	num := strings.Count(TokenString,".")
 	if num != 2 {
-		return false, -1
-	}
-
+		return false,-1
+	} 
+	
 	token, err := jwt.ParseWithClaims(TokenString, &MyCliams{},
 		func(token *jwt.Token) (i interface{}, err error) {
 			return appKey, nil
 		})
 	if err != nil {
-		panic(err)
+		// panic(err)
+		fmt.Println(err)
 	}
 	if claims, ok := token.Claims.(*MyCliams); ok && token.Valid {
 		// 校验token
 		return true, claims.Id
 	}
 	return false, -1
-}
-
-// TODO: 添加Test
-func main(){
-	fmt.Println("123token:", CreateToken(123))
-	fmt.Println("321token:", CreateToken(321))
 }
