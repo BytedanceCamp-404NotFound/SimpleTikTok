@@ -37,6 +37,27 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 		return rsp, err
 	}
 
+	//change by zzj at 2023-01-25
+	res, err := sql.FindUserIsExist(req.UserName, req.PassWord)
+	if err!=nil {
+		logx.Error("Find User is exist err:", err)
+		rsp.StatusCode = 400
+		rsp.StatusMsg = "Find User is exist err"
+		rsp.UserID = -1
+		rsp.Token = ""
+		return rsp, err
+	}
+	if res!=0 {
+		token := tools.CreateToken(res)
+		return &types.UserRegisterHandlerResponse{
+			StatusCode: 0,
+			StatusMsg:  "change password success",
+			UserID:     int64(res),
+			Token:      token,
+		}, err
+	}
+	//end here
+
 	uid := sql.CreateUser(req.UserName, req.PassWord)
 	logx.Infof("%d", uid)
 	if uid == -1 {
