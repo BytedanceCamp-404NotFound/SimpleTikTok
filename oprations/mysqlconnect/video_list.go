@@ -1,4 +1,4 @@
-package sql
+package mysqlconnect
 
 func VideoNum(AuthorID int) (n int64) {
 	db, _ := SqlConnect()

@@ -3,7 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 
@@ -33,7 +33,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 			VideoList: []types.Video{},
 		},err
 	}
-	user, ok := sql.CheckUserInf(int(req.UserID), id)
+	user, ok := mysqlconnect.CheckUserInf(int(req.UserID), id)
 	if !ok {
 		return &types.PublishListHandlerResponse{
 			StatusCode: -1,
@@ -42,8 +42,8 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		},err
 	}
 
-	n := sql.VideoNum(int(req.UserID))
-	v := sql.GetVideoList(int(req.UserID))
+	n := mysqlconnect.VideoNum(int(req.UserID))
+	v := mysqlconnect.GetVideoList(int(req.UserID))
 	videolist := make([]types.Video ,n) 
 	for i:= 0 ; i < int(n) ; i++ {
 		videolist[i] = types.Video{

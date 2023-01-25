@@ -4,7 +4,7 @@ import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/mongodb"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 	"errors"
@@ -69,7 +69,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
-		db, err := sql.SqlConnect()
+		db, err := mysqlconnect.SqlConnect()
 		if err != nil {
 			return nil, err
 		}

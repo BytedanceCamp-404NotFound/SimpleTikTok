@@ -5,7 +5,7 @@ import (
 
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,44 +25,58 @@ func NewUserRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 	}
 }
 
+// TODO优化:
+// 1. SQL注入
+// 2. 大量用户注册测试
+// 响应时间：2471.2ms
 func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) (resp *types.UserRegisterHandlerResponse, err error) {
 	logx.Infof("UserRegister UserName: %v PassWord: %v", req.UserName, req.PassWord == "")
-	rsp := &types.UserRegisterHandlerResponse{StatusCode: -1}
 	if req.PassWord == "" && req.UserName == "" {
-		logx.Error("UserName and PassWord is nil")
-		rsp.StatusCode = 400
-		rsp.StatusMsg = "UserName and PassWord is null,register error"
-		rsp.UserID = -1
-		rsp.Token = ""
-		return rsp, err
+		logx.Errorf("UserName and PassWord is nil %v", err)
+		return &types.UserRegisterHandlerResponse{
+			StatusCode: 400,
+			StatusMsg:  "用户名或者密码错误，注册失败",
+			UserID:     -1,
+			Token:      "",
+		}, err	
 	}
 
-	//change by zzj at 2023-01-25
-	res, err := sql.FindUserIsExist(req.UserName, req.PassWord)
-	if err!=nil {
-		logx.Error("Find User is exist err:", err)
-		rsp.StatusCode = 400
-		rsp.StatusMsg = "Find User is exist err"
-		rsp.UserID = -1
-		rsp.Token = ""
-		return rsp, err
-	}
-	if res!=0 {
+	db, err := mysqlconnect.SqlConnect()
+	if err != nil{
+		logx.Errorf("SqlConnect err: %v", err)
 		return &types.UserRegisterHandlerResponse{
-			StatusCode: 0,
+			StatusCode: 400,
+			StatusMsg:  "用户已存在，请直接登录",
+			UserID:     -1,
+			Token:      "",
+		}, err	
+	}
+	res, err := mysqlconnect.FindUserIsExist(db, req.UserName, req.PassWord)
+	if err != nil {
+		logx.Errorf("UserRegisterLogic FindUserIsExist err: %v", err)
+		return &types.UserRegisterHandlerResponse{
+			StatusCode: 400,
+			StatusMsg:  "用户已存在，请直接登录",
+			UserID:     -1,
+			Token:      "",
+		}, err
+	}
+	if res != 0 {
+		logx.Infof("UserRegisterLogic Find User is exist err: %v", err)
+		return &types.UserRegisterHandlerResponse{
+			StatusCode: 400,
 			StatusMsg:  "用户已存在，请直接登录",
 			UserID:     int64(res),
 			Token:      "",
 		}, err
 	}
-	//end here
 
-	uid := sql.CreateUser(req.UserName, req.PassWord)
+	uid := mysqlconnect.CreateUser(db, req.UserName, req.PassWord)
 	logx.Infof("%d", uid)
 	if uid == -1 {
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: -1,
-			StatusMsg:  "register error",
+			StatusMsg:  "注册失败",
 			UserID:     -1,
 			Token:      "",
 		}, err
@@ -70,7 +84,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 	TokenString := tools.CreateToken(uid)
 	return &types.UserRegisterHandlerResponse{
 		StatusCode: 0,
-		StatusMsg:  "register success",
+		StatusMsg:  "注册成功",
 		UserID:     int64(uid),
 		Token:      TokenString,
 	}, err

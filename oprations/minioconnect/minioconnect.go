@@ -1,4 +1,4 @@
-package minio
+package minioconnect
 
 import (
 	"encoding/base64"

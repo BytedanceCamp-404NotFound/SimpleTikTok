@@ -3,7 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 	"fmt"
@@ -52,7 +52,7 @@ func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerReq
 		sqlString = fmt.Sprintf("DELETE FROM follow_and_follower_list WHERE user_id=%d and follower_id=%d", req.To_user_id, TokenToUserID)
 	}
 
-	db, _ := sql.SqlConnect()
+	db, _ := mysqlconnect.SqlConnect()
 	b := db.Exec(sqlString)
 	fmt.Println(b.RowsAffected)
 	fmt.Printf("%+v\n\n\n", b)

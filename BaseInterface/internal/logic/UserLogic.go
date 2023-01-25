@@ -3,7 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 
@@ -34,7 +34,7 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 			User:       types.User{},
 		}, err
 	}
-	ui, ok := sql.CheckUserInf(int(req.UserID), id)
+	ui, ok := mysqlconnect.CheckUserInf(int(req.UserID), id)
 	if !ok {
 		return &types.UserHandlerResponse{
 			StatusCode: -1,

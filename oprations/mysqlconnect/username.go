@@ -1,8 +1,10 @@
-package sql
+package mysqlconnect
 
 import (
 	"fmt"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type User_name struct {
@@ -19,9 +21,9 @@ type User_name struct {
  *	返回值 id:新用户的uid
  *		若id=-1,则说明数据库添加不成功
  */
-func CreateUser(UserName string, password string) int {
+func CreateUser(db *gorm.DB, UserName string, password string) int {
 	id := -1
-	db, _ := SqlConnect()
+	// db, _ := SqlConnect()
 	user := User_name{UserName: UserName, UserPwd: password, RegisterDate: time.Now()}
 	db.Table("user_login").Create(&user)
 	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
@@ -47,19 +49,19 @@ func CheckUser(UserName string, password string) int {
 	return id
 }
 
-//检查注册用户是否存在,存在则修改密码,不存在才创建用户
-//-1代表发生错误
-//0代表用户不存在
-//否则代表用户存在
-func FindUserIsExist(userName string, password string) (int, error) {
+// 检查注册用户是否存在,存在则修改密码,不存在才创建用户
+// -1代表发生错误
+// 0代表用户不存在
+// 否则代表用户存在
+func FindUserIsExist(db *gorm.DB, userName string, password string) (int, error) {
 	var count int64
 	var uid int
-	db, _ := SqlConnect()
+	// db, _ := SqlConnect()
 	err := db.Table("user_login").Select("user_id").Where("user_name = ?", userName).Find(&uid).Count(&count).Error
-	if err!=nil {
+	if err != nil {
 		return -1, err
 	}
-	if count==0 {
+	if count == 0 {
 		return 0, nil
 	}
 	return uid, nil

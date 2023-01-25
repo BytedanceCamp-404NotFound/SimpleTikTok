@@ -1,4 +1,4 @@
-package sql
+package mysqlconnect
 
 type User struct {
 	UserID        int64  `gorm:"cloumn:user_id;primaryKey"`

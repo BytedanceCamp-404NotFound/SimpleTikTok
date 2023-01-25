@@ -3,7 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 
@@ -61,7 +61,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 	}
 
 	//
-	db, _ := sql.SqlConnect() //连接数据库
+	db, _ := mysqlconnect.SqlConnect() //连接数据库
 	//
 
 	favoriteVideoId := make([]int, 100) //预分配足够的内存，提升性能
@@ -133,7 +133,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 	////db.Table("follow_and_follower_list").Where("follower_id = ?",userId).Select("user_id").Find(&followAndFollowerList)  //这里的userId是用户，通过用户id反向查找其关注的人
 
 	for i := 0; i < len(favoriteVideoId); i++ {
-		videoList[i].Author.IsFollow = sql.CheckIsFollow(int(userid[i]), userId)
+		videoList[i].Author.IsFollow = mysqlconnect.CheckIsFollow(int(userid[i]), userId)
 	}
 
 	return &types.FavoriteListRegisterHandlerResponse{

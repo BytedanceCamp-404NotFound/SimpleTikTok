@@ -36,7 +36,7 @@ func getExeFile() (string, error) {
 	}
 	//返回上级目录
 	yamlFile := filepath.Dir(filepath.Dir(exePath))
-	configFile := fmt.Sprintf("%s/oprations/DatabaseConfig.yaml", yamlFile)
+	configFile := fmt.Sprintf("%s/oprations/databaseconfig.yaml", yamlFile)
 	logx.Infof("yamlFile:%v outputDir:%v", yamlFile, configFile)
 	return configFile, nil
 }
