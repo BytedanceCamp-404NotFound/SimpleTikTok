@@ -1,13 +1,12 @@
 package logic
 
 import (
-	"context"
-	"fmt"
-
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/mongodb"
 	tools "SimpleTikTok/tools/token"
+	"context"
+	"fmt"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.mongodb.org/mongo-driver/bson"
@@ -34,7 +33,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	var comments []types.Comment
 	token := req.Token
 	flag, _ := tools.CheckToke(token)
-	if flag == false {
+	if !flag {
 		resp.StatusMsg = "token invalid"
 		return resp, nil
 	}

@@ -9,7 +9,7 @@ type FeedHandlerRequest struct {
 type FeedHandlerResponse struct {
 	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
-	VideoList  Video  `json:"video_list"`
+	VideoList  []Video  `json:"video_list"`
 	NextTime   int64  `json:"next_time"`
 }
 
@@ -21,7 +21,7 @@ type Video struct {
 	FavoriteCount int64  `form:"favorite_count"`
 	CommentCount  int64  `form:"comment_count"`
 	IsFavotite    bool   `form:"is_favorite"`
-	Title         string `form:"title"`
+	VideoTitle    string `form:"video_title"`
 }
 
 type User struct {
@@ -78,12 +78,14 @@ type PublishActionHandlerResponse struct {
 }
 
 type PublishListHandlerRequest struct {
-	StatusCode int32 `form:"status_code"`
+	UserID int64  `form:"user_id"`
+	Token  string `form:"token"`
 }
 
-type PublishListHandlerResponse struct {
-	StatusCode string `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+type PublishListHandlerResponse struct{
+	StatusCode  int32   `json:"status_code"`
+	StatusMsg   string  `json:"status_msg"`
+	VideoList	[]Video `json:"video_list"`
 }
 
 type Comment struct {

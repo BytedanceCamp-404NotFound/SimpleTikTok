@@ -11,10 +11,10 @@ type FeedHandlerRequest {
 }
 
 type FeedHandlerResponse {
-	StatusCode int64  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
-	VideoList  Video  `json:"video_list"`
-	NextTime   int64  `json:"next_time"`
+	StatusCode int64      `json:"status_code"`
+	StatusMsg  string 	  `json:"status_msg"`
+	VideoList  []Video  `json:"video_list"`
+	NextTime   int64      `json:"next_time"`
 }
 
 type Video {
@@ -25,7 +25,7 @@ type Video {
 	FavoriteCount int64  `form:"favorite_count"`
 	CommentCount  int64  `form:"comment_count"`
 	IsFavotite    bool   `form:"is_favorite"`
-	Title         string `form:"title"`
+	VideoTitle    string `form:"video_title"`
 }
 
 //用户信息接口
@@ -37,6 +37,7 @@ type User {
 	IsFollow      bool   `form:"column:is_follow" bson:"is_follow"`
 }
 
+// 用户信息请求与响应接口
 type UserHandlerRequest {
 	UserID int64  `form:"user_id"`
 	Token  string `form:"token"`
@@ -82,18 +83,20 @@ type PublishActionHandlerRequest {
 }
 
 type PublishActionHandlerResponse {
-	StatusCode int32  `form:"status_code,default=400"`
-	StatusMsg  string `form:"status_msg,optional"`
+	StatusCode int32  `json:"status_code,default=400"`
+	StatusMsg  string `json:"status_msg,optional"`
 }
 
 // 发布列表
 type PublishListHandlerRequest {
-	StatusCode int32 `form:"status_code"`
+	UserID int64  `form:"user_id"`
+	Token  string `form:"token"`
 }
 
 type PublishListHandlerResponse {
-	StatusCode string `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg"`
+	VideoList  []Video `json:"video_list"`
 }
 
 service BaseInterface-api {
