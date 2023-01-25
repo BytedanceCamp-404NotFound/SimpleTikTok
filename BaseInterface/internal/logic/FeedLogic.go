@@ -2,9 +2,12 @@ package logic
 
 import (
 	"context"
+	"time"
 
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/sql"
+	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,13 +27,55 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandlerResponse, err error) {
-	// todo: add your logic here and delete this line
-	
+	ok, userId := tools.CheckToke(req.Token)
+	if !ok {
+		return &types.FeedHandlerResponse{
+			StatusCode: -1,
+			StatusMsg:  "登录过期，请重新登陆",
+		}, nil
+	}
+	db, err := sql.SqlConnect() //连接数据库
+	if err != nil {
+		logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
+		return nil, err
+	}
 
+	var feedUserInfo sql.UserInfo
+	err = db.Model(&sql.UserInfo{}).Where("user_id = ?", userId).First(&feedUserInfo).Error
+	if err != nil {
+		logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
+		return nil, err
+	}
+	var respFeedUserInfo types.User
+	respFeedUserInfo.UserId = feedUserInfo.UserID
+	respFeedUserInfo.Name = feedUserInfo.Name
+	respFeedUserInfo.FollowCount = feedUserInfo.FollowCount
+	respFeedUserInfo.FollowerCount = feedUserInfo.FollowerCount
+	respFeedUserInfo.IsFollow = feedUserInfo.IsFollow
+
+	var feedVideLists []sql.VideoInfo
+	err = db.Model(&sql.VideoInfo{}).Where("user_id = ?", userId).Scan(&feedVideLists).Limit(10).Error
+	if err != nil {
+		logx.Errorf("FeedLogic select VideoInfo error:%v", err)
+		return nil, err
+	}
+
+	var respFeedVideoList = make([]types.Video,len(feedVideLists))
+	for index, val := range feedVideLists {
+		respFeedVideoList[index].Id = val.VideID
+		respFeedVideoList[index].Author = respFeedUserInfo
+		respFeedVideoList[index].PlayUrl = val.PlayUrl
+		respFeedVideoList[index].CoverUrl = val.CoverUrl
+		respFeedVideoList[index].FavoriteCount = val.FavoriteCount
+		respFeedVideoList[index].CommentCount = val.CommentCount
+		respFeedVideoList[index].IsFavotite = val.IsFavotite
+		respFeedVideoList[index].VideoTitle = val.VideoTitle
+	}
 
 	return &types.FeedHandlerResponse{
 		StatusCode: 200,
 		StatusMsg:  "feed video success",
-		NextTime:   123,
+		VideoList:  respFeedVideoList,
+		NextTime:   time.Now().Unix(),		// 暂时返回当前时间
 	}, nil
 }
