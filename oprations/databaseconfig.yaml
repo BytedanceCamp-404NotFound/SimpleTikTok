@@ -1,9 +1,9 @@
 MySQL:
- UserName: root
- PassWord: cab955b6a72135c64be7c6a5a29232ac  # 404NotFound MD5 32位小写
- Host: 39.106.72.165
+ UserName: SimpleTikTok
+ PassWord: CYchp8jJePjnS5HF  # 404NotFound MD5 32位小写
+ Host: 122.9.98.17
  Port: 3306
- DBname: SimpleTikTok
+ DBname: simpletiktok
  TimeOut: 10s
 
 Minio:

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -27,7 +27,7 @@ func NewUserloginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Userlog
 
 func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *types.UserloginHandlerResponse, err error) {
 	fmt.Println(req)
-	uid := sql.CheckUser(req.UserName, req.PassWord)
+	uid := mysqlconnect.CheckUser(req.UserName, req.PassWord)
 	fmt.Println(uid)
 	if uid == -1 {
 		return &types.UserloginHandlerResponse{

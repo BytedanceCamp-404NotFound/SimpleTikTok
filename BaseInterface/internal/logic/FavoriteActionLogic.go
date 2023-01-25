@@ -3,7 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 	"fmt"
@@ -44,14 +44,14 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 		}, nil
 	}
 
-	db, _ := sql.SqlConnect() //连接数据库
+	db, _ := mysqlconnect.SqlConnect() //连接数据库
 
 	//直接让表中的数据自增或者自减，用原生的sql语句操作
 	SqlStringAdd := fmt.Sprintf("UPDATE video_info SET favorite_count = favorite_count + 1 WHERE video_id = %d", req.VideoId)
 	SqlStringSub := fmt.Sprintf("UPDATE video_info SET favorite_count = favorite_count - 1 WHERE video_id = %d", req.VideoId)
 
 	if req.ActionType == 1 { //此时未点赞
-		err1 := db.Create(sql.Favorite_list{Favorite_video_id: req.VideoId, Favorite_user_id: userId, Record_time: time.Now()}).Error //插入点赞数据
+		err1 := db.Create(mysqlconnect.Favorite_list{Favorite_video_id: req.VideoId, Favorite_user_id: userId, Record_time: time.Now()}).Error //插入点赞数据
 		err2 := db.Exec(SqlStringAdd).Error                                                                                           //将video的点赞总数+1
 		if err1 != nil || err2 != nil {
 			return &types.FavoriteActionHandlerResponse{
@@ -67,7 +67,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 		}
 
 	} else if req.ActionType == 2 {
-		err1 := db.Unscoped().Where("Favorite_user_id = ?", userId).Delete(&sql.Favorite_list{}).Error //根据用户操作硬删除整条数据
+		err1 := db.Unscoped().Where("Favorite_user_id = ?", userId).Delete(&mysqlconnect.Favorite_list{}).Error //根据用户操作硬删除整条数据
 		err2 := db.Exec(SqlStringSub)                                                                  //将video的点赞总数-1
 		if err1 != nil || err2 != nil {
 			return &types.FavoriteActionHandlerResponse{

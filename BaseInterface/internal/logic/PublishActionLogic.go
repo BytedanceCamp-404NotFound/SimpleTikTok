@@ -3,8 +3,8 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/minio"
-	"SimpleTikTok/oprations/sql"
+	minio "SimpleTikTok/oprations/minioconnect"
+	"SimpleTikTok/oprations/mysqlconnect"
 	"context"
 	"fmt"
 	"os"
@@ -68,13 +68,13 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	// 	return &resultJson, err
 	// }
 	// _ = TokenToUserID
-	db, _ := sql.SqlConnect()
+	db, _ := mysqlconnect.SqlConnect()
 	// result := db.Table("user_info").Where("user_id = ?", UserID).Find(&u.User)
 	// if result.RowsAffected == 0 {
 	// 	return u, false
 	// }
 
-	videoInfo := &sql.VideoInfo{
+	videoInfo := &mysqlconnect.VideoInfo{
 		VideID:        0,
 		AuthorID:      0,
 		PlayUrl:       minioVideoUrl,

@@ -6,7 +6,7 @@ import (
 
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
-	"SimpleTikTok/oprations/sql"
+	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,16 +34,16 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 			StatusMsg:  "登录过期，请重新登陆",
 		}, nil
 	}
-	db, err := sql.SqlConnect() //连接数据库
+	db, err := mysqlconnect.SqlConnect() //连接数据库
 	if err != nil {
 		logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
 		return nil, err
 	}
 
-	var feedUserInfo sql.UserInfo
-	err = db.Model(&sql.UserInfo{}).Where("user_id = ?", userId).First(&feedUserInfo).Error
+	var feedUserInfo mysqlconnect.UserInfo
+	err = db.Model(&mysqlconnect.UserInfo{}).Where("user_id = ?", userId).First(&feedUserInfo).Error
 	if err != nil {
-		logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
+		logx.Errorf("UserID: %v FeedLogic select feedUserInfo error:%v", userId, err)
 		return nil, err
 	}
 	var respFeedUserInfo types.User
@@ -53,14 +53,14 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	respFeedUserInfo.FollowerCount = feedUserInfo.FollowerCount
 	respFeedUserInfo.IsFollow = feedUserInfo.IsFollow
 
-	var feedVideLists []sql.VideoInfo
-	err = db.Model(&sql.VideoInfo{}).Where("user_id = ?", userId).Scan(&feedVideLists).Limit(10).Error
+	var feedVideLists []mysqlconnect.VideoInfo
+	err = db.Model(&mysqlconnect.VideoInfo{}).Where("user_id = ?", userId).Scan(&feedVideLists).Limit(10).Error
 	if err != nil {
 		logx.Errorf("FeedLogic select VideoInfo error:%v", err)
 		return nil, err
 	}
 
-	var respFeedVideoList = make([]types.Video,len(feedVideLists))
+	var respFeedVideoList = make([]types.Video, len(feedVideLists))
 	for index, val := range feedVideLists {
 		respFeedVideoList[index].Id = val.VideID
 		respFeedVideoList[index].Author = respFeedUserInfo
@@ -76,6 +76,6 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 		StatusCode: 200,
 		StatusMsg:  "feed video success",
 		VideoList:  respFeedVideoList,
-		NextTime:   time.Now().Unix(),		// 暂时返回当前时间
+		NextTime:   time.Now().Unix(), // 暂时返回当前时间
 	}, nil
 }
