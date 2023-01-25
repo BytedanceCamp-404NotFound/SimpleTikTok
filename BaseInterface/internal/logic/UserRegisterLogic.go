@@ -38,18 +38,18 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 			StatusMsg:  "用户名或者密码错误，注册失败",
 			UserID:     -1,
 			Token:      "",
-		}, err	
+		}, err
 	}
 
 	db, err := mysqlconnect.SqlConnect()
-	if err != nil{
+	if err != nil {
 		logx.Errorf("SqlConnect err: %v", err)
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: 400,
 			StatusMsg:  "用户已存在，请直接登录",
 			UserID:     -1,
 			Token:      "",
-		}, err	
+		}, err
 	}
 	res, err := mysqlconnect.FindUserIsExist(db, req.UserName, req.PassWord)
 	if err != nil {
@@ -81,7 +81,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 			Token:      "",
 		}, err
 	}
-	TokenString := tools.CreateToken(uid)
+	TokenString, err := tools.CreateToken(uid)
 	return &types.UserRegisterHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "注册成功",

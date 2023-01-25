@@ -39,7 +39,7 @@ func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerReq
 	var sqlString string
 	resultJson := types.RelationActionHandlerResponse{StatusCode: 501, StatusMsg: "token失效，请重新登录"}
 
-	result, TokenToUserID := tools.CheckToke(req.Token)
+	result, TokenToUserID, err := tools.CheckToke(req.Token)
 	if !result {
 		return &resultJson, err
 	}

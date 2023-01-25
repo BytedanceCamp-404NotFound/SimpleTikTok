@@ -1,12 +1,11 @@
 package logic
 
 import (
-	"context"
-	"fmt"
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
+	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,9 +25,8 @@ func NewUserloginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Userlog
 }
 
 func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *types.UserloginHandlerResponse, err error) {
-	fmt.Println(req)
 	uid := mysqlconnect.CheckUser(req.UserName, req.PassWord)
-	fmt.Println(uid)
+	logx.Infof("UserloginLogic CheckUser,uid:%v",uid)
 	if uid == -1 {
 		return &types.UserloginHandlerResponse{
 			StatusCode: -1,
@@ -37,7 +35,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 			Token:      "",
 		}, err
 	}
-	TokenString := tools.CreateToken(uid)
+	TokenString, err := tools.CreateToken(uid)
 	return &types.UserloginHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "登录成功",

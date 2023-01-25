@@ -27,7 +27,7 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandlerResponse, err error) {
-	ok, userId := tools.CheckToke(req.Token)
+	ok, userId, err := tools.CheckToke(req.Token)
 	if !ok {
 		return &types.FeedHandlerResponse{
 			StatusCode: -1,
@@ -78,4 +78,8 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 		VideoList:  respFeedVideoList,
 		NextTime:   time.Now().Unix(), // 暂时返回当前时间
 	}, nil
+}
+
+func tokenIsNull() error {
+	return nil
 }

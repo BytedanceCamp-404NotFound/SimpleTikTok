@@ -33,8 +33,8 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	// todo: add your logic here and delete this line
 	//parse token
 	resp = new(types.CommmentActionHandlerResponse)
-	flag, userId := tools.CheckToke(req.Token)
-	if !flag{
+	flag, userId, err := tools.CheckToke(req.Token)
+	if !flag {
 		return nil, errors.New("parse Token failed")
 	}
 	//get collection from mongodb
@@ -56,10 +56,10 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			Key:   "_id",
 			Value: commentId,
 		},
-		{
-			Key: "video_id",
-			Value: videoId,
-		}}
+			{
+				Key:   "video_id",
+				Value: videoId,
+			}}
 		_, err = collection.DeleteOne(context.Background(), filter)
 		if err != nil {
 			return nil, err
@@ -82,14 +82,14 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		content := req.CommentText
 		date := time.Now()
 		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
-		id, err:= mongodb.GetId(collection)
+		id, err := mongodb.GetId(collection)
 		if err != nil {
 			return nil, err
 		}
 		comment := types.Comment{
 			Id:         id,
 			VideoId:    videoId,
-			User:   	user,
+			User:       user,
 			Content:    content,
 			CreateDate: createDate,
 		}

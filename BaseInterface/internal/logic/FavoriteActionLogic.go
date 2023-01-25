@@ -36,7 +36,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 		}, nil
 	}
 
-	ok, userId := tools.CheckToke(req.Token)
+	ok, userId, err := tools.CheckToke(req.Token)
 	if !ok {
 		return &types.FavoriteActionHandlerResponse{
 			StatusCode: -1,
@@ -52,7 +52,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 
 	if req.ActionType == 1 { //此时未点赞
 		err1 := db.Create(mysqlconnect.Favorite_list{Favorite_video_id: req.VideoId, Favorite_user_id: userId, Record_time: time.Now()}).Error //插入点赞数据
-		err2 := db.Exec(SqlStringAdd).Error                                                                                           //将video的点赞总数+1
+		err2 := db.Exec(SqlStringAdd).Error                                                                                                    //将video的点赞总数+1
 		if err1 != nil || err2 != nil {
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: -1,
@@ -68,7 +68,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 
 	} else if req.ActionType == 2 {
 		err1 := db.Unscoped().Where("Favorite_user_id = ?", userId).Delete(&mysqlconnect.Favorite_list{}).Error //根据用户操作硬删除整条数据
-		err2 := db.Exec(SqlStringSub)                                                                  //将video的点赞总数-1
+		err2 := db.Exec(SqlStringSub)                                                                           //将video的点赞总数-1
 		if err1 != nil || err2 != nil {
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: -1,
