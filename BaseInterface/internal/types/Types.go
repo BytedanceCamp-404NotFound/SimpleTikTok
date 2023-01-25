@@ -181,5 +181,8 @@ type FavoriteListRegisterHandlerRequest struct {
 type FavoriteListRegisterHandlerResponse struct {
 	StatusCode int32  `form:"status_code"`
 	StatusMsg  string `form:"status_msg"`
-	VideoList  Video  `form:"video_list"`
+	VideoList  []Video  `form:"video_list"`
 }
+
+
+

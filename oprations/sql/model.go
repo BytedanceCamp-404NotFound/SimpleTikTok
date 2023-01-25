@@ -1,6 +1,10 @@
 package sql
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // 默认情况下，名为 `ID` 的字段会作为表的主键
 type VideoInfo struct {
@@ -22,4 +26,11 @@ type UserInfo struct {
 	FollowCount   int64  // 关注总数
 	FollowerCount int64  // 粉丝总数
 	IsFollow      bool   // true-已关注
+}
+
+
+type Favorite_list struct {
+	Favorite_video_id int64 
+	Favorite_user_id int
+	Record_time time.Time
 }
