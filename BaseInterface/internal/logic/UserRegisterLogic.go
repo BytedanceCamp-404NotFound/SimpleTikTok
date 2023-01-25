@@ -48,12 +48,11 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 		return rsp, err
 	}
 	if res!=0 {
-		token := tools.CreateToken(res)
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: 0,
-			StatusMsg:  "change password success",
+			StatusMsg:  "用户已存在，请直接登录",
 			UserID:     int64(res),
-			Token:      token,
+			Token:      "",
 		}, err
 	}
 	//end here

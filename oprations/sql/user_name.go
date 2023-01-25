@@ -50,10 +50,10 @@ func CheckUser(UserName string, password string) int {
 //检查注册用户是否存在,存在则修改密码,不存在才创建用户
 //-1代表发生错误
 //0代表用户不存在
-//否则代表用户存在,修改密码
+//否则代表用户存在
 func FindUserIsExist(userName string, password string) (int, error) {
 	var count int64
-	var uid int64
+	var uid int
 	db, _ := SqlConnect()
 	err := db.Table("user_login").Select("user_id").Where("user_name = ?", userName).Find(&uid).Count(&count).Error
 	if err!=nil {
@@ -62,9 +62,5 @@ func FindUserIsExist(userName string, password string) (int, error) {
 	if count==0 {
 		return 0, nil
 	}
-	err = db.Table("user_login").Where("user_name = ?", userName).Update("user_pwd", password).Error
-	if err!=nil {
-		return -1, err
-	}
-	return int(uid), nil
+	return uid, nil
 }
