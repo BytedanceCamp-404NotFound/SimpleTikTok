@@ -26,7 +26,7 @@ func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLogic {
 
 func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandlerResponse, err error) {
 	// todo: add your logic here and delete this line
-	ok, id := tools.CheckToke(req.Token)
+	ok, id, err := tools.CheckToke(req.Token)
 	if !ok {
 		return &types.UserHandlerResponse{
 			StatusCode: -1,

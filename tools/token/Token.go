@@ -1,11 +1,12 @@
 package tools
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 // token负载，即token中蕴含的信息
@@ -25,7 +26,7 @@ var appKey = []byte("404NotFound")
  * 如果需要限制token有效时间可以在上面的MyCliams结构体中
  * 添加token签发时间与token有效期
  */
-func CreateToken(id int) string {
+func CreateToken(id int) (string, error) {
 	c := MyCliams{
 		Id: id,
 		StandardClaims: jwt.StandardClaims{
@@ -35,14 +36,12 @@ func CreateToken(id int) string {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
-
 	TokenString, err := token.SignedString(appKey)
-
 	if err != nil {
-		panic(err)
+		logx.Errorf("CreateToken error:%v", err)
+		return "", err
 	}
-
-	return TokenString
+	return TokenString, nil
 }
 
 /*
@@ -51,29 +50,29 @@ func CreateToken(id int) string {
  * 返回值 flag:鉴权是否成功
  *        id:提取出的user_id
  */
-func CheckToke(TokenString string) (flag bool, id int) {
-	/*
-		这部分后面导出日志时可以使用
-		if len(appKey) == 0 {
-			log.Fatal("Server unable to start, expected an APP_KEY for JWT auth")
-		}
-	*/
-	num := strings.Count(TokenString,".")
+func CheckToke(TokenString string) (flag bool, id int, err error) {
+	// 这部分后面导出日志时可以使用
+	if len(appKey) == 0 {
+		logx.Error("Server unable to start, expected an APP_KEY for JWT auth")
+	}
+	num := strings.Count(TokenString, ".")
 	if num != 2 {
-		return false,-1
-	} 
-	
+		logx.Errorf("TokenString is error")
+		return false, -1, errors.New("TokenString is error")
+	}
+
 	token, err := jwt.ParseWithClaims(TokenString, &MyCliams{},
 		func(token *jwt.Token) (i interface{}, err error) {
 			return appKey, nil
 		})
 	if err != nil {
-		// panic(err)
-		fmt.Println(err)
+		logx.Errorf("CheckToke error:%v", err)
+		return false, -1, err
 	}
 	if claims, ok := token.Claims.(*MyCliams); ok && token.Valid {
 		// 校验token
-		return true, claims.Id
+		logx.Infof("=======================CheckToke is ok=======================")
+		return true, claims.Id, nil
 	}
-	return false, -1
+	return false, -1, nil
 }

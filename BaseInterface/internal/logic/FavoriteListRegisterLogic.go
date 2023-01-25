@@ -52,7 +52,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 		}, nil
 	}
 
-	ok, userId := tools.CheckToke(req.Token)
+	ok, userId, err := tools.CheckToke(req.Token)
 	if !ok {
 		return &types.FavoriteListRegisterHandlerResponse{
 			StatusCode: -1,

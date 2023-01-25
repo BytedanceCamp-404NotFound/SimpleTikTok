@@ -32,7 +32,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	resp.StatusCode = -1
 	var comments []types.Comment
 	token := req.Token
-	flag, _ := tools.CheckToke(token)
+	flag, _, err := tools.CheckToke(token)
 	if !flag {
 		resp.StatusMsg = "token invalid"
 		return resp, nil

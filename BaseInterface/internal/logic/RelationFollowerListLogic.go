@@ -30,7 +30,7 @@ func (l *RelationFollowerListLogic) RelationFollowerList(req *types.RelationFoll
 	testUserList_ := make([]types.RelationUser, 0)
 	tempUserList := types.RelationUser{}
 	resultJson := types.RelationFollowerListHandlerResponse{StatusCode: 501, StatusMsg: "token失效，请重新登录"}
-	result, TokenToUserID := tools.CheckToke(req.Token)
+	result, TokenToUserID, err := tools.CheckToke(req.Token)
 	if !result {
 		return &resultJson, err
 	}
