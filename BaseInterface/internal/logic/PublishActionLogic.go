@@ -5,6 +5,7 @@ import (
 	"SimpleTikTok/BaseInterface/internal/types"
 	minio "SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
+	"SimpleTikTok/oprations/commonerror"
 	"context"
 	"fmt"
 	"os"
@@ -92,7 +93,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 		return nil, err
 	}
 	return &types.PublishActionHandlerResponse{
-		StatusCode: 200,
-		StatusMsg:  "up file success",
+		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusMsg:  "上传成功",
 	}, err
 }
