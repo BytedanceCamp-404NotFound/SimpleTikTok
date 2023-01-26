@@ -27,6 +27,15 @@ type MinioConfig struct {
 	UseSSL          bool   //是否开启SSL加密
 }
 
+type MongoConfig struct {
+	MongoUserName   string
+	MongoPwd        string
+	MongoUrl        string
+	MongoPort       int
+	MongoDB         string
+	MongoTable      string
+}
+
 // 获取当前可执行文件位置
 func getExeFile() (string, error) {
 	exePath, err := os.Executable()
@@ -91,4 +100,20 @@ func ConfigReadToMinio() (*MinioConfig, error) {
 		UseSSL:          config.GetBool("UseSSL"),
 	}
 	return minioConfig, nil
+}
+
+func ConfigReadToMongoDB() (*MongoConfig, error) {
+	config, err := getViperConfig("MongoDB")
+	if err!=nil {
+		logx.Errorf("ConfigReadToMongoDB: %v", err)
+	}
+	mongoClient := &MongoConfig{
+		MongoUserName: config.GetString("mongoUserName"),
+		MongoPwd:      config.GetString("mongoPwd"),
+		MongoUrl:      config.GetString("mongoUrl"),
+		MongoPort:     config.GetInt("mongoPort"),
+		MongoDB:       config.GetString("mongoDatabase"),
+		MongoTable:     config.GetString("mongoTable"),
+	}
+	return mongoClient, nil
 }

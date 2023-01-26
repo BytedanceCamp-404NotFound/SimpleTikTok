@@ -6,7 +6,6 @@ import (
 	"SimpleTikTok/oprations/mongodb"
 	tools "SimpleTikTok/tools/token"
 	"context"
-	"fmt"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.mongodb.org/mongo-driver/bson"
@@ -38,15 +37,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 		return resp, nil
 	}
 	videoId := req.VideoId
-	mongoUser := "admin"
-	mongoPwd := "admin"
-	mongoUrl := "192.168.31.132:27017"
-	url := fmt.Sprintf("mongodb://%v:%v@%v", mongoUser, mongoPwd, mongoUrl)
-	collection, err := mongodb.Connect("tiktok", "comment", url)
-	if err != nil {
-		resp.StatusMsg = "connect mongodb failed"
-		return resp, nil
-	}
+	collection := mongodb.MongoDBCollection
 	filter := bson.D{{
 		Key:   "video_id",
 		Value: videoId,
