@@ -56,7 +56,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 		logx.Errorf("UserRegisterLogic FindUserIsExist err: %v", err)
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: 400,
-			StatusMsg:  "用户已存在，请直接登录",
+			StatusMsg:  "查找注册用户是否存在失败",
 			UserID:     -1,
 			Token:      "",
 		}, err
