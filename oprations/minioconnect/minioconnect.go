@@ -2,6 +2,7 @@ package minioconnect
 
 import (
 	"encoding/base64"
+	"io"
 	"path/filepath"
 
 	"SimpleTikTok/oprations/viperconfigread"
@@ -49,7 +50,6 @@ func MinioMakeBucket() error {
 	return nil
 }
 
-
 func MinioFileUploader(minioClient *minio.Client, bucketName string, objectPre string, filePath string) (string, error) {
 	newfilePath := filepath.Base(filePath)
 	newfilePath = uuid.New().String() + "-" + newfilePath
@@ -60,6 +60,32 @@ func MinioFileUploader(minioClient *minio.Client, bucketName string, objectPre s
 	contentType := "video/mp4" // 类型
 
 	n, err := minioClient.FPutObject(bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
+
+	if err != nil {
+		logx.Error(err)
+		return "", err
+	}
+	logx.Infof("Successfully uploaded %s of size %d\n", objectName, n)
+	str := bucketName + "_" + objectName
+	strbytes := []byte(str)
+	bucket_filepath := "minio_" + base64.StdEncoding.EncodeToString(strbytes)
+	return bucket_filepath, nil
+}
+
+func MinioFileUploader_byte(minioClient *minio.Client, bucketName string, objectPre string, filePath string, videoIO io.Reader, objectSize int64) (string, error) {
+
+	newfilePath := filepath.Base(filePath)
+	newfilePath = uuid.New().String() + "-" + newfilePath
+	logx.Infof("%s", newfilePath)
+
+	objectName := objectPre + newfilePath // 要上传的文件的名字
+	logx.Infof("MinioFileUploader, objectName:%s, newfilePath:%s", objectName, newfilePath)
+	contentType := "video/mp4" // 类型
+
+	//n, err := minioClient.FPutObject(bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType}
+
+	n, err := minioClient.PutObject(bucketName, objectName, videoIO, objectSize, minio.PutObjectOptions{ContentType: contentType})
+
 	if err != nil {
 		logx.Error(err)
 		return "", err
