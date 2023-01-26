@@ -42,7 +42,7 @@ func CreateUser(db *gorm.DB, UserName string, password string) int {
  */
 func CheckUser(UserName string, password string) int {
 	id := -1
-	db, _ := SqlConnect()
+	db := GormDB
 	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
 	fmt.Println(id)
 

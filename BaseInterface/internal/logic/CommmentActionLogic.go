@@ -60,7 +60,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
-		db, err := mysqlconnect.SqlConnect()
+		db := mysqlconnect.GormDB
 		if err != nil {
 			return nil, err
 		}

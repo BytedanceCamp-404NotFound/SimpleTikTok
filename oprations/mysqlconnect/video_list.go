@@ -1,13 +1,13 @@
 package mysqlconnect
 
 func VideoNum(AuthorID int) (n int64) {
-	db, _ := SqlConnect()
+	db := GormDB
 	db.Table("video_info").Where("author_id = ?", AuthorID).Count(&n)
 	return n
 }
 
 func GetVideoList(AuthorID int) (list []VideoInfo) {
-	db, _ := SqlConnect()
+	db := GormDB
 	n := VideoNum(AuthorID)
 	if n == 0 {
 		return []VideoInfo{}

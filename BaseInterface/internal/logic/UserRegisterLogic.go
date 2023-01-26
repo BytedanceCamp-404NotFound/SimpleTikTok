@@ -41,16 +41,16 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 		}, err
 	}
 
-	db, err := mysqlconnect.SqlConnect()
-	if err != nil {
-		logx.Errorf("SqlConnect err: %v", err)
-		return &types.UserRegisterHandlerResponse{
-			StatusCode: 400,
-			StatusMsg:  "用户已存在，请直接登录",
-			UserID:     -1,
-			Token:      "",
-		}, err
-	}
+	db := mysqlconnect.GormDB
+	// if err != nil {
+	// 	logx.Errorf("SqlConnect err: %v", err)
+	// 	return &types.UserRegisterHandlerResponse{
+	// 		StatusCode: 400,
+	// 		StatusMsg:  "用户已存在，请直接登录",
+	// 		UserID:     -1,
+	// 		Token:      "",
+	// 	}, err
+	// }
 	res, err := mysqlconnect.FindUserIsExist(db, req.UserName, req.PassWord)
 	if err != nil {
 		logx.Errorf("UserRegisterLogic FindUserIsExist err: %v", err)

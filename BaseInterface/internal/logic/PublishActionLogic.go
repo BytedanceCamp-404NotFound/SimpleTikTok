@@ -85,7 +85,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	// 	return &resultJson, err
 	// }
 	// _ = TokenToUserID
-	db, _ := mysqlconnect.SqlConnect()
+	db := mysqlconnect.GormDB
 	// result := db.Table("user_info").Where("user_id = ?", UserID).Find(&u.User)
 	// if result.RowsAffected == 0 {
 	// 	return u, false

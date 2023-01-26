@@ -14,6 +14,16 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+
+var GormDB *gorm.DB
+func init() {
+	var err error
+	GormDB, err = SqlConnect()
+	if err!=nil {
+		logx.Errorf("get sql connect fail, err:%v", err)
+	}
+}
+
 /*
  *	函数功能：连接数据库
  *	返回值 *gorm.DB为链接上的数据库
