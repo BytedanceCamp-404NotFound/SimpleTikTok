@@ -57,7 +57,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 		return &types.FavoriteListRegisterHandlerResponse{
 			StatusCode: -1,
 			StatusMsg:  "登录过期，请重新登陆",
-		}, nil
+		}, err
 	}
 
 	//
@@ -75,7 +75,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 	}
 	videoInfo := make([]VideoInfo, len(favoriteVideoId))
 
-	err2 := db.Table("video_info").Where("video_id", favoriteVideoId).Select("video_title", "author_id", "cover_url", "play_url", "favorite_count", "comment_count").Find(&videoInfo).Error //查出数据在videoInfo中
+	err2 := db.Table("video_info").Where("video_id = ?", favoriteVideoId).Select("video_title", "author_id", "cover_url", "play_url", "favorite_count", "comment_count").Find(&videoInfo).Error //查出数据在videoInfo中
 
 	if err2 != nil {
 		return &types.FavoriteListRegisterHandlerResponse{
