@@ -6,6 +6,7 @@ import (
 	"SimpleTikTok/BaseInterface/internal/logic"
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
@@ -16,9 +17,8 @@ func PublishActionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
 		l := logic.NewPublishActionLogic(r.Context(), svcCtx)
-		resp, err := l.PublishAction(&req)
+		resp, err := l.PublishAction(&req, r)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

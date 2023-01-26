@@ -3,11 +3,12 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	minio "SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
-	"SimpleTikTok/oprations/commonerror"
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -30,18 +31,21 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 
 // yzx
 // TODO
-func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerRequest) (resp *types.PublishActionHandlerResponse, err error) {
+func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerRequest, r *http.Request) (resp *types.PublishActionHandlerResponse, err error) {
 	// TODO 还需要处理传输过来的byte,暂时先用本地MP4和png代替
 	// TODO 兼容多种视频和图片格式？avi,mp4
 	exePath, _ := os.Executable()
 	sourceFile := filepath.Dir(filepath.Dir(exePath))
-	vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
+	//vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
 	pictureFile := fmt.Sprintf("%s/source/pic/pic_test1.png", sourceFile)
-	content, err := os.ReadFile(vidoeFile)
+	//content, err := os.ReadFile(vidoeFile)
+
+	//content := req.Data
+
 	if err != nil {
 		logx.Errorf("ioutil error:%v", err)
 	}
-	_ = content
+	//_ = content
 
 	bucketName := "test-minio"
 	minioClient, err := minio.MinioConnect()
@@ -49,7 +53,19 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 		logx.Infof("minio connect is fail, error:%v\n", err)
 		return nil, err
 	}
-	minioVideoUrl, err := minio.MinioFileUploader(minioClient, bucketName, "vidoeFile/", vidoeFile)
+	//minioVideoUrl, err := minio.MinioFileUploader(minioClient, bucketName, "vidoeFile/", vidoeFile)
+
+	file, FileHeader, err2 := r.FormFile("data") //可以优化
+	if err2 != nil {
+		logx.Errorf("没有收到视频文件或者出现其他错误。。 error:%v", err)
+		return &types.PublishActionHandlerResponse{
+			StatusCode: 400,
+			StatusMsg:  "没有收到视频文件或者出现其他错误",
+		}, err
+	}
+
+	minioVideoUrl, err := minio.MinioFileUploader_byte(minioClient, bucketName, "vidoeFile/", FileHeader.Filename, file, FileHeader.Size)
+
 	if err != nil {
 		logx.Infof("minio upload to fail, error:%v\n", err)
 		return nil, err // TODO: 上传失败暂时中断接口
