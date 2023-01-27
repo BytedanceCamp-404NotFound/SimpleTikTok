@@ -25,7 +25,7 @@ func NewUserloginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Userlog
 }
 
 func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *types.UserloginHandlerResponse, err error) {
-	uid := mysqlconnect.CheckUser(req.UserName, req.PassWord)
+	uid, _:= mysqlconnect.CheckUser(req.UserName, req.PassWord)
 	logx.Infof("UserloginLogic CheckUser,uid:%v",uid)
 	if uid == -1 {
 		return &types.UserloginHandlerResponse{
