@@ -25,13 +25,13 @@ var (
 		700: "PARSE_TOKEN_ERROR",
 	}
 	CommonErr_value = map[string]int32{
-		"UNKNOW_ERROR":     0,
-		"DB_ERROR":         13,
-		"STATUS_OK":        200,
-		"PARAMETER_FAILED": 400,
-		"PAGE_NOT_EXIT":    404,
-		"INTERNAL_ERROR":   500,
-		"TIMEOUT":          504,
-		"PARSE_TOKEN_ERROR":700 ,
+		"UNKNOW_ERROR":      0,
+		"DB_ERROR":          13,
+		"STATUS_OK":         200,
+		"PARAMETER_FAILED":  400,
+		"PAGE_NOT_EXIT":     404,
+		"INTERNAL_ERROR":    500,
+		"TIMEOUT":           504,
+		"PARSE_TOKEN_ERROR": 700,
 	}
 )
