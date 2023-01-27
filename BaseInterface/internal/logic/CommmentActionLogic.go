@@ -7,7 +7,6 @@ import (
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -33,9 +32,12 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	// todo: add your logic here and delete this line
 	//parse token
 	resp = new(types.CommmentActionHandlerResponse)
+	resp.StatusCode = 400
 	flag, userId, err := tools.CheckToke(req.Token)
 	if !flag {
-		return nil, errors.New(fmt.Sprintf("parse token failed, err:%v", err))
+		logx.Errorf("parse token failed, err:%v", err)
+		resp.StatusMsg = "parse token failed"
+		return resp, err
 	}
 	//get collection from mongodb
 	collection := mongodb.MongoDBCollection
@@ -54,28 +56,31 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			}}
 		_, err = collection.DeleteOne(context.Background(), filter)
 		if err != nil {
-			return nil, err
+			logx.Errorf("delete comment failed, err:%v", err)
+			resp.StatusMsg = "delete comment failed"
+			return resp, err
 		}
-		resp.StatusCode = 0
+		resp.StatusCode = 200
 		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
 		db := mysqlconnect.GormDB
-		if err != nil {
-			return nil, err
-		}
 
 		var user types.User
 		err = db.Table("user_info").Where("user_id=?", userId).First(&user).Error
 		if err != nil {
-			return nil, err
+			logx.Errorf("search user_info failed, err:%v", err)
+			resp.StatusMsg = "search user_info failed"
+			return resp, err
 		}
 		content := req.CommentText
 		date := time.Now()
 		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
 		id, err := mongodb.GetId(collection)
 		if err != nil {
-			return nil, err
+			logx.Errorf("get id failed, err:%v", err)
+			resp.StatusMsg = "get id failed"
+			return resp, err
 		}
 		comment := types.Comment{
 			Id:         id,
@@ -86,9 +91,11 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		}
 		_, err = collection.InsertOne(context.Background(), comment)
 		if err != nil {
-			return nil, err
+			logx.Errorf("insert comment failed, err:%v", err)
+			resp.StatusMsg = "insert comment failed"
+			return resp, err
 		}
-		resp.StatusCode = 0
+		resp.StatusCode = 200
 		resp.StatusMsg = "insert success"
 		resp.Comment = comment
 	}

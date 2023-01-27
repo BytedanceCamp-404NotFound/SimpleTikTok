@@ -1,13 +1,13 @@
 MySQL:
  UserName: root
- PassWord: 119149349j  # 404NotFound MD5 32位小写
+ PassWord: 119149349j  
  Host: 175.178.93.55
  Port: 3306
  DBname: SimpleTikTok
  TimeOut: 10s
 
 Minio:
- Endpoint: 39.106.72.165:9001 # 用的API端口，不是Console
+ Endpoint: 175.178.93.55:9001 # 用的API端口，不是Console
  AccessKeyID: minio
  SecretAccessKey: minio123
  UseSSL: false
