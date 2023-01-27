@@ -35,7 +35,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	token := req.Token
 	flag, _, err := tools.CheckToke(token)
 	if !flag {
-		logx.Errorf("logic CommmentList parse token failed, err:%v", err)
+		logx.Errorf("[pkg]logic [func]CommmentList [msg]parse token failed, [err]%v", err)
 		resp.StatusCode = int32(commonerror.CommonErr_PARSE_TOKEN_ERROR)
 		resp.StatusMsg = "parse token failed"
 		return resp, err
@@ -57,7 +57,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	opts.Sort = sortOption
 	cur, err := collection.Find(context.Background(), filter, opts)
 	if err != nil {
-		logx.Errorf("logic CommmentList find comments failed, err:%v", err)
+		logx.Errorf("[pkg]logic [func]CommmentList [msg]find comments failed, [err]%v", err)
 		resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 		resp.StatusMsg = "find comments failed"
 		return resp, err
@@ -66,7 +66,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 		var comment types.Comment
 		err = cur.Decode(&comment)
 		if err != nil {
-			logx.Errorf("logic CommmentList decode comment failed, err:%v", err)
+			logx.Errorf("[pkg]logic [func]CommmentList [msg]decode comment failed, [err]%v", err)
 			resp.StatusCode = int32(commonerror.CommonErr_PARAMETER_FAILED)
 			resp.StatusMsg = "decode comment failed"
 			return resp, err
@@ -76,7 +76,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	}
 	err = cur.Err()
 	if err != nil {
-		logx.Errorf("logic CommmentList cur has an error, err:%v", err)
+		logx.Errorf("[pkg]logic [func]CommmentList [msg]cur has an error, [err]%v", err)
 		resp.StatusCode = int32(commonerror.CommonErr_PARAMETER_FAILED)
 		resp.StatusMsg = "cur has an error"
 		return resp, err
