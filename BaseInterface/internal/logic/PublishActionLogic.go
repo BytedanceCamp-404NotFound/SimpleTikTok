@@ -6,12 +6,14 @@ import (
 	"SimpleTikTok/oprations/commonerror"
 	minio "SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
+	tools "SimpleTikTok/tools/token"
 	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -30,86 +32,88 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 }
 
 // yzx
-// TODO
+// TODO 还需要处理传输过来的byte,暂时先用本地MP4和png代替
+// TODO 兼容多种视频和图片格式？avi,mp4
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerRequest, r *http.Request) (resp *types.PublishActionHandlerResponse, err error) {
-	// TODO 还需要处理传输过来的byte,暂时先用本地MP4和png代替
-	// TODO 兼容多种视频和图片格式？avi,mp4
-	exePath, _ := os.Executable()
-	sourceFile := filepath.Dir(filepath.Dir(exePath))
-	//vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
-	pictureFile := fmt.Sprintf("%s/source/pic/pic_test1.png", sourceFile)
-	//content, err := os.ReadFile(vidoeFile)
-
-	//content := req.Data
-
+	ok, userId, err := tools.CheckToke(req.Token)
 	if err != nil {
-		logx.Errorf("ioutil error:%v", err)
-	}
-	//_ = content
-
-	bucketName := "test-minio"
-	minioClient, err := minio.MinioConnect()
-	if err != nil {
-		logx.Infof("minio connect is fail, error:%v\n", err)
-		return nil, err
-	}
-	//minioVideoUrl, err := minio.MinioFileUploader(minioClient, bucketName, "vidoeFile/", vidoeFile)
-
-	file, FileHeader, err2 := r.FormFile("data") //可以优化
-	if err2 != nil {
-		logx.Errorf("没有收到视频文件或者出现其他错误。。 error:%v", err)
 		return &types.PublishActionHandlerResponse{
-			StatusCode: 400,
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "Token校验出错",
+		}, nil
+	}
+	if !ok {
+		logx.Infof("[pkg]logic [func]PublishAction [msg]feedUserInfo.Name is nuil ")
+		return &types.PublishActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
+			StatusMsg:  "登录过期，请重新登陆",
+		}, nil
+	}
+
+	minioVideoUrl, minioPictureUrl, err := minioUpDate(r) // Minio 上传文件
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]PublishAction [msg]minioUpDate is fail [err]%v", err)
+		return &types.PublishActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PAGE_NOT_EXIT),
 			StatusMsg:  "没有收到视频文件或者出现其他错误",
 		}, err
 	}
 
-	minioVideoUrl, err := minio.MinioFileUploader_byte(minioClient, bucketName, "vidoeFile/", FileHeader.Filename, file, FileHeader.Size)
-
-	if err != nil {
-		logx.Infof("minio upload to fail, error:%v\n", err)
-		return nil, err // TODO: 上传失败暂时中断接口
-	}
-	logx.Infof("vidoeFile:%s", minioVideoUrl)
-	minioPictureUrl, err := minio.MinioFileUploader(minioClient, bucketName, "pictureFile/", pictureFile)
-	if err != nil {
-		logx.Infof("minio upload to fail, error:%v\n", err)
-		return nil, err // TODO: 上传失败暂时中断接口
-	}
-	logx.Infof("pictureFile:%s", minioPictureUrl)
-	// testUserList_ := make([]types.RelationUser, 0)
-	// tempUserList := types.RelationUser{}
-	// resultJson := types.PublishActionHandlerResponse{StatusCode: 501, StatusMsg: "token失效，请重新登录"}
-	// result, TokenToUserID := tools.CheckToke(req.Token)
-	// if !result {
-	// 	return &resultJson, err
-	// }
-	// _ = TokenToUserID
-	db := mysqlconnect.GormDB
-	// result := db.Table("user_info").Where("user_id = ?", UserID).Find(&u.User)
-	// if result.RowsAffected == 0 {
-	// 	return u, false
-	// }
-
-	videoInfo := &mysqlconnect.VideoInfo{
-		VideID:        0,
-		AuthorID:      0,
-		PlayUrl:       minioVideoUrl,
-		CoverUrl:      minioPictureUrl,
-		FavoriteCount: 0,
-		CommentCount:  0,
-		IsFavotite:    false,
-		VideoTitle:    req.Title,
+	VideoInfo := &mysqlconnect.PublishActionVideoInfo{
+		Video_id:       int32(uuid.New().ID()),
+		Author_id:      int64(userId),
+		Play_url:       minioVideoUrl,
+		Cover_url:      minioPictureUrl,
+		Favorite_count: 0,
+		Comment_count:  0,
+		Video_title:    req.Title,
 	}
 
 	// gorm创建一条信息
-	err = db.Create(&videoInfo).Error
+	err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
 	if err != nil {
-		logx.Errorf("PublishAction mysql error:%v", err)
+		logx.Errorf("[pkg]logic [func]PublishAction [msg]CreatePublishActionViedeInfo is err [err]%v", err)
 		return nil, err
 	}
 	return &types.PublishActionHandlerResponse{
 		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
 		StatusMsg:  "上传成功",
 	}, err
+}
+
+// 图片和视频上传到minio
+func minioUpDate(r *http.Request) (string, string, error) {
+	// TOTEMP
+	exePath, _ := os.Executable()
+	sourceFile := filepath.Dir(filepath.Dir(exePath))
+	//vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
+	pictureFile := fmt.Sprintf("%s/source/pic/pic_test2.jpg", sourceFile)
+	// content, err := os.ReadFile(vidoeFile)
+
+	bucketName := "test-minio"
+	minioClient, err := minio.MinioConnect()
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]minioUpDate [msg]MinioConnect fail [err]%v", err)
+		return "", "", err
+	}
+
+	file, FileHeader, err := r.FormFile("data") //可以优化
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]minioUpDate [msg]r.FormFile fail [err]%v", err)
+		return "", "", err
+	}
+
+	//minioVideoUrl, err := minio.MinioFileUploader(minioClient, bucketName, "vidoeFile/", vidoeFile) //上传本地文件
+	minioVideoUrl, err := minio.MinioFileUploader_byte(minioClient, bucketName, "vidoeFile/", FileHeader.Filename, file, FileHeader.Size) // 上传字节类型文件
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]minioUpDate [msg]minio video upload to fail [err]%v", err)
+		return "", "", err // TODO: 上传失败暂时中断接口
+	}
+
+	minioPictureUrl, err := minio.MinioFileUploader(minioClient, bucketName, "pictureFile/", pictureFile)
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]minioUpDate [msg]minio picture upload to fail [err]%v", err)
+		// return "", "", err // TODO: 上传图片失败不中断接口
+	}
+	return minioVideoUrl, minioPictureUrl, err
 }
