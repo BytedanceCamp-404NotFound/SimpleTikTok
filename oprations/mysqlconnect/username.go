@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"SimpleTikTok/tools/encryption"
+
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 )
@@ -14,9 +16,9 @@ import (
 func CreateUser(db *gorm.DB, UserName string, password string) int {
 	id := -1
 	// db, _ := SqlConnect()
-	user := User_login{UserName: UserName, UserPwd: password, RegisterDate: time.Now()}
+	user := User_login{UserName: UserName, UserPwd: encryption.HashEncode(password), RegisterDate: time.Now()}
 	db.Table("user_login").Create(&user)
-	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
+	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, encryption.HashEncode(password)).Find(&id)
 
 	CreateInfo(UserName, int64(id))
 	return id
@@ -28,7 +30,7 @@ func CreateUser(db *gorm.DB, UserName string, password string) int {
 func CheckUser(UserName string, password string) (int, error) {
 	id := -1
 	db := GormDB
-	err := db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id).Error
+	err := db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, encryption.HashEncode(password)).Find(&id).Error
 	if err != nil {
 		logx.Errorf("Check user fail, error:%v", err.Error())
 		return -1, err

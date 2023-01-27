@@ -3,6 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
@@ -25,8 +26,15 @@ func NewUserloginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Userlog
 }
 
 func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *types.UserloginHandlerResponse, err error) {
-	uid := mysqlconnect.CheckUser(req.UserName, req.PassWord)
-	logx.Infof("UserloginLogic CheckUser,uid:%v",uid)
+	uid, err := mysqlconnect.CheckUser(req.UserName, req.PassWord)
+	if err != nil {
+		logx.Error("Check user err: %v", err)
+		return &types.UserloginHandlerResponse{
+			StatusCode: int64(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "服务器出错，等待修复",
+		}, nil
+	}
+	logx.Infof("UserloginLogic CheckUser,uid:%v", uid)
 	if uid == -1 {
 		return &types.UserloginHandlerResponse{
 			StatusCode: -1,
