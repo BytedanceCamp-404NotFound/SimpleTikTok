@@ -28,13 +28,14 @@ func NewCommmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comm
 func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) (resp *types.CommmentListHandlerResponse, err error) {
 	// todo: add your logic here and delete this line
 	resp = new(types.CommmentListHandlerResponse)
-	resp.StatusCode = -1
+	resp.StatusCode = 400
 	var comments []types.Comment
 	token := req.Token
 	flag, _, err := tools.CheckToke(token)
 	if !flag {
-		resp.StatusMsg = "token invalid"
-		return resp, nil
+		logx.Errorf("parse token failed, err:%v", err)
+		resp.StatusMsg = "parse token failed"
+		return resp, err
 	}
 	videoId := req.VideoId
 	collection := mongodb.MongoDBCollection
@@ -44,25 +45,29 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	}}
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
+		logx.Errorf("find comments failed, err:%v", err)
 		resp.StatusMsg = "find comments failed"
-		return resp, nil
+		return resp, err
 	}
 	for cur.Next(context.Background()) {
 		var comment types.Comment
 		err = cur.Decode(&comment)
 		if err != nil {
+			logx.Errorf("decode comment failed, err:%v", err)
 			resp.StatusMsg = "decode comment failed"
-			return resp, nil
+			return resp, err
 		}
 		comments = append(comments, comment)
 
 	}
 	err = cur.Err()
 	if err != nil {
-		return nil, err
+		logx.Errorf("cur has an error, err:%v", err)
+		resp.StatusMsg = "cur has an error"
+		return resp, err
 	}
 	cur.Close(context.Background())
-	resp.StatusCode = 0
+	resp.StatusCode = 200
 	resp.StatusMsg = "get commentList success"
 	resp.CommentList = comments
 	return resp, nil
