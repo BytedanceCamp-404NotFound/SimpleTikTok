@@ -28,7 +28,7 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 
 func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerRequest) (resp *types.FavoriteActionHandlerResponse, err error) {
 	// todo: add your logic here and delete this line
-
+	
 	if req.Token == "" {
 		return &types.FavoriteActionHandlerResponse{
 			StatusCode: -1,
