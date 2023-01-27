@@ -28,9 +28,15 @@ type UserInfo struct {
 	IsFollow      bool   // true-已关注
 }
 
-
 type Favorite_list struct {
-	Favorite_video_id int64 
-	Favorite_user_id int
-	Record_time time.Time
+	Favorite_video_id int64
+	Favorite_user_id  int
+	Record_time       time.Time
+}
+
+type User_login struct {
+	UserID       int64     `gorm:"cloumn:user_id;primaryKey"`
+	UserName     string    `gorm:"cloumn:user_id;"`
+	UserPwd      string    `gorm:"cloumn:user_id;"`
+	RegisterDate time.Time `gorm:"cloumn:register_date;"`
 }

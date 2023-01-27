@@ -4,27 +4,17 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
 )
 
-type User_name struct {
-	UserID       int64     `gorm:"cloumn:user_id;primaryKey"`
-	UserName     string    `gorm:"cloumn:user_id;"`
-	UserPwd      string    `gorm:"cloumn:user_id;"`
-	RegisterDate time.Time `gorm:"cloumn:register_date;"`
-}
-
-/*
- *	函数功能 向user_login表中插入新值，同时更新user表
- *	输入参数 UserName:用户名
- *           password:密码
- *	返回值 id:新用户的uid
- *		若id=-1,则说明数据库添加不成功
- */
+// 向user_login表中插入新值，同时更新user表
+// 返回id不为-1表示注册成功
+// 返回id为-1表示失败
 func CreateUser(db *gorm.DB, UserName string, password string) int {
 	id := -1
 	// db, _ := SqlConnect()
-	user := User_name{UserName: UserName, UserPwd: password, RegisterDate: time.Now()}
+	user := User_login{UserName: UserName, UserPwd: password, RegisterDate: time.Now()}
 	db.Table("user_login").Create(&user)
 	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
 
@@ -32,21 +22,20 @@ func CreateUser(db *gorm.DB, UserName string, password string) int {
 	return id
 }
 
-/*
- *	函数功能 校验user_name表中的账户密码是否一致
- *	输入参数 UserName:用户名
- *           password:密码
- *	返回值 id:判断插入是否成功
- *          id>0，查询成功
- *          id=-1 表中没有对应的项
- */
-func CheckUser(UserName string, password string) int {
+// 函数功能 校验user_name表中的账户密码是否一致
+// 返回id不为-1表示一致
+// 返回id为-1表示不一致
+func CheckUser(UserName string, password string) (int, error) {
 	id := -1
 	db := GormDB
-	db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id)
+	err := db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, password).Find(&id).Error
+	if err != nil {
+		logx.Errorf("Check user fail, error:%v", err.Error())
+		return -1, err
+	}
 	fmt.Println(id)
 
-	return id
+	return id, err
 }
 
 // 检查注册用户是否存在,存在则修改密码,不存在才创建用户

@@ -1,35 +1,31 @@
 package mysqlconnect
 
 import (
+	"SimpleTikTok/oprations/viperconfigread"
 	"fmt"
 	"log"
 	"os"
 	"time"
-	"SimpleTikTok/oprations/viperconfigread"
 
-	"gorm.io/gorm/schema"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
-
 var GormDB *gorm.DB
+
 func init() {
 	var err error
 	GormDB, err = SqlConnect()
-	if err!=nil {
+	if err != nil {
 		logx.Errorf("get sql connect fail, err:%v", err)
 	}
 }
 
-/*
- *	函数功能：连接数据库
- *	返回值 *gorm.DB为链接上的数据库
- *  Tips:如果数据库参数不一致可以依照参数表注释修改
- *  Tips:这里做了修改，将原本的配置信息放置在文件sqlConfig.yaml中
- */
+// 函数功能：连接数据库
+// 返回值 *gorm.DB为链接上的数据库
 func SqlConnect() (*gorm.DB, error) {
 	mysqlConfig, err := viperconfigread.ConfigReadToMySQL()
 	if err != nil {
@@ -74,7 +70,7 @@ func gormInit(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:                 logger,
 		SkipDefaultTransaction: true, // 跳过默认开启事务模式
-		PrepareStmt:            false, 
+		PrepareStmt:            false,
 		AllowGlobalUpdate:      true, // 在没有任何条件的情况下执行批量删除，GORM 不会执行该操作
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, //使用单数表名，启用该选项.
