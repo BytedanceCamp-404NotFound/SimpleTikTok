@@ -52,7 +52,7 @@ func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerReq
 		sqlString = fmt.Sprintf("DELETE FROM follow_and_follower_list WHERE user_id=%d and follower_id=%d", req.To_user_id, TokenToUserID)
 	}
 
-	db, _ := mysqlconnect.SqlConnect()
+	db := mysqlconnect.GormDB
 	b := db.Exec(sqlString)
 	fmt.Println(b.RowsAffected)
 	fmt.Printf("%+v\n\n\n", b)

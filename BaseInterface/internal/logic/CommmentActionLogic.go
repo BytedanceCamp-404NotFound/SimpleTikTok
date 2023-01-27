@@ -35,18 +35,10 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	resp = new(types.CommmentActionHandlerResponse)
 	flag, userId, err := tools.CheckToke(req.Token)
 	if !flag {
-		return nil, errors.New("parse Token failed")
+		return nil, errors.New(fmt.Sprintf("parse token failed, err:%v", err))
 	}
 	//get collection from mongodb
-	mongoUser := "admin"
-	mongoPwd := "admin"
-	mongoUrl := "192.168.31.132:27017"
-	url := fmt.Sprintf("mongodb://%v:%v@%v", mongoUser, mongoPwd, mongoUrl)
-	collection, err := mongodb.Connect("tiktok", "comment", url)
-	if err != nil {
-		return nil, err
-	}
-
+	collection := mongodb.MongoDBCollection
 	actionType := req.ActionType
 	videoId := req.VideoId
 	if actionType == 2 {
@@ -65,11 +57,10 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			return nil, err
 		}
 		resp.StatusCode = 0
-		//resp.StatusMsg = fmt.Sprintf("delete success")
 		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
-		db, err := mysqlconnect.SqlConnect()
+		db := mysqlconnect.GormDB
 		if err != nil {
 			return nil, err
 		}

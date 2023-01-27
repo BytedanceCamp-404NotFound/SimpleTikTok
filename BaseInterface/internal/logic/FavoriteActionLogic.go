@@ -44,7 +44,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 		}, nil
 	}
 
-	db, _ := mysqlconnect.SqlConnect() //连接数据库
+	db := mysqlconnect.GormDB //连接数据库
 
 	//直接让表中的数据自增或者自减，用原生的sql语句操作
 	SqlStringAdd := fmt.Sprintf("UPDATE video_info SET favorite_count = favorite_count + 1 WHERE video_id = %d", req.VideoId)

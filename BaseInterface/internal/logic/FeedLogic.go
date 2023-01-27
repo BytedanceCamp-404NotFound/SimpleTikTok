@@ -34,11 +34,11 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 			StatusMsg:  "登录过期，请重新登陆",
 		}, nil
 	}
-	db, err := mysqlconnect.SqlConnect() //连接数据库
-	if err != nil {
-		logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
-		return nil, err
-	}
+	db := mysqlconnect.GormDB //连接数据库
+	// if err != nil {
+	// 	logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
+	// 	return nil, err
+	// }
 
 	var feedUserInfo mysqlconnect.UserInfo
 	err = db.Model(&mysqlconnect.UserInfo{}).Where("user_id = ?", userId).First(&feedUserInfo).Error

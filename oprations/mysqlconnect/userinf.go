@@ -13,7 +13,7 @@ type User_inf struct {
 }
 
 func CheckUserInf(UserID int, FollowerID int) (u User_inf, exist bool) {
-	db, _ := SqlConnect()
+	db := GormDB
 	result := db.Table("user_info").Where("user_id = ?", UserID).Find(&u.User)
 	if result.RowsAffected == 0 {
 		return u, false
@@ -25,7 +25,7 @@ func CheckUserInf(UserID int, FollowerID int) (u User_inf, exist bool) {
 
 func CheckIsFollow(UserID int, FollowerID int) bool {
 	var num int64
-	db, _ := SqlConnect()
+	db := GormDB
 	db.Table("follow_and_follower_list").Where("user_id = ? and follower_id = ?", UserID, FollowerID).Count(&num)
 
 	return num > 0
@@ -33,8 +33,8 @@ func CheckIsFollow(UserID int, FollowerID int) bool {
 
 func CreateInfo(UserName string, uid int64) error {
 	info := User{UserID: int64(uid), UserNickName: UserName, FollowCount: 0, FollowerCount: 0}
-	db, err := SqlConnect()
-	db.Table("user_info").Create(&info)
+	db := GormDB
+	err := db.Table("user_info").Create(&info).Error
 
 	return err
 }

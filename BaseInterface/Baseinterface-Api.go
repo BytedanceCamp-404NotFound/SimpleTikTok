@@ -7,6 +7,8 @@ import (
 	"SimpleTikTok/BaseInterface/internal/config"
 	"SimpleTikTok/BaseInterface/internal/handler"
 	"SimpleTikTok/BaseInterface/internal/svc"
+	_ "SimpleTikTok/oprations/mysqlconnect"
+	_ "SimpleTikTok/oprations/mongodb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

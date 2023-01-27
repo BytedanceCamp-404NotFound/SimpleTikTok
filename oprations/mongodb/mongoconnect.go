@@ -1,10 +1,12 @@
 package mongodb
 
 import (
+	"SimpleTikTok/oprations/viperconfigread"
 	"context"
 	"errors"
 	"fmt"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -13,6 +15,22 @@ import (
 type autoIncrement struct {
 	Name  string `bson:"name"`
 	Value int64  `bson:"value"`
+}
+
+var MongoDBCollection *mongo.Collection
+
+func init() {
+	mongoConfig, err := viperconfigread.ConfigReadToMongoDB()
+	if err!=nil {
+		logx.Errorf("get MongoDB config err:%v", err)
+	}
+	url := fmt.Sprintf("mongodb://%v:%v@%v:%v", mongoConfig.MongoUserName, mongoConfig.MongoPwd, mongoConfig.MongoUrl, mongoConfig.MongoPort)
+	mongoDB := mongoConfig.MongoDB
+	mongoTable := mongoConfig.MongoTable
+	MongoDBCollection, err = Connect(mongoDB, mongoTable, url)
+	if err != nil {
+		logx.Errorf("get MongoDB collection err:%v", err)
+	}
 }
 
 func Connect(database string, Table string, url string) (*mongo.Collection, error) {

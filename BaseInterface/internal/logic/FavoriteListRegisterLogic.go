@@ -61,7 +61,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 	}
 
 	//
-	db, _ := mysqlconnect.SqlConnect() //连接数据库
+	db := mysqlconnect.GormDB //连接数据库
 	//
 
 	favoriteVideoId := make([]int, 100) //预分配足够的内存，提升性能

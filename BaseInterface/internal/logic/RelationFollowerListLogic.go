@@ -35,7 +35,7 @@ func (l *RelationFollowerListLogic) RelationFollowerList(req *types.RelationFoll
 		return &resultJson, err
 	}
 
-	db, _ := mysqlconnect.SqlConnect()
+	db := mysqlconnect.GormDB
 	//#查找某个账号的粉丝列表   user_id：账号
 	userInfoList, err := db.Raw(fmt.Sprintf("SELECT * FROM user_info where user_id in(SELECT follower_id FROM follow_and_follower_list where user_id=%d)", req.UserId)).Rows()
 
