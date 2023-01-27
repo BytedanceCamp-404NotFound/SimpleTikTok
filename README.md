@@ -1,9 +1,5 @@
 # SimpleTikTok
 
-### 调试
-在任何位置启动F5都可以使用，但是需要先编译
-
-BasicInterface
 ### 创建go-zero
 ```shell
 goctl api new BaseInterface
@@ -13,32 +9,10 @@ go mod tidy
 
 ### 修改API
 ./GoZeroUse.sh create
-
 ### 编译
 ./GoZeroUse.sh build
 ### 启动go-zero
 ./GoZeroUse.sh run
-### 测试go-zero
-```shell
-curl -i -X GET http://localhost:8888/from/you
-```
-浏览器中打开
-http://[自己IP地址]:8080/from/you
-
-logrus
-
-
-# 临时放在这里的环境配置
-
-### 安装mysql
-sudo apt install mysql-server -y
-检查安装的是否正确
-sudo systemctl status mysql.service
-
-# 未来计划以及已完成
-
-+ [ ] vscode可以F5一键编译和调试
-+ [X] 增加Action的CI检测
 
 
 # commit类型
@@ -57,29 +31,6 @@ revert：回滚到上一个版本 </br>
 merge：代码合并 </br>
 sync：同步主线或分支的Bug </br>
 
-
-# vscode 写go代码，没法转跳函数
-
-ctrl + shift + p 
-Go:Install/Update Tools
-全选
-OK
-
-setting
- "go.toolsEnvVars": {
-        "GOFLAGS": "-mod=vendor"
-}
-
-
-ctrl + shift + p 
-reload
-
-Go: Use Language Serve
-
-
-/usr/local/bin/  # 放可执行文件的位置
-
-go-outline之类的，放在/usr/local/bin/下面，就可以转跳了
 # 参考资料
 
 https://go-zero.dev/cn/docs/quick-start/monolithic-service
