@@ -3,12 +3,14 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mongodb"
 	tools "SimpleTikTok/tools/token"
 	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type CommmentListLogic struct {
@@ -33,7 +35,8 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	token := req.Token
 	flag, _, err := tools.CheckToke(token)
 	if !flag {
-		logx.Errorf("parse token failed, err:%v", err)
+		logx.Errorf("logic CommmentList parse token failed, err:%v", err)
+		resp.StatusCode = int32(commonerror.CommonErr_PARSE_TOKEN_ERROR)
 		resp.StatusMsg = "parse token failed"
 		return resp, err
 	}
@@ -43,9 +46,19 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 		Key:   "video_id",
 		Value: videoId,
 	}}
-	cur, err := collection.Find(context.Background(), filter)
+	opts := &options.FindOptions{}
+	sortOption := bson.D{{
+		Key: "create_date",
+		Value: -1,
+	},{
+		Key: "_id",
+		Value: -1,
+	}}
+	opts.Sort = sortOption
+	cur, err := collection.Find(context.Background(), filter, opts)
 	if err != nil {
-		logx.Errorf("find comments failed, err:%v", err)
+		logx.Errorf("logic CommmentList find comments failed, err:%v", err)
+		resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 		resp.StatusMsg = "find comments failed"
 		return resp, err
 	}
@@ -53,7 +66,8 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 		var comment types.Comment
 		err = cur.Decode(&comment)
 		if err != nil {
-			logx.Errorf("decode comment failed, err:%v", err)
+			logx.Errorf("logic CommmentList decode comment failed, err:%v", err)
+			resp.StatusCode = int32(commonerror.CommonErr_PARAMETER_FAILED)
 			resp.StatusMsg = "decode comment failed"
 			return resp, err
 		}
@@ -62,12 +76,13 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 	}
 	err = cur.Err()
 	if err != nil {
-		logx.Errorf("cur has an error, err:%v", err)
+		logx.Errorf("logic CommmentList cur has an error, err:%v", err)
+		resp.StatusCode = int32(commonerror.CommonErr_PARAMETER_FAILED)
 		resp.StatusMsg = "cur has an error"
 		return resp, err
 	}
 	cur.Close(context.Background())
-	resp.StatusCode = 200
+	resp.StatusCode = int32(commonerror.CommonErr_STATUS_OK)
 	resp.StatusMsg = "get commentList success"
 	resp.CommentList = comments
 	return resp, nil
