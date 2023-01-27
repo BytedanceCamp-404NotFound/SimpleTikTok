@@ -1,6 +1,6 @@
 package commonerror
 
-type CommonErr int32
+type CommonErr int64
 
 const (
 	CommonErr_UNKNOW_ERROR      CommonErr = 0   // 未知错误

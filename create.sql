@@ -78,6 +78,7 @@ CREATE TABLE `video_info` (
   `favorite_count` int(11) DEFAULT '0' COMMENT '视频的点赞总数',
   `comment_count` int(11) DEFAULT '0' COMMENT '视频的评论总数',
   `update_time` datetime DEFAULT NULL COMMENT '上传时间',
+  `deleted_at` datetime NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`video_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
