@@ -1,11 +1,11 @@
 // 互动方向
 // 评论操作
 type Comment{
-	Id         string `form:"_id" bson:"_id"`
-	VideoId    int64  `form:"video_id" bson:"video_id"`  //视频id
-	User   	   User   `form:"user" bson:"user"`
-	Content    string `form:"content" bson:"content"`
-	CreateDate string `form:"create_date" bson:"create_date"`
+	Id         int64  `json:"id"          form:"_id"         bson:"_id"`
+	VideoId    int64  `json:"video_id"    form:"video_id"    bson:"video_id"` //视频id
+	User       User   `json:"user"        form:"user"        bson:"user"`
+	Content    string `json:"content"     form:"content"     bson:"content"`
+	CreateDate string `json:"create_date" form:"create_date" bson:"create_date"`
 }
 type CommmentActionHandlerRequest {
 	Token  		string `form:"token"`

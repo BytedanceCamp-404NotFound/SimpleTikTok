@@ -2,7 +2,6 @@ package viperconfigread
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -54,7 +53,7 @@ func getExeFile() (string, error) {
 func getViperConfig(configFileName string) (*viper.Viper, error) {
 	configFile, _ := getExeFile()
 	viper.SetConfigFile(configFile)
-	content, err := ioutil.ReadFile(configFile)
+	content, err := os.ReadFile(configFile)
 	if err != nil {
 		logx.Errorf("ioutil err:%v", err)
 		return nil, err

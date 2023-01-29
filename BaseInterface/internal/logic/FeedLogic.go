@@ -1,13 +1,13 @@
 package logic
 
 import (
-	"context"
-	"time"
-
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
+	"context"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,41 +28,74 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 
 func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandlerResponse, err error) {
 	ok, userId, err := tools.CheckToke(req.Token)
-	if !ok {
+	if err != nil {
 		return &types.FeedHandlerResponse{
-			StatusCode: -1,
-			StatusMsg:  "登录过期，请重新登陆",
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "Token校验出错",
+			VideoList:  []types.Video{},
+			NextTime:   time.Now().Unix(), // 暂时返回当前时间
 		}, nil
 	}
-	db := mysqlconnect.GormDB //连接数据库
-	// if err != nil {
-	// 	logx.Errorf("FeedLogic select feedUserInfo error:%v", err)
-	// 	return nil, err
-	// }
+	if !ok {
+		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
+		return &types.FeedHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
+			StatusMsg:  "登录过期，请重新登陆",
+			VideoList:  []types.Video{},
+			NextTime:   time.Now().Unix(), // 暂时返回当前时间
+		}, nil
+	}
 
-	var feedUserInfo mysqlconnect.UserInfo
-	err = db.Model(&mysqlconnect.UserInfo{}).Where("user_id = ?", userId).First(&feedUserInfo).Error
+	feedUserInfo, err := mysqlconnect.GetFeedUserInfo(userId)
 	if err != nil {
-		logx.Errorf("UserID: %v FeedLogic select feedUserInfo error:%v", userId, err)
-		return nil, err
+		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedUserInfo [err]%v", err)
+		return &types.FeedHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "获取用户信息失败",
+			VideoList:  []types.Video{},
+			NextTime:   time.Now().Unix(), // 暂时返回当前时间
+		}, nil
+	}
+	if feedUserInfo.UserNickName == "" {
+		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
+		return &types.FeedHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
+			StatusMsg:  "用户信息为空",
+			VideoList:  []types.Video{},
+			NextTime:   time.Now().Unix(), // 暂时返回当前时间
+		}, nil
 	}
 	var respFeedUserInfo types.User
 	respFeedUserInfo.UserId = feedUserInfo.UserID
-	respFeedUserInfo.Name = feedUserInfo.Name
+	respFeedUserInfo.Name = feedUserInfo.UserNickName
 	respFeedUserInfo.FollowCount = feedUserInfo.FollowCount
 	respFeedUserInfo.FollowerCount = feedUserInfo.FollowerCount
 	respFeedUserInfo.IsFollow = feedUserInfo.IsFollow
 
 	var feedVideLists []mysqlconnect.VideoInfo
-	err = db.Model(&mysqlconnect.VideoInfo{}).Where("user_id = ?", userId).Scan(&feedVideLists).Limit(10).Error
+	feedVideLists, err = mysqlconnect.GetFeedVideoList(userId)
 	if err != nil {
-		logx.Errorf("FeedLogic select VideoInfo error:%v", err)
-		return nil, err
+		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedVideoList [err]%v", err)
+		return &types.FeedHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "获取视频信息失败",
+			VideoList:  []types.Video{},
+			NextTime:   time.Now().Unix(), // 暂时返回当前时间
+		}, nil
+	}
+	if feedVideLists == nil {
+		logx.Infof("[pkg]logic [func]Feed [msg]feedVideLists is nil", err)
+		return &types.FeedHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "此用户没有视频信息",
+			VideoList:  []types.Video{},
+			NextTime:   time.Now().Unix(), // 暂时返回当前时间
+		}, nil
 	}
 
 	var respFeedVideoList = make([]types.Video, len(feedVideLists))
 	for index, val := range feedVideLists {
-		respFeedVideoList[index].Id = val.VideID
+		respFeedVideoList[index].Id = val.VideoID
 		respFeedVideoList[index].Author = respFeedUserInfo
 		respFeedVideoList[index].PlayUrl = val.PlayUrl
 		respFeedVideoList[index].CoverUrl = val.CoverUrl

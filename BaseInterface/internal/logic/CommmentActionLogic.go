@@ -3,6 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mongodb"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
@@ -32,10 +33,10 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	// todo: add your logic here and delete this line
 	//parse token
 	resp = new(types.CommmentActionHandlerResponse)
-	resp.StatusCode = 400
 	flag, userId, err := tools.CheckToke(req.Token)
 	if !flag {
-		logx.Errorf("parse token failed, err:%v", err)
+		logx.Errorf("logic CommentAction parse token failed, err:%v", err)
+		resp.StatusCode = int32(commonerror.CommonErr_PARSE_TOKEN_ERROR)
 		resp.StatusMsg = "parse token failed"
 		return resp, err
 	}
@@ -56,11 +57,12 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			}}
 		_, err = collection.DeleteOne(context.Background(), filter)
 		if err != nil {
-			logx.Errorf("delete comment failed, err:%v", err)
+			logx.Errorf("logic CommentAction delete comment failed, err:%v", err)
+			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "delete comment failed"
 			return resp, err
 		}
-		resp.StatusCode = 200
+		resp.StatusCode = int32(commonerror.CommonErr_STATUS_OK)
 		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
@@ -69,7 +71,8 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		var user types.User
 		err = db.Table("user_info").Where("user_id=?", userId).First(&user).Error
 		if err != nil {
-			logx.Errorf("search user_info failed, err:%v", err)
+			logx.Errorf("logic CommentAction search user_info failed, err:%v", err)
+			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "search user_info failed"
 			return resp, err
 		}
@@ -78,7 +81,8 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
 		id, err := mongodb.GetId(collection)
 		if err != nil {
-			logx.Errorf("get id failed, err:%v", err)
+			logx.Errorf("logic CommentAction get id failed, err:%v", err)
+			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "get id failed"
 			return resp, err
 		}
@@ -91,11 +95,12 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		}
 		_, err = collection.InsertOne(context.Background(), comment)
 		if err != nil {
-			logx.Errorf("insert comment failed, err:%v", err)
+			logx.Errorf("logic CommentAction insert comment failed, err:%v", err)
+			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "insert comment failed"
 			return resp, err
 		}
-		resp.StatusCode = 200
+		resp.StatusCode = int32(commonerror.CommonErr_STATUS_OK)
 		resp.StatusMsg = "insert success"
 		resp.Comment = comment
 	}

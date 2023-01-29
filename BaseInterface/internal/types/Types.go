@@ -7,10 +7,10 @@ type FeedHandlerRequest struct {
 }
 
 type FeedHandlerResponse struct {
-	StatusCode int64  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
-	VideoList  []Video  `json:"video_list"`
-	NextTime   int64  `json:"next_time"`
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg"`
+	VideoList  []Video `json:"video_list"`
+	NextTime   int64   `json:"next_time"` // 获取到的视频中，最早的投稿时间
 }
 
 type Video struct {
@@ -25,11 +25,11 @@ type Video struct {
 }
 
 type User struct {
-	UserId        int64  `gorm:"column:user_id" form:"user_id" bson:"user_id"`
-	Name          string `gorm:"column:user_nick_name" form:"name" bson:"name"`
-	FollowCount   int64  `gorm:"column:follow_count" form:"follow_count" bson:"follow_count"`
-	FollowerCount int64  `gorm:"column:follower_count" form:"follower_count" bson:"follower_count"`
-	IsFollow      bool   `form:"column:is_follow" bson:"is_follow"`
+	UserId        int64  `gorm:"column:user_id"        json:"id"               form:"user_id"        bson:"user_id"`
+	Name          string `gorm:"column:user_nick_name" json:"name"             form:"name"           bson:"name"`
+	FollowCount   int64  `gorm:"column:follow_count"   json:"follow_count"     form:"follow_count"   bson:"follow_count"`
+	FollowerCount int64  `gorm:"column:follower_count" json:"follower_count"   form:"follower_count" bson:"follower_count"`
+	IsFollow      bool   `json:"is_follow"             form:"is_follow"        bson:"is_follow"`
 }
 
 type UserHandlerRequest struct {
@@ -49,7 +49,7 @@ type UserRegisterHandlerRequest struct {
 }
 
 type UserRegisterHandlerResponse struct {
-	StatusCode int64  `json:"status_code"`
+	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	Token      string `json:"token"`
 	UserID     int64  `json:"user_id"`
@@ -61,7 +61,7 @@ type UserloginHandlerRequest struct {
 }
 
 type UserloginHandlerResponse struct {
-	StatusCode int64  `json:"status_code"`
+	StatusCode int32  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	Token      string `json:"token"`
 	UserID     int64  `json:"user_id"`
@@ -73,8 +73,8 @@ type PublishActionHandlerRequest struct {
 }
 
 type PublishActionHandlerResponse struct {
-	StatusCode int32  `form:"status_code,default=400"`
-	StatusMsg  string `form:"status_msg,optional"`
+	StatusCode int32  `json:"status_code,default=400"`
+	StatusMsg  string `json:"status_msg,optional"`
 }
 
 type PublishListHandlerRequest struct {
@@ -82,18 +82,18 @@ type PublishListHandlerRequest struct {
 	Token  string `form:"token"`
 }
 
-type PublishListHandlerResponse struct{
-	StatusCode  int32   `json:"status_code"`
-	StatusMsg   string  `json:"status_msg"`
-	VideoList	[]Video `json:"video_list"`
+type PublishListHandlerResponse struct {
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg"`
+	VideoList  []Video `json:"video_list"`
 }
 
 type Comment struct {
-	Id         int64 `form:"_id" bson:"_id"`
-	VideoId    int64  `form:"video_id" bson:"video_id"` //视频id
-	User       User   `form:"user" bson:"user"`
-	Content    string `form:"content" bson:"content"`
-	CreateDate string `form:"create_date" bson:"create_date"`
+	Id         int64  `json:"id"          form:"_id"         bson:"_id"`
+	VideoId    int64  `json:"video_id"    form:"video_id"    bson:"video_id"` //视频id
+	User       User   `json:"user"        form:"user"        bson:"user"`
+	Content    string `json:"content"     form:"content"     bson:"content"`
+	CreateDate string `json:"create_date" form:"create_date" bson:"create_date"`
 }
 
 type CommmentActionHandlerRequest struct {
@@ -123,7 +123,7 @@ type CommmentListHandlerResponse struct {
 
 type RelationActionHandlerRequest struct {
 	Token       string `form:"token"`
-	To_user_id  int32  `form:"to_user_id"`
+	To_user_id  int64  `form:"to_user_id"`
 	Sction_type int32  `form:"action_type"`
 }
 
@@ -134,7 +134,7 @@ type RelationActionHandlerResponse struct {
 
 type RelationFollowListHandlerRequest struct {
 	Token  string `form:"token"`
-	UserId int32  `form:"user_id"`
+	UserId int64  `form:"user_id"`
 }
 
 type RelationFollowListHandlerResponse struct {
@@ -145,7 +145,7 @@ type RelationFollowListHandlerResponse struct {
 
 type RelationFollowerListHandlerRequest struct {
 	Token  string `form:"token"`
-	UserId int32  `form:"user_id"`
+	UserId int64  `form:"user_id"`
 }
 
 type RelationFollowerListHandlerResponse struct {
@@ -157,8 +157,8 @@ type RelationFollowerListHandlerResponse struct {
 type RelationUser struct {
 	Id            int64  `from:"id" gorm:"column:user_id"`
 	Name          string `from:"name" gorm:"column:user_nick_name"`
-	FollowCount   int32  `form:"follow_count" gorm:"column:follow_count"`
-	FollowerCount int32  `from:"follower_count" gorm:"column:follower_count"`
+	FollowCount   int64  `form:"follow_count" gorm:"column:follow_count"`
+	FollowerCount int64  `from:"follower_count" gorm:"column:follower_count"`
 	IsFollow      bool   `from:"is_follow"`
 }
 
@@ -179,10 +179,7 @@ type FavoriteListRegisterHandlerRequest struct {
 }
 
 type FavoriteListRegisterHandlerResponse struct {
-	StatusCode int32  `form:"status_code"`
-	StatusMsg  string `form:"status_msg"`
-	VideoList  []Video  `form:"video_list"`
+	StatusCode int32   `form:"status_code"`
+	StatusMsg  string  `form:"status_msg"`
+	VideoList  []Video `form:"video_list"`
 }
-
-
-

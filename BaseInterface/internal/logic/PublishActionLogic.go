@@ -92,7 +92,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	// }
 
 	videoInfo := &mysqlconnect.VideoInfo{
-		VideID:        0,
+		VideoID:       0,
 		AuthorID:      0,
 		PlayUrl:       minioVideoUrl,
 		CoverUrl:      minioPictureUrl,
