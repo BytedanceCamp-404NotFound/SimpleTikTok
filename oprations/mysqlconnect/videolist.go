@@ -8,6 +8,7 @@ func VideoNum(AuthorID int64) (n int64, err error) {
 	return n,err
 }
 
+//获得用户的发布列表
 func GetVideoList(AuthorID int64, UserID int64) (list []VideoInfo, err error) {
 	db := GormDB
 	n, err:= VideoNum(AuthorID)

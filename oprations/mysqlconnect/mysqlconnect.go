@@ -2,7 +2,7 @@ package mysqlconnect
 
 import (
 	"SimpleTikTok/oprations/viperconfigread"
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -24,13 +24,13 @@ func init() {
 		logx.Errorf("get sql connect fail, err:%v", err)
 	}
 
-	sql, err := GormDB.DB()
-	if err != nil {
-		logx.Errorf("sel sql connpool fail, err:%v", err)
-	}
-	data, _ := json.Marshal(sql.Stats())
-	logx.Infof("sql pool:" + string(data))
-	sql.Close()
+	// sql, err := GormDB.DB()
+	// if err != nil {
+	// 	logx.Errorf("sel sql connpool fail, err:%v", err)
+	// }
+	// data, _ := json.Marshal(sql.Stats())
+	// logx.Infof("sql pool:" + string(data))
+	// sql.Close()
 }
 
 // 函数功能：连接数据库
@@ -50,16 +50,16 @@ func SqlConnect() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	sqlpool, err := db.DB()
-	if err != nil {
-		logx.Errorf("gorm init fail, error:%v", err.Error())
-		return nil, err
-	}
+	// sqlpool, err := db.DB()
+	// if err != nil {
+	// 	logx.Errorf("gorm init fail, error:%v", err.Error())
+	// 	return nil, err
+	// }
 
 	// 设置连接池参数，参数的具体意义可以查看配置文件
-	sqlpool.SetMaxOpenConns(mysqlConfig.MaxOpenConns)
-	sqlpool.SetMaxIdleConns(mysqlConfig.MaxIdleConns)
-	sqlpool.Close() //这里看文档关闭sql.db()不会影响gorm.db()
+	// sqlpool.SetMaxOpenConns(mysqlConfig.MaxOpenConns)
+	// sqlpool.SetMaxIdleConns(mysqlConfig.MaxIdleConns)
+	//sqlpool.Close() //这里看文档关闭sql.db()不会影响gorm.db()
 
 	// err = gormTableInit(db)
 	// if err != nil {

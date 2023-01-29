@@ -5,9 +5,9 @@ MySQL:
  Port: 3306
  DBname: SimpleTikTok
  TimeOut: 10s
- MaxIdleConns: 200
- MaxOpenConns: 200
- ConnMaxLifetime: 5
+#  MaxIdleConns: 200
+#  MaxOpenConns: 200
+#  ConnMaxLifetime: 5
 
 
 Minio:
