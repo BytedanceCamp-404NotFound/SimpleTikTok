@@ -6,7 +6,7 @@ import (
 
 // 默认情况下，名为 `ID` 的字段会作为表的主键
 type VideoInfo struct {
-	VideID        int64 `gorm:"index;default: 0;unsigned"`
+	VideoID       int64  `gorm:"cloumn:video_id;primaryKey"`
 	AuthorID      int64
 	PlayUrl       string // 视频播放地址
 	CoverUrl      string // 视频封面地址

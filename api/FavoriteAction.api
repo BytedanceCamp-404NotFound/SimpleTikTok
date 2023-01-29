@@ -3,7 +3,7 @@
 
 type FavoriteActionHandlerRequest {
     Token string `form:"token"`
-    VideoId int32 `form:"video_id"`
+    VideoId int64 `form:"video_id"`
     ActionType int32  `form:"action_type"`
 }
 

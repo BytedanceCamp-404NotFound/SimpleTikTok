@@ -3,6 +3,7 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
@@ -28,10 +29,10 @@ func NewFavoriteActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fa
 
 func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerRequest) (resp *types.FavoriteActionHandlerResponse, err error) {
 	// todo: add your logic here and delete this line
-
+	
 	if req.Token == "" {
 		return &types.FavoriteActionHandlerResponse{
-			StatusCode: -1,
+			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
 			StatusMsg:  "未登录，请登录再点赞",
 		}, nil
 	}
@@ -39,7 +40,7 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 	ok, userId, err := tools.CheckToke(req.Token)
 	if !ok {
 		return &types.FavoriteActionHandlerResponse{
-			StatusCode: -1,
+			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
 			StatusMsg:  "登录过期，请重新登陆",
 		}, nil
 	}

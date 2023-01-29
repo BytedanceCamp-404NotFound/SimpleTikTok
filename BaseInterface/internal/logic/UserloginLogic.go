@@ -30,7 +30,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 	if err != nil {
 		logx.Error("Check user err: %v", err)
 		return &types.UserloginHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 			StatusMsg:  "服务器出错，等待修复",
 		}, nil
 	}

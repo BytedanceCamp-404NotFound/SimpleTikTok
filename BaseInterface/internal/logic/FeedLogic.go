@@ -1,14 +1,13 @@
 package logic
 
 import (
-	"context"
-	"time"
-
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
 	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
+	"context"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +30,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	ok, userId, err := tools.CheckToke(req.Token)
 	if err != nil {
 		return &types.FeedHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 			StatusMsg:  "Token校验出错",
 			VideoList:  []types.Video{},
 			NextTime:   time.Now().Unix(), // 暂时返回当前时间
@@ -40,7 +39,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	if !ok {
 		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
 		return &types.FeedHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_PARAMETER_FAILED),
+			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
 			StatusMsg:  "登录过期，请重新登陆",
 			VideoList:  []types.Video{},
 			NextTime:   time.Now().Unix(), // 暂时返回当前时间
@@ -51,7 +50,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedUserInfo [err]%v", err)
 		return &types.FeedHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 			StatusMsg:  "获取用户信息失败",
 			VideoList:  []types.Video{},
 			NextTime:   time.Now().Unix(), // 暂时返回当前时间
@@ -60,7 +59,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	if feedUserInfo.UserNickName == "" {
 		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
 		return &types.FeedHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_PARAMETER_FAILED),
+			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
 			StatusMsg:  "用户信息为空",
 			VideoList:  []types.Video{},
 			NextTime:   time.Now().Unix(), // 暂时返回当前时间
@@ -78,7 +77,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedVideoList [err]%v", err)
 		return &types.FeedHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 			StatusMsg:  "获取视频信息失败",
 			VideoList:  []types.Video{},
 			NextTime:   time.Now().Unix(), // 暂时返回当前时间
@@ -87,7 +86,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	if feedVideLists == nil {
 		logx.Infof("[pkg]logic [func]Feed [msg]feedVideLists is nil", err)
 		return &types.FeedHandlerResponse{
-			StatusCode: int64(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 			StatusMsg:  "此用户没有视频信息",
 			VideoList:  []types.Video{},
 			NextTime:   time.Now().Unix(), // 暂时返回当前时间
@@ -96,7 +95,7 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 
 	var respFeedVideoList = make([]types.Video, len(feedVideLists))
 	for index, val := range feedVideLists {
-		respFeedVideoList[index].Id = val.VideID
+		respFeedVideoList[index].Id = val.VideoID
 		respFeedVideoList[index].Author = respFeedUserInfo
 		respFeedVideoList[index].PlayUrl = val.PlayUrl
 		respFeedVideoList[index].CoverUrl = val.CoverUrl
