@@ -1,6 +1,0 @@
-package mysqlconnect
-
-
-func init(){
-	
-}

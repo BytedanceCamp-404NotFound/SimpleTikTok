@@ -11,12 +11,15 @@ import (
 )
 
 type MySQLConfig struct {
-	UserName string //账号
-	PassWord string //密码
-	Host     string //数据库地址，可以是Ip或者域名
-	Port     int32  //数据库端口
-	DBname   string //数据库名
-	TimeOut  string //连接超时，10秒
+	UserName     string //账号
+	PassWord     string //密码
+	Host         string //数据库地址，可以是Ip或者域名
+	Port         int32  //数据库端口
+	DBname       string //数据库名
+	TimeOut      string //连接超时，10秒
+	MaxIdleConns int    //最大空闲连接数
+	MaxOpenConns int    //最大连接数
+	// ConnMaxLifetime int
 }
 
 type MinioConfig struct {
@@ -27,12 +30,12 @@ type MinioConfig struct {
 }
 
 type MongoConfig struct {
-	MongoUserName   string
-	MongoPwd        string
-	MongoUrl        string
-	MongoPort       int
-	MongoDB         string
-	MongoTable      string
+	MongoUserName string
+	MongoPwd      string
+	MongoUrl      string
+	MongoPort     int
+	MongoDB       string
+	MongoTable    string
 }
 
 // 获取当前可执行文件位置
@@ -75,12 +78,15 @@ func ConfigReadToMySQL() (*MySQLConfig, error) {
 		return nil, err
 	}
 	mysqlConfig := &MySQLConfig{
-		UserName: config.GetString("UserName"),
-		PassWord: config.GetString("PassWord"),
-		Host:     config.GetString("Host"),
-		Port:     config.GetInt32("Port"),
-		DBname:   config.GetString("DBname"),
-		TimeOut:  config.GetString("TimeOut"),
+		UserName:     config.GetString("UserName"),
+		PassWord:     config.GetString("PassWord"),
+		Host:         config.GetString("Host"),
+		Port:         config.GetInt32("Port"),
+		DBname:       config.GetString("DBname"),
+		TimeOut:      config.GetString("TimeOut"),
+		MaxIdleConns: config.GetInt("MaxIdleConns"),
+		MaxOpenConns: config.GetInt("MaxOpenConns"),
+		// ConnMaxLifetime: config.GetInt("ConnMaxLifetime"),
 	}
 	return mysqlConfig, nil
 }
@@ -103,7 +109,7 @@ func ConfigReadToMinio() (*MinioConfig, error) {
 
 func ConfigReadToMongoDB() (*MongoConfig, error) {
 	config, err := getViperConfig("MongoDB")
-	if err!=nil {
+	if err != nil {
 		logx.Errorf("ConfigReadToMongoDB: %v", err)
 	}
 	mongoClient := &MongoConfig{
@@ -112,7 +118,7 @@ func ConfigReadToMongoDB() (*MongoConfig, error) {
 		MongoUrl:      config.GetString("mongoUrl"),
 		MongoPort:     config.GetInt("mongoPort"),
 		MongoDB:       config.GetString("mongoDatabase"),
-		MongoTable:     config.GetString("mongoTable"),
+		MongoTable:    config.GetString("mongoTable"),
 	}
 	return mongoClient, nil
 }

@@ -35,7 +35,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	resp = new(types.CommmentActionHandlerResponse)
 	flag, userId, err := tools.CheckToke(req.Token)
 	if !flag {
-		logx.Errorf("logic CommentAction parse token failed, err:%v", err)
+		logx.Errorf("[pkg]logic [func]CommentAction [msg]parse token failed, [err]%v", err)
 		resp.StatusCode = int32(commonerror.CommonErr_PARSE_TOKEN_ERROR)
 		resp.StatusMsg = "parse token failed"
 		return resp, err
@@ -57,7 +57,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 			}}
 		_, err = collection.DeleteOne(context.Background(), filter)
 		if err != nil {
-			logx.Errorf("logic CommentAction delete comment failed, err:%v", err)
+			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
 			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "delete comment failed"
 			return resp, err
@@ -66,22 +66,20 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		resp.StatusMsg = "delete success"
 	} else {
 		//insert comment
-		db := mysqlconnect.GormDB
-
-		var user types.User
-		err = db.Table("user_info").Where("user_id=?", userId).First(&user).Error
+		comUser, err:= mysqlconnect.CommentGetUserByUserId(userId)
 		if err != nil {
-			logx.Errorf("logic CommentAction search user_info failed, err:%v", err)
+			logx.Errorf("[pkg]logic [func]CommentAction [msg]search user_info failed, [err]%v", err)
 			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "search user_info failed"
 			return resp, err
 		}
+		user := types.User(comUser)
 		content := req.CommentText
 		date := time.Now()
 		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
 		id, err := mongodb.GetId(collection)
 		if err != nil {
-			logx.Errorf("logic CommentAction get id failed, err:%v", err)
+			logx.Errorf("[pkg]logic [func]CommentAction [msg]get id failed, [err]%v", err)
 			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "get id failed"
 			return resp, err
@@ -95,7 +93,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 		}
 		_, err = collection.InsertOne(context.Background(), comment)
 		if err != nil {
-			logx.Errorf("logic CommentAction insert comment failed, err:%v", err)
+			logx.Errorf("[pkg]logic [func]CommentAction [msg]insert comment failed, [err]%v", err)
 			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
 			resp.StatusMsg = "insert comment failed"
 			return resp, err
