@@ -5,6 +5,10 @@ MySQL:
  Port: 3306
  DBname: SimpleTikTok
  TimeOut: 10s
+ MaxIdleConns: 200
+ MaxOpenConns: 200
+ ConnMaxLifetime: 5
+
 
 Minio:
  Endpoint: 175.178.93.55:9001 # 用的API端口，不是Console
