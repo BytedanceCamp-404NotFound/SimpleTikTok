@@ -3,10 +3,10 @@ package logic
 import (
 	"SimpleTikTok/BaseInterface/internal/svc"
 	"SimpleTikTok/BaseInterface/internal/types"
+	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,46 +34,33 @@ type Follow_and_follower_list struct {
 }
 
 func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerRequest) (resp *types.RelationActionHandlerResponse, err error) {
-	//	db.exec("sql语句")		//执行插入删除等操作使用
-	//	db.raw("sql语句")		//执行查询操作时使用
-	var sqlString string
-	resultJson := types.RelationActionHandlerResponse{StatusCode: 501, StatusMsg: "token失效，请重新登录"}
+	ok, id, err := tools.CheckToke(req.Token)
+	resultJson := types.RelationActionHandlerResponse{}
 
-	result, TokenToUserID, err := tools.CheckToke(req.Token)
-	if !result {
-		return &resultJson, err
+	if !ok {
+		logx.Infof("[pkg]logic [func]PublishList [msg]req.Token is wrong ")
+		return &types.RelationActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
+			StatusMsg:  "登录过期，请重新登陆",
+		}, nil
+	}
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]PublishListr [msg]func CheckToken [err]%v", err)
+		return &types.RelationActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "Token校验出错",
+		}, nil
 	}
 
-	if req.Sction_type == 1 { //关注
-		//#关注账号 user_id：被关注的账号  follower_id：哪个账号要关注
-		sqlString = fmt.Sprintf("INSERT into follow_and_follower_list(user_id,follower_id) VALUES(%d,%d)", req.To_user_id, TokenToUserID)
-	} else if req.Sction_type == 2 { //取消关注
-		//取消关注.  user_id：要被取消关注的账号   follower_id：哪个账号要取消关注
-		sqlString = fmt.Sprintf("DELETE FROM follow_and_follower_list WHERE user_id=%d and follower_id=%d", req.To_user_id, TokenToUserID)
-	}
+	// ！！！胡海龙：我先将sql代码抽离出来，有没有bug暂时没测试，过两天考试驾驶证再调试！！！
 
-	db := mysqlconnect.GormDB
-	b := db.Exec(sqlString)
-	fmt.Println(b.RowsAffected)
-	fmt.Printf("%+v\n\n\n", b)
-	if b.RowsAffected <= 0 { //失败  ：传入的数据不正确
-		resultJson.StatusCode = 500
-		resultJson.StatusMsg = "请求失败，请稍后再试！"
-	} else if req.Sction_type == 1 { //关注:以上是将关注的用户id绑定到数据库，以下是被关注的粉丝数+1
-		sqlString = fmt.Sprintf("UPDATE user_info Set follower_count=follower_count+1 where user_id=%d", req.To_user_id)
-		if db.Exec(sqlString).RowsAffected > 0 {
-			resultJson.StatusCode = 200
-			resultJson.StatusMsg = "关注成功"
-		}
-	} else if req.Sction_type == 2 { //取消关注  //关注:以上是将取消关注的用户id绑定信息从数据库删除，以下是被关注的粉丝数-1
-		sqlString = fmt.Sprintf("UPDATE user_info Set follower_count=follower_count-1 where user_id=%d", req.To_user_id)
-		if db.Exec(sqlString).RowsAffected > 0 {
-			resultJson.StatusCode = 200
-			resultJson.StatusMsg = "取消关注成功"
-		}
+	ok, err2 := mysqlconnect.RelationAction(int64(id), req.To_user_id, int8(req.Sction_type))
+	if ok {
+		resultJson.StatusCode = 0
+		resultJson.StatusMsg = "success"
 	} else {
 		resultJson.StatusCode = 500
-		resultJson.StatusMsg = "服务异常"
+		resultJson.StatusMsg = err.Error()
 	}
-	return &resultJson, err
+	return &resultJson, err2
 }
