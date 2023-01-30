@@ -30,7 +30,7 @@ func init() {
 	}
 	data, _ := json.Marshal(sql.Stats())
 	logx.Infof("sql pool:" + string(data))
-	sql.Close()
+	// sql.Close()
 }
 
 // 函数功能：连接数据库
@@ -59,7 +59,7 @@ func SqlConnect() (*gorm.DB, error) {
 	// 设置连接池参数，参数的具体意义可以查看配置文件
 	sqlpool.SetMaxOpenConns(mysqlConfig.MaxOpenConns)
 	sqlpool.SetMaxIdleConns(mysqlConfig.MaxIdleConns)
-	sqlpool.Close() //这里看文档关闭sql.db()不会影响gorm.db()
+	// sqlpool.Close() //这里看文档关闭sql.db()不会影响gorm.db()
 
 	// err = gormTableInit(db)
 	// if err != nil {
