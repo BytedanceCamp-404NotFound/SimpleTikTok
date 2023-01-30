@@ -17,8 +17,8 @@ type MySQLConfig struct {
 	Port         int32  //数据库端口
 	DBname       string //数据库名
 	TimeOut      string //连接超时，10秒
-	MaxIdleConns int    //最大空闲连接数
-	MaxOpenConns int    //最大连接数
+	// MaxIdleConns int    //最大空闲连接数
+	// MaxOpenConns int    //最大连接数
 	// ConnMaxLifetime int
 }
 
@@ -84,8 +84,8 @@ func ConfigReadToMySQL() (*MySQLConfig, error) {
 		Port:         config.GetInt32("Port"),
 		DBname:       config.GetString("DBname"),
 		TimeOut:      config.GetString("TimeOut"),
-		MaxIdleConns: config.GetInt("MaxIdleConns"),
-		MaxOpenConns: config.GetInt("MaxOpenConns"),
+		// MaxIdleConns: config.GetInt("MaxIdleConns"),
+		// MaxOpenConns: config.GetInt("MaxOpenConns"),
 		// ConnMaxLifetime: config.GetInt("ConnMaxLifetime"),
 	}
 	return mysqlConfig, nil
