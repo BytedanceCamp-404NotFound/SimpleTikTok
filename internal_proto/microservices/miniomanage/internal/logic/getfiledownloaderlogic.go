@@ -9,14 +9,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetFileUploaderLogic struct {
+type GetFileDownloaderLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetFileUploaderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetFileUploaderLogic {
-	return &GetFileUploaderLogic{
+func NewGetFileDownloaderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetFileDownloaderLogic {
+	return &GetFileDownloaderLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
@@ -24,8 +24,8 @@ func NewGetFileUploaderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 // 文件下载
-func (l *GetFileUploaderLogic) GetFileUploader(in *miniomanageserver.GetMinioConnectRequest) (*miniomanageserver.GetMinioConnectResponse, error) {
+func (l *GetFileDownloaderLogic) GetFileDownloader(in *miniomanageserver.GetFileDownloaderRequest) (*miniomanageserver.GetFileDownloaderResponse, error) {
 	// todo: add your logic here and delete this line
 
-	return &miniomanageserver.GetMinioConnectResponse{}, nil
+	return &miniomanageserver.GetFileDownloaderResponse{}, nil
 }

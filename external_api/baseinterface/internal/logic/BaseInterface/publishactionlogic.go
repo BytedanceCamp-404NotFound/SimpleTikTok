@@ -32,6 +32,9 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 	}
 }
 
+// yzx
+// TODO 还需要处理传输过来的byte,暂时先用本地MP4和png代替
+// TODO 兼容多种视频和图片格式？avi,mp4
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerRequest, r *http.Request) (resp *types.PublishActionHandlerResponse, err error) {
 	ok, userId, err := tools.CheckToke(req.Token)
 	if err != nil {

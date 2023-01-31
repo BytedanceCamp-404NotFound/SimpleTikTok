@@ -25,9 +25,9 @@ type MinioManageServerClient interface {
 	// 文件上传
 	PutFileUploader(ctx context.Context, in *PutFileUploaderRequest, opts ...grpc.CallOption) (*PutFileUploaderResponse, error)
 	// byte形式文件上传
-	PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteponse, error)
+	PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteResponse, error)
 	// 文件下载
-	GetFileUploader(ctx context.Context, in *GetMinioConnectRequest, opts ...grpc.CallOption) (*GetMinioConnectResponse, error)
+	GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error)
 }
 
 type minioManageServerClient struct {
@@ -47,8 +47,8 @@ func (c *minioManageServerClient) PutFileUploader(ctx context.Context, in *PutFi
 	return out, nil
 }
 
-func (c *minioManageServerClient) PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteponse, error) {
-	out := new(PutFileUploaderByteponse)
+func (c *minioManageServerClient) PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteResponse, error) {
+	out := new(PutFileUploaderByteResponse)
 	err := c.cc.Invoke(ctx, "/miniomanageserver.MinioManageServer/PutFileUploaderByte", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,9 +56,9 @@ func (c *minioManageServerClient) PutFileUploaderByte(ctx context.Context, in *P
 	return out, nil
 }
 
-func (c *minioManageServerClient) GetFileUploader(ctx context.Context, in *GetMinioConnectRequest, opts ...grpc.CallOption) (*GetMinioConnectResponse, error) {
-	out := new(GetMinioConnectResponse)
-	err := c.cc.Invoke(ctx, "/miniomanageserver.MinioManageServer/GetFileUploader", in, out, opts...)
+func (c *minioManageServerClient) GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error) {
+	out := new(GetFileDownloaderResponse)
+	err := c.cc.Invoke(ctx, "/miniomanageserver.MinioManageServer/GetFileDownloader", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,9 +72,9 @@ type MinioManageServerServer interface {
 	// 文件上传
 	PutFileUploader(context.Context, *PutFileUploaderRequest) (*PutFileUploaderResponse, error)
 	// byte形式文件上传
-	PutFileUploaderByte(context.Context, *PutFileUploaderByteRequest) (*PutFileUploaderByteponse, error)
+	PutFileUploaderByte(context.Context, *PutFileUploaderByteRequest) (*PutFileUploaderByteResponse, error)
 	// 文件下载
-	GetFileUploader(context.Context, *GetMinioConnectRequest) (*GetMinioConnectResponse, error)
+	GetFileDownloader(context.Context, *GetFileDownloaderRequest) (*GetFileDownloaderResponse, error)
 	mustEmbedUnimplementedMinioManageServerServer()
 }
 
@@ -85,11 +85,11 @@ type UnimplementedMinioManageServerServer struct {
 func (UnimplementedMinioManageServerServer) PutFileUploader(context.Context, *PutFileUploaderRequest) (*PutFileUploaderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutFileUploader not implemented")
 }
-func (UnimplementedMinioManageServerServer) PutFileUploaderByte(context.Context, *PutFileUploaderByteRequest) (*PutFileUploaderByteponse, error) {
+func (UnimplementedMinioManageServerServer) PutFileUploaderByte(context.Context, *PutFileUploaderByteRequest) (*PutFileUploaderByteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutFileUploaderByte not implemented")
 }
-func (UnimplementedMinioManageServerServer) GetFileUploader(context.Context, *GetMinioConnectRequest) (*GetMinioConnectResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFileUploader not implemented")
+func (UnimplementedMinioManageServerServer) GetFileDownloader(context.Context, *GetFileDownloaderRequest) (*GetFileDownloaderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFileDownloader not implemented")
 }
 func (UnimplementedMinioManageServerServer) mustEmbedUnimplementedMinioManageServerServer() {}
 
@@ -140,20 +140,20 @@ func _MinioManageServer_PutFileUploaderByte_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MinioManageServer_GetFileUploader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMinioConnectRequest)
+func _MinioManageServer_GetFileDownloader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFileDownloaderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MinioManageServerServer).GetFileUploader(ctx, in)
+		return srv.(MinioManageServerServer).GetFileDownloader(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/miniomanageserver.MinioManageServer/GetFileUploader",
+		FullMethod: "/miniomanageserver.MinioManageServer/GetFileDownloader",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MinioManageServerServer).GetFileUploader(ctx, req.(*GetMinioConnectRequest))
+		return srv.(MinioManageServerServer).GetFileDownloader(ctx, req.(*GetFileDownloaderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -174,8 +174,8 @@ var MinioManageServer_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MinioManageServer_PutFileUploaderByte_Handler,
 		},
 		{
-			MethodName: "GetFileUploader",
-			Handler:    _MinioManageServer_GetFileUploader_Handler,
+			MethodName: "GetFileDownloader",
+			Handler:    _MinioManageServer_GetFileDownloader_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -29,13 +29,13 @@ func (s *MinioManageServerServer) PutFileUploader(ctx context.Context, in *minio
 }
 
 // byte形式文件上传
-func (s *MinioManageServerServer) PutFileUploaderByte(ctx context.Context, in *miniomanageserver.PutFileUploaderByteRequest) (*miniomanageserver.PutFileUploaderByteponse, error) {
+func (s *MinioManageServerServer) PutFileUploaderByte(ctx context.Context, in *miniomanageserver.PutFileUploaderByteRequest) (*miniomanageserver.PutFileUploaderByteResponse, error) {
 	l := logic.NewPutFileUploaderByteLogic(ctx, s.svcCtx)
 	return l.PutFileUploaderByte(in)
 }
 
 // 文件下载
-func (s *MinioManageServerServer) GetFileUploader(ctx context.Context, in *miniomanageserver.GetMinioConnectRequest) (*miniomanageserver.GetMinioConnectResponse, error) {
-	l := logic.NewGetFileUploaderLogic(ctx, s.svcCtx)
-	return l.GetFileUploader(in)
+func (s *MinioManageServerServer) GetFileDownloader(ctx context.Context, in *miniomanageserver.GetFileDownloaderRequest) (*miniomanageserver.GetFileDownloaderResponse, error) {
+	l := logic.NewGetFileDownloaderLogic(ctx, s.svcCtx)
+	return l.GetFileDownloader(in)
 }
