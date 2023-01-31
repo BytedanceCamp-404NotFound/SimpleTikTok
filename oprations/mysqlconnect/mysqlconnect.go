@@ -2,7 +2,7 @@ package mysqlconnect
 
 import (
 	"SimpleTikTok/oprations/viperconfigread"
-	// "encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -50,11 +50,11 @@ func SqlConnect() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	// sqlpool, err := db.DB()
-	// if err != nil {
-	// 	logx.Errorf("gorm init fail, error:%v", err.Error())
-	// 	return nil, err
-	// }
+	sqlpool, err := db.DB()
+	if err != nil {
+		logx.Errorf("gorm init fail, error:%v", err.Error())
+		return nil, err
+	}
 
 	// 设置连接池参数，参数的具体意义可以查看配置文件
 	sqlpool.SetMaxOpenConns(mysqlConfig.MaxOpenConns)
