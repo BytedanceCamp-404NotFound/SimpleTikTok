@@ -1,22 +1,48 @@
-# SimpleTikTok
+# SimpleTikTok_MSA
+go-zero从单体向微服务改进的尝试
 
-### 创建go-zero
+## 0. 获取帮助
 ```shell
-goctl api new BaseInterface
-goctl api new great   # 多了一个整个great文件夹
-go mod tidy
+useage: ./GoZeroUse.sh 
 ```
 
-### 修改API
-./GoZeroUse.sh create
-### 编译
-./GoZeroUse.sh build
-### 启动go-zero
-./GoZeroUse.sh run
+## 1. goctl生成
+什么都不填，两个都会生成
+```shell
+useage: ./GoZeroUse.sh create api
+        ./GoZeroUse.sh create proto
+        ./GoZeroUse.sh create 
+```
+### 2. 编译
+现在编译会输出参数
+```shell
+useage: ./GoZeroUse.sh build api
+        ./GoZeroUse.sh build proto
+        ./GoZeroUse.sh build proto -a # 重新编译
+        ./GoZeroUse.sh build  # 全部编译
+```
+### 3. 启动
+发现运行失败，尝试使用ps查看进程是否已经启动了
+如果有启动的进程，使用```./GoZeroUse.sh.sh kill all```清除
+```shell
+useage: ./GoZeroUse.sh run api
+        ./GoZeroUse.sh run proto
+```
 
+### 4. 停止进程
+```shell
+useage: ./GoZeroUse.sh kill # 显示帮助信息，一定要填写参数
+        ./GoZeroUse.sh kill api
+        ./GoZeroUse.sh kill etcd
+        ./GoZeroUse.sh kill all
+```
+
+### 5. 清理日志文件
+```shell
+useage: ./GoZeroUse.sh clear 
+```
 
 # commit类型
-
 用于说明 commit 的类别，只允许使用下面7个标识。
 feat：新功能（feature）</br>
 fix/to：修补bug </br>

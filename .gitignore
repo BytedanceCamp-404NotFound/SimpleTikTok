@@ -15,4 +15,5 @@
 vendor/
 
 
-BaseInterface/Baseinterface-Api
+bin/
+default.etcd/

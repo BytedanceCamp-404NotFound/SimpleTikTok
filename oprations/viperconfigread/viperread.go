@@ -17,9 +17,9 @@ type MySQLConfig struct {
 	Port         int32  //数据库端口
 	DBname       string //数据库名
 	TimeOut      string //连接超时，10秒
-	// MaxIdleConns int    //最大空闲连接数
-	// MaxOpenConns int    //最大连接数
-	// ConnMaxLifetime int
+	MaxIdleConns int    //最大空闲连接数
+	MaxOpenConns int    //最大连接数
+	ConnMaxLifetime int
 }
 
 type MinioConfig struct {
@@ -45,9 +45,10 @@ func getExeFile() (string, error) {
 		logx.Errorf("%v %v", exePath, err)
 		return "", err
 	}
-	//返回上级目录
-	yamlFile := filepath.Dir(filepath.Dir(exePath))
-	configFile := fmt.Sprintf("%s/oprations/databaseconfig.yaml", yamlFile)
+	// 返回上级目录
+	yamlFile := filepath.Dir(filepath.Dir(filepath.Dir(exePath)))
+	// 这个路径是手动指定的，经常需要修改
+	configFile := fmt.Sprintf("%s/bin/config/databaseconfig.yaml", yamlFile)
 	logx.Infof("yamlFile:%v outputDir:%v", yamlFile, configFile)
 	return configFile, nil
 }
@@ -84,9 +85,9 @@ func ConfigReadToMySQL() (*MySQLConfig, error) {
 		Port:         config.GetInt32("Port"),
 		DBname:       config.GetString("DBname"),
 		TimeOut:      config.GetString("TimeOut"),
-		// MaxIdleConns: config.GetInt("MaxIdleConns"),
-		// MaxOpenConns: config.GetInt("MaxOpenConns"),
-		// ConnMaxLifetime: config.GetInt("ConnMaxLifetime"),
+		MaxIdleConns: config.GetInt("MaxIdleConns"),
+		MaxOpenConns: config.GetInt("MaxOpenConns"),
+		ConnMaxLifetime: config.GetInt("ConnMaxLifetime"),
 	}
 	return mysqlConfig, nil
 }
