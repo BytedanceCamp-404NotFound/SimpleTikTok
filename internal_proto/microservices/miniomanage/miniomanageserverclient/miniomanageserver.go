@@ -13,20 +13,20 @@ import (
 )
 
 type (
-	GetMinioConnectRequest     = miniomanageserver.GetMinioConnectRequest
-	GetMinioConnectResponse    = miniomanageserver.GetMinioConnectResponse
-	PutFileUploaderByteRequest = miniomanageserver.PutFileUploaderByteRequest
-	PutFileUploaderByteponse   = miniomanageserver.PutFileUploaderByteponse
-	PutFileUploaderRequest     = miniomanageserver.PutFileUploaderRequest
-	PutFileUploaderResponse    = miniomanageserver.PutFileUploaderResponse
+	GetFileDownloaderRequest    = miniomanageserver.GetFileDownloaderRequest
+	GetFileDownloaderResponse   = miniomanageserver.GetFileDownloaderResponse
+	PutFileUploaderByteRequest  = miniomanageserver.PutFileUploaderByteRequest
+	PutFileUploaderByteResponse = miniomanageserver.PutFileUploaderByteResponse
+	PutFileUploaderRequest      = miniomanageserver.PutFileUploaderRequest
+	PutFileUploaderResponse     = miniomanageserver.PutFileUploaderResponse
 
 	MinioManageServer interface {
 		// 文件上传
 		PutFileUploader(ctx context.Context, in *PutFileUploaderRequest, opts ...grpc.CallOption) (*PutFileUploaderResponse, error)
 		// byte形式文件上传
-		PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteponse, error)
+		PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteResponse, error)
 		// 文件下载
-		GetFileUploader(ctx context.Context, in *GetMinioConnectRequest, opts ...grpc.CallOption) (*GetMinioConnectResponse, error)
+		GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error)
 	}
 
 	defaultMinioManageServer struct {
@@ -47,13 +47,13 @@ func (m *defaultMinioManageServer) PutFileUploader(ctx context.Context, in *PutF
 }
 
 // byte形式文件上传
-func (m *defaultMinioManageServer) PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteponse, error) {
+func (m *defaultMinioManageServer) PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteResponse, error) {
 	client := miniomanageserver.NewMinioManageServerClient(m.cli.Conn())
 	return client.PutFileUploaderByte(ctx, in, opts...)
 }
 
 // 文件下载
-func (m *defaultMinioManageServer) GetFileUploader(ctx context.Context, in *GetMinioConnectRequest, opts ...grpc.CallOption) (*GetMinioConnectResponse, error) {
+func (m *defaultMinioManageServer) GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error) {
 	client := miniomanageserver.NewMinioManageServerClient(m.cli.Conn())
-	return client.GetFileUploader(ctx, in, opts...)
+	return client.GetFileDownloader(ctx, in, opts...)
 }

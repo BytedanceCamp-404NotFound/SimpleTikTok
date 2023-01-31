@@ -24,8 +24,8 @@ func NewPutFileUploaderByteLogic(ctx context.Context, svcCtx *svc.ServiceContext
 }
 
 // byte形式文件上传
-func (l *PutFileUploaderByteLogic) PutFileUploaderByte(in *miniomanageserver.PutFileUploaderByteRequest) (*miniomanageserver.PutFileUploaderByteponse, error) {
+func (l *PutFileUploaderByteLogic) PutFileUploaderByte(in *miniomanageserver.PutFileUploaderByteRequest) (*miniomanageserver.PutFileUploaderByteResponse, error) {
 	// todo: add your logic here and delete this line
 
-	return &miniomanageserver.PutFileUploaderByteponse{}, nil
+	return &miniomanageserver.PutFileUploaderByteResponse{}, nil
 }
