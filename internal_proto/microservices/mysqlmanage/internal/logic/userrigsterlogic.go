@@ -59,12 +59,12 @@ func (l *UserRigsterLogic) UserRigster(in *mysqlmanageserver.UserRegisterRequest
 	if err != nil {
 		logx.Error("Rigster rpc error: %v", err)
 		return &mysqlmanageserver.UserRegisterResponse{
-			UserId: int32(uid),
+			UserId: int64(uid),
 		}, err
 	}
 
 	return &mysqlmanageserver.UserRegisterResponse{
-		UserId: int32(uid),
+		UserId: int64(uid),
 	}, nil
 }
 
