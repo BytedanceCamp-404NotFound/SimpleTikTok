@@ -2,15 +2,15 @@
 package types
 
 type FeedHandlerRequest struct {
-	LastestTime int64  `form:"lastest_time"`
-	Token       string `form:"token"`
+	LatestTime int64  `form:"latest_time"`
+	Token      string `form:"token"`
 }
 
 type FeedHandlerResponse struct {
-	StatusCode int32   `json:"status_code"`
-	StatusMsg  string  `json:"status_msg"`
-	VideoList  []Video `json:"video_list"`
-	NextTime   int64   `json:"next_time"` // 获取到的视频中，最早的投稿时间
+	StatusCode int32       `json:"status_code"`
+	StatusMsg  string      `json:"status_msg"`
+	VideoList  []VideoTest `json:"video_list"`
+	NextTime   int64       `json:"next_time"` // 获取到的视频中，最早的投稿时间
 }
 
 type UserHandlerRequest struct {
@@ -78,6 +78,16 @@ type Video struct {
 	CommentCount  int64  `form:"comment_count"`
 	IsFavotite    bool   `form:"is_favorite"`
 	VideoTitle    string `form:"video_title"`
+}
+
+type VideoTest struct {
+	Id            int64  `form:"id"`
+	Author        User   `form:"author"`
+	PlayUrl       string `form:"play_url"`
+	CoverUrl      string `form:"cover_url"`
+	FavoriteCount int64  `form:"favorite_count"`
+	CommentCount  int64  `form:"comment_count"`
+	IsFavotite    bool   `form:"is_favorite"`
 }
 
 type User struct {
