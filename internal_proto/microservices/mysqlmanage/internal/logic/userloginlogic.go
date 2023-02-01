@@ -37,15 +37,15 @@ func (l *UserLoginLogic) UserLogin(in *mysqlmanageserver.UserLoginRequest) (*mys
 	}
 
 	return &mysqlmanageserver.UserLoginResponse{
-		UserId: int32(uid),
+		UserId: uid,
 	}, nil
 }
 
 // 函数功能 校验user_name表中的账户密码是否一致
 // 返回id不为-1表示一致
 // 返回id为-1表示不一致
-func CheckUser(db *gorm.DB, UserName string, password string) (int32, error) {
-	var id int32
+func CheckUser(db *gorm.DB, UserName string, password string) (int64, error) {
+	var id int64
 	err := db.Table("user_login").Select("user_id").Where("user_name = ? and user_pwd = ?", UserName, encryption.HashEncode(password)).Find(&id).Error
 	if err != nil {
 		logx.Errorf("Check user fail, error:%v", err.Error())

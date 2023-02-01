@@ -270,7 +270,7 @@ type UserLoginResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId int32 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId int64 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 }
 
 func (x *UserLoginResponse) Reset() {
@@ -305,7 +305,7 @@ func (*UserLoginResponse) Descriptor() ([]byte, []int) {
 	return file_proto_mysqlmanage_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *UserLoginResponse) GetUserId() int32 {
+func (x *UserLoginResponse) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
@@ -372,7 +372,7 @@ type UserRegisterResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId int32 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId int64 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 }
 
 func (x *UserRegisterResponse) Reset() {
@@ -407,7 +407,7 @@ func (*UserRegisterResponse) Descriptor() ([]byte, []int) {
 	return file_proto_mysqlmanage_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *UserRegisterResponse) GetUserId() int32 {
+func (x *UserRegisterResponse) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
