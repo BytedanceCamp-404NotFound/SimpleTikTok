@@ -22,18 +22,6 @@ func NewMySQLManageServerServer(svcCtx *svc.ServiceContext) *MySQLManageServerSe
 	}
 }
 
-// 1
-func (s *MySQLManageServerServer) CommentGetUserByUserId(ctx context.Context, in *mysqlmanageserver.CommentGetUserByUserIdRequest) (*mysqlmanageserver.CommentGetUserByUserIdResponse, error) {
-	l := logic.NewCommentGetUserByUserIdLogic(ctx, s.svcCtx)
-	return l.CommentGetUserByUserId(in)
-}
-
-// 2
-func (s *MySQLManageServerServer) FavoriteVideoNum(ctx context.Context, in *mysqlmanageserver.FavoriteVideoNumRequest) (*mysqlmanageserver.FavoriteVideoNumResponse, error) {
-	l := logic.NewFavoriteVideoNumLogic(ctx, s.svcCtx)
-	return l.FavoriteVideoNum(in)
-}
-
 // 用户登陆校验
 func (s *MySQLManageServerServer) UserLogin(ctx context.Context, in *mysqlmanageserver.UserLoginRequest) (*mysqlmanageserver.UserLoginResponse, error) {
 	l := logic.NewUserLoginLogic(ctx, s.svcCtx)
@@ -44,4 +32,28 @@ func (s *MySQLManageServerServer) UserLogin(ctx context.Context, in *mysqlmanage
 func (s *MySQLManageServerServer) UserRigster(ctx context.Context, in *mysqlmanageserver.UserRegisterRequest) (*mysqlmanageserver.UserRegisterResponse, error) {
 	l := logic.NewUserRigsterLogic(ctx, s.svcCtx)
 	return l.UserRigster(in)
+}
+
+// 获得用户信息
+func (s *MySQLManageServerServer) CheckUserInf(ctx context.Context, in *mysqlmanageserver.CheckUserInfRequest) (*mysqlmanageserver.CheckUserInfResponse, error) {
+	l := logic.NewCheckUserInfLogic(ctx, s.svcCtx)
+	return l.CheckUserInf(in)
+}
+
+// 是否关注
+func (s *MySQLManageServerServer) CheckIsFollow(ctx context.Context, in *mysqlmanageserver.CheckIsFollowRequest) (*mysqlmanageserver.CheckIsFollowResponse, error) {
+	l := logic.NewCheckIsFollowLogic(ctx, s.svcCtx)
+	return l.CheckIsFollow(in)
+}
+
+// 发布列表视频信息
+func (s *MySQLManageServerServer) GetVideoList(ctx context.Context, in *mysqlmanageserver.GetVideoListRequest) (*mysqlmanageserver.GetVideoListResponse, error) {
+	l := logic.NewGetVideoListLogic(ctx, s.svcCtx)
+	return l.GetVideoList(in)
+}
+
+// 发布列表视频数量
+func (s *MySQLManageServerServer) VideoNum(ctx context.Context, in *mysqlmanageserver.VideoNumRequest) (*mysqlmanageserver.VideoNumResponse, error) {
+	l := logic.NewVideoNumLogic(ctx, s.svcCtx)
+	return l.VideoNum(in)
 }

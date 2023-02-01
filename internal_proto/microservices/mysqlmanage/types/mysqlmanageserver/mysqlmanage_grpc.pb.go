@@ -22,14 +22,18 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MySQLManageServerClient interface {
-	// 1
-	CommentGetUserByUserId(ctx context.Context, in *CommentGetUserByUserIdRequest, opts ...grpc.CallOption) (*CommentGetUserByUserIdResponse, error)
-	// 2
-	FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error)
 	// 用户登陆校验
 	UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 	// 用户注册
 	UserRigster(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error)
+	// 获得用户信息
+	CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error)
+	// 是否关注
+	CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error)
+	// 发布列表视频信息
+	GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error)
+	// 发布列表视频数量
+	VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error)
 }
 
 type mySQLManageServerClient struct {
@@ -38,24 +42,6 @@ type mySQLManageServerClient struct {
 
 func NewMySQLManageServerClient(cc grpc.ClientConnInterface) MySQLManageServerClient {
 	return &mySQLManageServerClient{cc}
-}
-
-func (c *mySQLManageServerClient) CommentGetUserByUserId(ctx context.Context, in *CommentGetUserByUserIdRequest, opts ...grpc.CallOption) (*CommentGetUserByUserIdResponse, error) {
-	out := new(CommentGetUserByUserIdResponse)
-	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/CommentGetUserByUserId", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *mySQLManageServerClient) FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error) {
-	out := new(FavoriteVideoNumResponse)
-	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/FavoriteVideoNum", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *mySQLManageServerClient) UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error) {
@@ -76,18 +62,58 @@ func (c *mySQLManageServerClient) UserRigster(ctx context.Context, in *UserRegis
 	return out, nil
 }
 
+func (c *mySQLManageServerClient) CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error) {
+	out := new(CheckUserInfResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/CheckUserInf", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mySQLManageServerClient) CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error) {
+	out := new(CheckIsFollowResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/CheckIsFollow", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mySQLManageServerClient) GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error) {
+	out := new(GetVideoListResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/GetVideoList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mySQLManageServerClient) VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error) {
+	out := new(VideoNumResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/VideoNum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MySQLManageServerServer is the server API for MySQLManageServer service.
 // All implementations must embed UnimplementedMySQLManageServerServer
 // for forward compatibility
 type MySQLManageServerServer interface {
-	// 1
-	CommentGetUserByUserId(context.Context, *CommentGetUserByUserIdRequest) (*CommentGetUserByUserIdResponse, error)
-	// 2
-	FavoriteVideoNum(context.Context, *FavoriteVideoNumRequest) (*FavoriteVideoNumResponse, error)
 	// 用户登陆校验
 	UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
 	// 用户注册
 	UserRigster(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error)
+	// 获得用户信息
+	CheckUserInf(context.Context, *CheckUserInfRequest) (*CheckUserInfResponse, error)
+	// 是否关注
+	CheckIsFollow(context.Context, *CheckIsFollowRequest) (*CheckIsFollowResponse, error)
+	// 发布列表视频信息
+	GetVideoList(context.Context, *GetVideoListRequest) (*GetVideoListResponse, error)
+	// 发布列表视频数量
+	VideoNum(context.Context, *VideoNumRequest) (*VideoNumResponse, error)
 	mustEmbedUnimplementedMySQLManageServerServer()
 }
 
@@ -95,17 +121,23 @@ type MySQLManageServerServer interface {
 type UnimplementedMySQLManageServerServer struct {
 }
 
-func (UnimplementedMySQLManageServerServer) CommentGetUserByUserId(context.Context, *CommentGetUserByUserIdRequest) (*CommentGetUserByUserIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommentGetUserByUserId not implemented")
-}
-func (UnimplementedMySQLManageServerServer) FavoriteVideoNum(context.Context, *FavoriteVideoNumRequest) (*FavoriteVideoNumResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FavoriteVideoNum not implemented")
-}
 func (UnimplementedMySQLManageServerServer) UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
 func (UnimplementedMySQLManageServerServer) UserRigster(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRigster not implemented")
+}
+func (UnimplementedMySQLManageServerServer) CheckUserInf(context.Context, *CheckUserInfRequest) (*CheckUserInfResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUserInf not implemented")
+}
+func (UnimplementedMySQLManageServerServer) CheckIsFollow(context.Context, *CheckIsFollowRequest) (*CheckIsFollowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckIsFollow not implemented")
+}
+func (UnimplementedMySQLManageServerServer) GetVideoList(context.Context, *GetVideoListRequest) (*GetVideoListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVideoList not implemented")
+}
+func (UnimplementedMySQLManageServerServer) VideoNum(context.Context, *VideoNumRequest) (*VideoNumResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VideoNum not implemented")
 }
 func (UnimplementedMySQLManageServerServer) mustEmbedUnimplementedMySQLManageServerServer() {}
 
@@ -118,42 +150,6 @@ type UnsafeMySQLManageServerServer interface {
 
 func RegisterMySQLManageServerServer(s grpc.ServiceRegistrar, srv MySQLManageServerServer) {
 	s.RegisterService(&MySQLManageServer_ServiceDesc, srv)
-}
-
-func _MySQLManageServer_CommentGetUserByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommentGetUserByUserIdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MySQLManageServerServer).CommentGetUserByUserId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/mysqlmanageserver.MySQLManageServer/CommentGetUserByUserId",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MySQLManageServerServer).CommentGetUserByUserId(ctx, req.(*CommentGetUserByUserIdRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MySQLManageServer_FavoriteVideoNum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FavoriteVideoNumRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MySQLManageServerServer).FavoriteVideoNum(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/mysqlmanageserver.MySQLManageServer/FavoriteVideoNum",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MySQLManageServerServer).FavoriteVideoNum(ctx, req.(*FavoriteVideoNumRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MySQLManageServer_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -192,6 +188,78 @@ func _MySQLManageServer_UserRigster_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MySQLManageServer_CheckUserInf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckUserInfRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).CheckUserInf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/CheckUserInf",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).CheckUserInf(ctx, req.(*CheckUserInfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MySQLManageServer_CheckIsFollow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckIsFollowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).CheckIsFollow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/CheckIsFollow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).CheckIsFollow(ctx, req.(*CheckIsFollowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MySQLManageServer_GetVideoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVideoListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).GetVideoList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/GetVideoList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).GetVideoList(ctx, req.(*GetVideoListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MySQLManageServer_VideoNum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VideoNumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).VideoNum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/VideoNum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).VideoNum(ctx, req.(*VideoNumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MySQLManageServer_ServiceDesc is the grpc.ServiceDesc for MySQLManageServer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -200,20 +268,28 @@ var MySQLManageServer_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MySQLManageServerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CommentGetUserByUserId",
-			Handler:    _MySQLManageServer_CommentGetUserByUserId_Handler,
-		},
-		{
-			MethodName: "FavoriteVideoNum",
-			Handler:    _MySQLManageServer_FavoriteVideoNum_Handler,
-		},
-		{
 			MethodName: "UserLogin",
 			Handler:    _MySQLManageServer_UserLogin_Handler,
 		},
 		{
 			MethodName: "UserRigster",
 			Handler:    _MySQLManageServer_UserRigster_Handler,
+		},
+		{
+			MethodName: "CheckUserInf",
+			Handler:    _MySQLManageServer_CheckUserInf_Handler,
+		},
+		{
+			MethodName: "CheckIsFollow",
+			Handler:    _MySQLManageServer_CheckIsFollow_Handler,
+		},
+		{
+			MethodName: "GetVideoList",
+			Handler:    _MySQLManageServer_GetVideoList_Handler,
+		},
+		{
+			MethodName: "VideoNum",
+			Handler:    _MySQLManageServer_VideoNum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

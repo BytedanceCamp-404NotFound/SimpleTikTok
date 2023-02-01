@@ -13,24 +13,35 @@ import (
 )
 
 type (
-	CommentGetUserByUserIdRequest  = mysqlmanageserver.CommentGetUserByUserIdRequest
-	CommentGetUserByUserIdResponse = mysqlmanageserver.CommentGetUserByUserIdResponse
-	FavoriteVideoNumRequest        = mysqlmanageserver.FavoriteVideoNumRequest
-	FavoriteVideoNumResponse       = mysqlmanageserver.FavoriteVideoNumResponse
-	UserLoginRequest               = mysqlmanageserver.UserLoginRequest
-	UserLoginResponse              = mysqlmanageserver.UserLoginResponse
-	UserRegisterRequest            = mysqlmanageserver.UserRegisterRequest
-	UserRegisterResponse           = mysqlmanageserver.UserRegisterResponse
+	CheckIsFollowRequest  = mysqlmanageserver.CheckIsFollowRequest
+	CheckIsFollowResponse = mysqlmanageserver.CheckIsFollowResponse
+	CheckUserInfRequest   = mysqlmanageserver.CheckUserInfRequest
+	CheckUserInfResponse  = mysqlmanageserver.CheckUserInfResponse
+	GetVideoListRequest   = mysqlmanageserver.GetVideoListRequest
+	GetVideoListResponse  = mysqlmanageserver.GetVideoListResponse
+	UserInf               = mysqlmanageserver.UserInf
+	UserLoginRequest      = mysqlmanageserver.UserLoginRequest
+	UserLoginResponse     = mysqlmanageserver.UserLoginResponse
+	UserRegisterRequest   = mysqlmanageserver.UserRegisterRequest
+	UserRegisterResponse  = mysqlmanageserver.UserRegisterResponse
+	Users                 = mysqlmanageserver.Users
+	VideoInfo             = mysqlmanageserver.VideoInfo
+	VideoNumRequest       = mysqlmanageserver.VideoNumRequest
+	VideoNumResponse      = mysqlmanageserver.VideoNumResponse
 
 	MySQLManageServer interface {
-		// 1
-		CommentGetUserByUserId(ctx context.Context, in *CommentGetUserByUserIdRequest, opts ...grpc.CallOption) (*CommentGetUserByUserIdResponse, error)
-		// 2
-		FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error)
 		// 用户登陆校验
 		UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 		// 用户注册
 		UserRigster(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error)
+		// 获得用户信息
+		CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error)
+		// 是否关注
+		CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error)
+		// 发布列表视频信息
+		GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error)
+		// 发布列表视频数量
+		VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error)
 	}
 
 	defaultMySQLManageServer struct {
@@ -44,18 +55,6 @@ func NewMySQLManageServer(cli zrpc.Client) MySQLManageServer {
 	}
 }
 
-// 1
-func (m *defaultMySQLManageServer) CommentGetUserByUserId(ctx context.Context, in *CommentGetUserByUserIdRequest, opts ...grpc.CallOption) (*CommentGetUserByUserIdResponse, error) {
-	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
-	return client.CommentGetUserByUserId(ctx, in, opts...)
-}
-
-// 2
-func (m *defaultMySQLManageServer) FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error) {
-	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
-	return client.FavoriteVideoNum(ctx, in, opts...)
-}
-
 // 用户登陆校验
 func (m *defaultMySQLManageServer) UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
@@ -66,4 +65,28 @@ func (m *defaultMySQLManageServer) UserLogin(ctx context.Context, in *UserLoginR
 func (m *defaultMySQLManageServer) UserRigster(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
 	return client.UserRigster(ctx, in, opts...)
+}
+
+// 获得用户信息
+func (m *defaultMySQLManageServer) CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.CheckUserInf(ctx, in, opts...)
+}
+
+// 是否关注
+func (m *defaultMySQLManageServer) CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.CheckIsFollow(ctx, in, opts...)
+}
+
+// 发布列表视频信息
+func (m *defaultMySQLManageServer) GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.GetVideoList(ctx, in, opts...)
+}
+
+// 发布列表视频数量
+func (m *defaultMySQLManageServer) VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.VideoNum(ctx, in, opts...)
 }
