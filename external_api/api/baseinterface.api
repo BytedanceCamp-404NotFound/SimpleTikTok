@@ -4,15 +4,15 @@ import (
 // 基础接口
 // 视频流接口
 type FeedHandlerRequest {
-	LastestTime int64  `form:"lastest_time"`
-	Token       string `form:"token"`
+	LatestTime int64  `form:"latest_time"`
+	Token      string `form:"token"`
 }
 
 type FeedHandlerResponse {
-	StatusCode int32   `json:"status_code"`
-	StatusMsg  string  `json:"status_msg"`
-	VideoList  []Video `json:"video_list"`
-	NextTime   int64   `json:"next_time"` // 获取到的视频中，最早的投稿时间
+	StatusCode int32       `json:"status_code"`
+	StatusMsg  string      `json:"status_msg"`
+	VideoList  []VideoTest `json:"video_list"`
+	NextTime   int64       `json:"next_time"` // 获取到的视频中，最早的投稿时间
 }
 
 // 用户信息请求与响应接口
