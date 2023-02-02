@@ -108,11 +108,11 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 		respFeedVideoList[index].Id = 1
 		respFeedVideoList[index].Author = respFeedUserInfo
 		// respFeedVideoList[index].PlayUrl = "175.178.93.55:9001/test-minio/vidoeFile/790ae4b3-cce7-43fe-bfd6-8ee82a23ca74-video_test6.mp4"
-		respFeedVideoList[index].PlayUrl = "https://www.w3schools.com/html/movie.mp4"
+		respFeedVideoList[index].PlayUrl = "http://175.178.93.55:9001/test-minio/vidoeFile/94e010c6-4c6e-4c2c-8d0b-b9afea9760d6-video_test12.mp4"
 		// respFeedVideoList[index].PlayUrl = getFileExtFromImageUrl(val.PlayUrl)
 		// keyval, _ := DecodeFileKey(val.CoverUrl)
 		// respFeedVideoList[index].CoverUrl = val.CoverUrl
-		respFeedVideoList[index].CoverUrl = "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg"
+		respFeedVideoList[index].CoverUrl = "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
 		respFeedVideoList[index].FavoriteCount = val.FavoriteCount
 		respFeedVideoList[index].CommentCount = val.CommentCount
 		respFeedVideoList[index].IsFavotite = val.IsFavotite
