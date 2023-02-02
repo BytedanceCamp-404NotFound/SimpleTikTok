@@ -77,7 +77,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 		return nil, err
 	}
 	return &types.PublishActionHandlerResponse{
-		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusCode: 0,
 		StatusMsg:  "上传成功",
 	}, err
 }
