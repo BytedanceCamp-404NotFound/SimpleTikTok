@@ -15,6 +15,7 @@ Minio:
  AccessKeyID: minio
  SecretAccessKey: minio123
  UseSSL: false
+ BucketName: "testminio"
 
 
 MongoDB:

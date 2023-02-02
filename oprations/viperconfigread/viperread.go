@@ -11,22 +11,23 @@ import (
 )
 
 type MySQLConfig struct {
-	UserName     string //账号
-	PassWord     string //密码
-	Host         string //数据库地址，可以是Ip或者域名
-	Port         int32  //数据库端口
-	DBname       string //数据库名
-	TimeOut      string //连接超时，10秒
-	MaxIdleConns int    //最大空闲连接数
-	MaxOpenConns int    //最大连接数
+	UserName        string //账号
+	PassWord        string //密码
+	Host            string //数据库地址，可以是Ip或者域名
+	Port            int32  //数据库端口
+	DBname          string //数据库名
+	TimeOut         string //连接超时，10秒
+	MaxIdleConns    int    //最大空闲连接数
+	MaxOpenConns    int    //最大连接数
 	ConnMaxLifetime int
 }
 
 type MinioConfig struct {
 	Endpoint        string // 用的API端口，不是Console
 	AccessKeyID     string // 账户名
-	SecretAccessKey string //密码
-	UseSSL          bool   //是否开启SSL加密
+	SecretAccessKey string // 密码
+	UseSSL          bool   // 是否开启SSL加密
+	BucketName      string // 桶的名字
 }
 
 type MongoConfig struct {
@@ -79,14 +80,14 @@ func ConfigReadToMySQL() (*MySQLConfig, error) {
 		return nil, err
 	}
 	mysqlConfig := &MySQLConfig{
-		UserName:     config.GetString("UserName"),
-		PassWord:     config.GetString("PassWord"),
-		Host:         config.GetString("Host"),
-		Port:         config.GetInt32("Port"),
-		DBname:       config.GetString("DBname"),
-		TimeOut:      config.GetString("TimeOut"),
-		MaxIdleConns: config.GetInt("MaxIdleConns"),
-		MaxOpenConns: config.GetInt("MaxOpenConns"),
+		UserName:        config.GetString("UserName"),
+		PassWord:        config.GetString("PassWord"),
+		Host:            config.GetString("Host"),
+		Port:            config.GetInt32("Port"),
+		DBname:          config.GetString("DBname"),
+		TimeOut:         config.GetString("TimeOut"),
+		MaxIdleConns:    config.GetInt("MaxIdleConns"),
+		MaxOpenConns:    config.GetInt("MaxOpenConns"),
 		ConnMaxLifetime: config.GetInt("ConnMaxLifetime"),
 	}
 	return mysqlConfig, nil
@@ -104,6 +105,7 @@ func ConfigReadToMinio() (*MinioConfig, error) {
 		AccessKeyID:     config.GetString("AccessKeyID"),
 		SecretAccessKey: config.GetString("SecretAccessKey"),
 		UseSSL:          config.GetBool("UseSSL"),
+		BucketName:      config.GetString("BucketName"),
 	}
 	return minioConfig, nil
 }

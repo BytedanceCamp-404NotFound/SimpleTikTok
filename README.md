@@ -1,6 +1,10 @@
-# SimpleTikTok_MSA
-go-zero从单体向微服务改进的尝试
+# SimpleTikTok
+go-zero微服务
 
+sudo apt-get install ffmpeg # 安装
+sudo apt-get purge ffmpeg # 卸载
+
+ffmpeg -i /yzx/src/SimpleTikTok/source/video/video_test2.mp4 -filter_complex [0]select=gte(n\,1)[s0] -map [s0] -f image2 -vcodec mjpeg -vframes 1 pipe:
 ## 0. 获取帮助
 ```shell
 useage: ./GoZeroUse.sh 
