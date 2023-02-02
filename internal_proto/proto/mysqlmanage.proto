@@ -4,33 +4,6 @@ package mysqlmanageserver;
   
 // protoc-gen-go 版本大于1.4.0, proto文件需要加上go_package,否则无法生成
 option go_package = "./mysqlmanageserver";
-
-// message CommentUser struct {
-// 	UserId        int64  `gorm:"column:user_id"        json:"id"               form:"user_id"        bson:"user_id"`
-// 	Name          string `gorm:"column:user_nick_name" json:"name"             form:"name"           bson:"name"`
-// 	FollowCount   int64  `gorm:"column:follow_count"   json:"follow_count"     form:"follow_count"   bson:"follow_count"`
-// 	FollowerCount int64  `gorm:"column:follower_count" json:"follower_count"   form:"follower_count" bson:"follower_count"`
-// 	IsFollow      bool   `json:"is_follow"             form:"is_follow"        bson:"is_follow"`
-// }
-
-message CommentGetUserByUserIdRequest {
-    int64 userId = 1;
-}
-  
-message CommentGetUserByUserIdResponse {
-    // CommentUser gender = 1;
-    string error = 2;
-}
-
-
-message FavoriteVideoNumRequest {
-    int64 userId = 1;
-}
-  
-message FavoriteVideoNumResponse {
-    // CommentUser gender = 1;
-    string error = 2;
-}
   
 message UserLoginRequest {
     string username = 1;
@@ -49,14 +22,89 @@ message UserRegisterRequest {
 message UserRegisterResponse {
     int64 userId = 1;
 }
+
+message User_inf {
+    Users users = 1;
+    bool isFollow = 2;
+}
+
+message Users {
+    int64 userId = 1;
+    string userNickName = 2;
+    int64 followCount = 3;
+    int64 followerCount = 4;
+}
+
+message CheckUserInfRequest {
+    int64 userId = 1;
+    int64 followerId = 2;
+}
+
+message CheckUserInfResponse {
+    User_inf user = 1;
+}
+
+message CheckIsFollowRequest {
+    int64 userId = 1;
+    int64 followerId = 2;
+}
+
+message CheckIsFollowResponse {
+    bool ok = 1;
+}
+
+message IsFavotiteRequest {
+    int64 userId = 1;
+    int64 videoId = 2;
+}
+
+message IsFavotiteResponse {
+    bool ok = 1;
+}
+
+message VideoInfo {
+    int64 videoId = 1;       
+	int64 authorId = 2;      
+	string playUrl = 3;       
+	string coverUrl = 4;  
+	int64 favoriteCount = 5; 
+	int64 commentCount = 6;
+	bool isFavotite = 7; 
+	string videoTitle = 8;
+}
+
+message GetVideoListRequest {
+    int64 authorId = 1;
+    int64 userId = 2;
+}
+
+message GetVideoListResponse {
+    repeated VideoInfo videoInfo = 1;
+}
+
+message VideoNumRequest {
+    int64 authorId = 1;
+}
+
+message VideoNumResponse {
+    int64 num = 1;
+}
   
 service MySQLManageServer {
-    // 1
-    rpc CommentGetUserByUserId(CommentGetUserByUserIdRequest) returns(CommentGetUserByUserIdResponse);
-    // 2
-    rpc FavoriteVideoNum(FavoriteVideoNumRequest) returns(FavoriteVideoNumResponse);
+
     // 用户登陆校验
     rpc UserLogin(UserLoginRequest) returns(UserLoginResponse);
     // 用户注册
     rpc UserRigster(UserRegisterRequest) returns(UserRegisterResponse);
+
+    // 获得用户信息
+    rpc CheckUserInf(CheckUserInfRequest) returns(CheckUserInfResponse);
+    // 是否关注
+    rpc CheckIsFollow(CheckIsFollowRequest) returns(CheckIsFollowResponse);
+    // 是否点赞
+    rpc IsFavotite(IsFavotiteRequest) returns(IsFavotiteResponse);
+    // 发布列表视频信息
+    rpc GetVideoList(GetVideoListRequest) returns(GetVideoListResponse);
+    // 发布列表视频数量
+    rpc VideoNum(VideoNumRequest) returns(VideoNumResponse);
 }

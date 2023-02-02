@@ -1,12 +1,12 @@
 package BaseInterface
 
 import (
-	"context"
-
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
-	"SimpleTikTok/oprations/mysqlconnect"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
+	"SimpleTikTok/oprations/commonerror"
 	tools "SimpleTikTok/tools/token"
+	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,23 +34,26 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 			User:       types.User{},
 		}, err
 	}
-	ui, ok := mysqlconnect.CheckUserInf(int(req.UserID), id)
-	if !ok {
+	ui, err := l.svcCtx.MySQLManageRpc.CheckUserInf(l.ctx, &mysqlmanageserver.CheckUserInfRequest{
+		UserId:     req.UserID,
+		FollowerId: int64(id),
+	})
+	if err != nil {
 		return &types.UserHandlerResponse{
-			StatusCode: -1,
-			StatusMsg:  "查询的用户不存在！",
-			User:       types.User{},
-		}, err
+			StatusCode: int32(commonerror.CommonErr_DB_ERROR),
+			StatusMsg: "该用户不存在！",
+			User: types.User{},
+		},nil
 	}
 	return &types.UserHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "查询成功！",
 		User: types.User{
-			UserId:        ui.User.UserID,
-			Name:          ui.User.UserNickName,
-			FollowCount:   ui.User.FollowCount,
-			FollowerCount: ui.User.FollowerCount,
-			IsFollow:      ui.IsFollow,
+			UserId:        ui.User.Users.UserId,
+			Name:          ui.User.Users.UserNickName,
+			FollowCount:   ui.User.Users.FollowCount,
+			FollowerCount: ui.User.Users.FollowerCount,
+			IsFollow:      ui.User.IsFollow,
 		},
-	}, err
+	}, nil
 }

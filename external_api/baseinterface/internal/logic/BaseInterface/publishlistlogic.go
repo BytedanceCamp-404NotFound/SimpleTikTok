@@ -1,13 +1,12 @@
 package BaseInterface
 
 import (
-	"context"
-
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
+	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -45,9 +44,9 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		}, nil
 	}
 
-	user, ok := mysqlconnect.CheckUserInf(int(req.UserID), id)
-	if !ok {
-		logx.Infof("[pkg]logic [func]PublishList [msg]User does not exist")
+	user, err := l.svcCtx.MySQLManageRpc.CheckUserInf(l.ctx, &mysqlmanageserver.CheckUserInfRequest{UserId: req.UserID, FollowerId: int64(id)})
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]PublishList [msg]rpc CheckUserInf %v", err)
 		return &types.PublishListHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 			StatusMsg:  "获取用户信息失败",
@@ -55,9 +54,9 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		}, nil
 	}
 
-	n, err := mysqlconnect.VideoNum(req.UserID)
+	videoNumResponse, err :=  l.svcCtx.MySQLManageRpc.VideoNum(l.ctx, &mysqlmanageserver.VideoNumRequest{AuthorId: req.UserID})
 	if err != nil {
-		logx.Errorf("[pkg]logic [func]PublishList [msg]func VideoNum [err]%v", err)
+		logx.Errorf("[pkg]logic [func]PublishList [msg]rpc VideoNum [err]%v", err)
 		return &types.PublishListHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_DB_ERROR),
 			StatusMsg:  "操作失败",
@@ -65,9 +64,12 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		}, nil
 	}
 
-	v, err := mysqlconnect.GetVideoList(req.UserID, int64(id))
+	getVideoListResponse, err :=  l.svcCtx.MySQLManageRpc.GetVideoList(l.ctx, &mysqlmanageserver.GetVideoListRequest{
+		AuthorId: req.UserID,
+		UserId: int64(id),
+	})
 	if err != nil {
-		logx.Errorf("[pkg]logic [func]PublishList [msg]func GetVideoList [err]%v", err)
+		logx.Errorf("[pkg]logic [func]PublishList [msg]rpc GetVideoList [err]%v", err)
 		return &types.PublishListHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_DB_ERROR),
 			StatusMsg:  "操作失败",
@@ -75,25 +77,35 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		}, nil
 	}
 
-	videolist := make([]types.Video, n)
-	for i := 0; i < int(n); i++ {
+	videolist := make([]types.Video, videoNumResponse.Num)
+	for i, vi := range getVideoListResponse.VideoInfo {
+		checkIsFollow, err := l.svcCtx.MySQLManageRpc.CheckIsFollow(l.ctx,&mysqlmanageserver.CheckIsFollowRequest{UserId: req.UserID, FollowerId: int64(id)})
+		if err != nil {
+			logx.Errorf("[pkg]logic [func]PublishList [msg]rpc checkIsFollow [err]%v", err)
+			return &types.PublishListHandlerResponse{
+				StatusCode: int32(commonerror.CommonErr_DB_ERROR),
+				StatusMsg:  "操作失败",
+				VideoList:  []types.Video{},
+			}, nil
+		}
 		videolist[i] = types.Video{
-			Id: v[i].VideoID,
+			Id: vi.VideoId,
 			Author: types.User{
-				UserId:        user.User.UserID,
-				Name:          user.User.UserNickName,
-				FollowCount:   user.User.FollowCount,
-				FollowerCount: user.User.FollowerCount,
-				IsFollow:      user.IsFollow,
+				UserId:        user.User.Users.UserId,
+				Name:          user.User.Users.UserNickName,
+				FollowCount:   user.User.Users.FollowCount,
+				FollowerCount: user.User.Users.FollowerCount,
+				IsFollow:      checkIsFollow.Ok,
 			},
-			PlayUrl:       v[i].PlayUrl,
-			CoverUrl:      v[i].CoverUrl,
-			FavoriteCount: v[i].FavoriteCount,
-			CommentCount:  v[i].CommentCount,
-			IsFavotite:    v[i].IsFavotite,
-			VideoTitle:    v[i].VideoTitle,
+			PlayUrl:       vi.PlayUrl,
+			CoverUrl:      vi.CoverUrl,
+			FavoriteCount: vi.FavoriteCount,
+			CommentCount:  vi.CommentCount,
+			IsFavotite:    vi.IsFavotite,
+			VideoTitle:    vi.VideoTitle,
 		}
 	}
+
 	return &types.PublishListHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "查询发布列表成功",
