@@ -52,7 +52,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 	return &types.UserloginHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "登录成功",
-		UserID:     uid.UserId,
+		UserID:     int64(uid.UserId),
 		Token:      TokenString,
 	}, err
 }

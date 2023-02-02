@@ -51,6 +51,19 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 		}, nil
 	}
 
+	go UploadData()
+	
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]PublishAction [msg]CreatePublishActionViedeInfo is err [err]%v", err)
+		return nil, err
+	}
+	return &types.PublishActionHandlerResponse{
+		StatusCode: 0,
+		StatusMsg:  "上传成功",
+	}, err
+}
+
+func UploadData(r *http.Request){
 	minioVideoUrl, minioPictureUrl, err := minioUpDate(r) // Minio 上传文件
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]PublishAction [msg]minioUpDate is fail [err]%v", err)
@@ -72,15 +85,9 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 
 	// gorm创建一条信息
 	err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
-	if err != nil {
-		logx.Errorf("[pkg]logic [func]PublishAction [msg]CreatePublishActionViedeInfo is err [err]%v", err)
-		return nil, err
-	}
-	return &types.PublishActionHandlerResponse{
-		StatusCode: 0,
-		StatusMsg:  "上传成功",
-	}, err
 }
+
+
 
 // 图片和视频上传到minio
 func minioUpDate(r *http.Request) (string, string, error) {
