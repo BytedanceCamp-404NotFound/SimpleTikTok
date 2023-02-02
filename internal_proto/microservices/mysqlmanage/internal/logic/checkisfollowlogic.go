@@ -26,12 +26,12 @@ func NewCheckIsFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Che
 // 是否关注
 func (l *CheckIsFollowLogic) CheckIsFollow(in *mysqlmanageserver.CheckIsFollowRequest) (*mysqlmanageserver.CheckIsFollowResponse, error) {
 	// todo: add your logic here and delete this line
-	var record int64 = 0
+	var num int64
 	fmt.Println(in.UserId, in.FollowerId)
-	err := svc.DB.Table("follow_and_follower_list").Select("record_id").Where("user_id = ? and follower_id = ?",in.UserId, in.FollowerId).Take(&record).Error
+	err := svc.DB.Table("follow_and_follower_list").Select("record_id").Where("user_id = ? and follower_id = ?",in.UserId, in.FollowerId).Count(&num).Error
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]CheckIsFollow [msg]gorm follow_and_follower_list.Take %v",err)
 		return &mysqlmanageserver.CheckIsFollowResponse{Ok: false},err
 	}
-	return &mysqlmanageserver.CheckIsFollowResponse{Ok: record != 0}, nil
+	return &mysqlmanageserver.CheckIsFollowResponse{Ok: num > 0}, nil
 }

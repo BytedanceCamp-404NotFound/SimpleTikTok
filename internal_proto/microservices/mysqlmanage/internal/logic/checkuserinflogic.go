@@ -27,15 +27,10 @@ func NewCheckUserInfLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Chec
 func (l *CheckUserInfLogic) CheckUserInf(in *mysqlmanageserver.CheckUserInfRequest) (*mysqlmanageserver.CheckUserInfResponse, error) {
 	// todo: add your logic here and delete this line
 	var user User
-	result := svc.DB.Table("user_info").Where("user_id = ?", in.UserId).Find(&user)
-	err := result.Error
-	if err != nil {
-		logx.Errorf("[pkg]logic [func]CheckUserInf [msg]gorm user_info.Find %v", err)
-		return &mysqlmanageserver.CheckUserInfResponse{}, err
-	}
-	if result.RowsAffected == 0 {
-		logx.Infof("[pkg]logic [func]CheckUserInf [msg]User does not exit")
-		return &mysqlmanageserver.CheckUserInfResponse{}, nil
+	result := svc.DB.Table("user_info").Where("user_id = ?", in.UserId).Take(&user)
+	if  result.Error != nil {
+		logx.Errorf("[pkg]logic [func]CheckUserInf [msg]User does not exit %v", result.Error)
+		return &mysqlmanageserver.CheckUserInfResponse{}, result.Error
 	}
 
 	var ls CheckIsFollowLogic

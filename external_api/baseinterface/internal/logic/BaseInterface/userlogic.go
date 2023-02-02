@@ -4,6 +4,7 @@ import (
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
+	"SimpleTikTok/oprations/commonerror"
 	tools "SimpleTikTok/tools/token"
 	"context"
 
@@ -37,6 +38,13 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 		UserId:     req.UserID,
 		FollowerId: int64(id),
 	})
+	if err != nil {
+		return &types.UserHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_DB_ERROR),
+			StatusMsg: "该用户不存在！",
+			User: types.User{},
+		},nil
+	}
 	return &types.UserHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "查询成功！",
@@ -47,5 +55,5 @@ func (l *UserLogic) User(req *types.UserHandlerRequest) (resp *types.UserHandler
 			FollowerCount: ui.User.Users.FollowerCount,
 			IsFollow:      ui.User.IsFollow,
 		},
-	}, err
+	}, nil
 }

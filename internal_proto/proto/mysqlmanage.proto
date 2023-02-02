@@ -53,6 +53,15 @@ message CheckIsFollowResponse {
     bool ok = 1;
 }
 
+message IsFavotiteRequest {
+    int64 userId = 1;
+    int64 videoId = 2;
+}
+
+message IsFavotiteResponse {
+    bool ok = 1;
+}
+
 message VideoInfo {
     int64 videoId = 1;       
 	int64 authorId = 2;      
@@ -92,6 +101,8 @@ service MySQLManageServer {
     rpc CheckUserInf(CheckUserInfRequest) returns(CheckUserInfResponse);
     // 是否关注
     rpc CheckIsFollow(CheckIsFollowRequest) returns(CheckIsFollowResponse);
+    // 是否点赞
+    rpc IsFavotite(IsFavotiteRequest) returns(IsFavotiteResponse);
     // 发布列表视频信息
     rpc GetVideoList(GetVideoListRequest) returns(GetVideoListResponse);
     // 发布列表视频数量

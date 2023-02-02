@@ -19,6 +19,8 @@ type (
 	CheckUserInfResponse  = mysqlmanageserver.CheckUserInfResponse
 	GetVideoListRequest   = mysqlmanageserver.GetVideoListRequest
 	GetVideoListResponse  = mysqlmanageserver.GetVideoListResponse
+	IsFavotiteRequest     = mysqlmanageserver.IsFavotiteRequest
+	IsFavotiteResponse    = mysqlmanageserver.IsFavotiteResponse
 	UserInf               = mysqlmanageserver.UserInf
 	UserLoginRequest      = mysqlmanageserver.UserLoginRequest
 	UserLoginResponse     = mysqlmanageserver.UserLoginResponse
@@ -38,6 +40,8 @@ type (
 		CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error)
 		// 是否关注
 		CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error)
+		// 是否点赞
+		IsFavotite(ctx context.Context, in *IsFavotiteRequest, opts ...grpc.CallOption) (*IsFavotiteResponse, error)
 		// 发布列表视频信息
 		GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error)
 		// 发布列表视频数量
@@ -77,6 +81,12 @@ func (m *defaultMySQLManageServer) CheckUserInf(ctx context.Context, in *CheckUs
 func (m *defaultMySQLManageServer) CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
 	return client.CheckIsFollow(ctx, in, opts...)
+}
+
+// 是否点赞
+func (m *defaultMySQLManageServer) IsFavotite(ctx context.Context, in *IsFavotiteRequest, opts ...grpc.CallOption) (*IsFavotiteResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.IsFavotite(ctx, in, opts...)
 }
 
 // 发布列表视频信息

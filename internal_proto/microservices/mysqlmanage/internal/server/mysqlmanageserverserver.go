@@ -46,6 +46,12 @@ func (s *MySQLManageServerServer) CheckIsFollow(ctx context.Context, in *mysqlma
 	return l.CheckIsFollow(in)
 }
 
+// 是否点赞
+func (s *MySQLManageServerServer) IsFavotite(ctx context.Context, in *mysqlmanageserver.IsFavotiteRequest) (*mysqlmanageserver.IsFavotiteResponse, error) {
+	l := logic.NewIsFavotiteLogic(ctx, s.svcCtx)
+	return l.IsFavotite(in)
+}
+
 // 发布列表视频信息
 func (s *MySQLManageServerServer) GetVideoList(ctx context.Context, in *mysqlmanageserver.GetVideoListRequest) (*mysqlmanageserver.GetVideoListResponse, error) {
 	l := logic.NewGetVideoListLogic(ctx, s.svcCtx)

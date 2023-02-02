@@ -30,6 +30,8 @@ type MySQLManageServerClient interface {
 	CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error)
 	// 是否关注
 	CheckIsFollow(ctx context.Context, in *CheckIsFollowRequest, opts ...grpc.CallOption) (*CheckIsFollowResponse, error)
+	// 是否点赞
+	IsFavotite(ctx context.Context, in *IsFavotiteRequest, opts ...grpc.CallOption) (*IsFavotiteResponse, error)
 	// 发布列表视频信息
 	GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error)
 	// 发布列表视频数量
@@ -80,6 +82,15 @@ func (c *mySQLManageServerClient) CheckIsFollow(ctx context.Context, in *CheckIs
 	return out, nil
 }
 
+func (c *mySQLManageServerClient) IsFavotite(ctx context.Context, in *IsFavotiteRequest, opts ...grpc.CallOption) (*IsFavotiteResponse, error) {
+	out := new(IsFavotiteResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/IsFavotite", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *mySQLManageServerClient) GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error) {
 	out := new(GetVideoListResponse)
 	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/GetVideoList", in, out, opts...)
@@ -110,6 +121,8 @@ type MySQLManageServerServer interface {
 	CheckUserInf(context.Context, *CheckUserInfRequest) (*CheckUserInfResponse, error)
 	// 是否关注
 	CheckIsFollow(context.Context, *CheckIsFollowRequest) (*CheckIsFollowResponse, error)
+	// 是否点赞
+	IsFavotite(context.Context, *IsFavotiteRequest) (*IsFavotiteResponse, error)
 	// 发布列表视频信息
 	GetVideoList(context.Context, *GetVideoListRequest) (*GetVideoListResponse, error)
 	// 发布列表视频数量
@@ -132,6 +145,9 @@ func (UnimplementedMySQLManageServerServer) CheckUserInf(context.Context, *Check
 }
 func (UnimplementedMySQLManageServerServer) CheckIsFollow(context.Context, *CheckIsFollowRequest) (*CheckIsFollowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckIsFollow not implemented")
+}
+func (UnimplementedMySQLManageServerServer) IsFavotite(context.Context, *IsFavotiteRequest) (*IsFavotiteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsFavotite not implemented")
 }
 func (UnimplementedMySQLManageServerServer) GetVideoList(context.Context, *GetVideoListRequest) (*GetVideoListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVideoList not implemented")
@@ -224,6 +240,24 @@ func _MySQLManageServer_CheckIsFollow_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MySQLManageServer_IsFavotite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsFavotiteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).IsFavotite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/IsFavotite",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).IsFavotite(ctx, req.(*IsFavotiteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MySQLManageServer_GetVideoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetVideoListRequest)
 	if err := dec(in); err != nil {
@@ -282,6 +316,10 @@ var MySQLManageServer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckIsFollow",
 			Handler:    _MySQLManageServer_CheckIsFollow_Handler,
+		},
+		{
+			MethodName: "IsFavotite",
+			Handler:    _MySQLManageServer_IsFavotite_Handler,
 		},
 		{
 			MethodName: "GetVideoList",
