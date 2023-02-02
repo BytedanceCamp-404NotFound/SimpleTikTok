@@ -456,7 +456,6 @@ type CheckIsFollowRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
 	UserId     int64 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	FollowerId int64 `protobuf:"varint,2,opt,name=followerId,proto3" json:"followerId,omitempty"`
 }
@@ -492,6 +491,7 @@ func (x *CheckIsFollowRequest) ProtoReflect() protoreflect.Message {
 func (*CheckIsFollowRequest) Descriptor() ([]byte, []int) {
 	return file_proto_mysqlmanage_proto_rawDescGZIP(), []int{8}
 }
+
 
 func (x *CheckIsFollowRequest) GetUserId() int64 {
 	if x != nil {
@@ -557,8 +557,7 @@ func (x *CheckIsFollowResponse) GetOk() bool {
 type IsFavotiteRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
+	unknownFields protoimpl.UnknownField
 	UserId  int64 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
 	VideoId int64 `protobuf:"varint,2,opt,name=videoId,proto3" json:"videoId,omitempty"`
 }
@@ -763,7 +762,6 @@ type GetVideoListRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
 	AuthorId int64 `protobuf:"varint,1,opt,name=authorId,proto3" json:"authorId,omitempty"`
 	UserId   int64 `protobuf:"varint,2,opt,name=userId,proto3" json:"userId,omitempty"`
 }
@@ -808,6 +806,7 @@ func (x *GetVideoListRequest) GetAuthorId() int64 {
 }
 
 func (x *GetVideoListRequest) GetUserId() int64 {
+
 	if x != nil {
 		return x.UserId
 	}

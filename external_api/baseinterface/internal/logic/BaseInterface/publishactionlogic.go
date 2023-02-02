@@ -2,10 +2,10 @@ package BaseInterface
 
 import (
 	"context"
-	"fmt"
+	// "fmt"
 	"net/http"
-	"os"
-	"path/filepath"
+	// "os"
+	// "path/filepath"
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
@@ -77,7 +77,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 		return nil, err
 	}
 	return &types.PublishActionHandlerResponse{
-		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusCode: 0,
 		StatusMsg:  "上传成功",
 	}, err
 }
@@ -85,10 +85,10 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 // 图片和视频上传到minio
 func minioUpDate(r *http.Request) (string, string, error) {
 	// TOTEMP
-	exePath, _ := os.Executable()
-	sourceFile := filepath.Dir(filepath.Dir(exePath))
+	// exePath, _ := os.Executable()
+	// sourceFile := filepath.Dir(filepath.Dir(exePath))
 	//vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
-	pictureFile := fmt.Sprintf("%s/source/pic/pic_test2.jpg", sourceFile)
+	// pictureFile := fmt.Sprintf("%s/source/pic/pic_test2.jpg", sourceFile)
 	// content, err := os.ReadFile(vidoeFile)
 
 	bucketName := "test-minio"
@@ -111,10 +111,11 @@ func minioUpDate(r *http.Request) (string, string, error) {
 		return "", "", err // TODO: 上传失败暂时中断接口
 	}
 
-	minioPictureUrl, err := minio.MinioFileUploader(minioClient, bucketName, "pictureFile/", pictureFile)
-	if err != nil {
-		logx.Errorf("[pkg]logic [func]minioUpDate [msg]minio picture upload to fail [err]%v", err)
-		// return "", "", err // TODO: 上传图片失败不中断接口
-	}
+	minioPictureUrl := ""
+	// minioPictureUrl, err := minio.MinioFileUploader(minioClient, bucketName, "pictureFile/", pictureFile)
+	// if err != nil {
+	// 	logx.Errorf("[pkg]logic [func]minioUpDate [msg]minio picture upload to fail [err]%v", err)
+	// 	// return "", "", err // TODO: 上传图片失败不中断接口
+	// }
 	return minioVideoUrl, minioPictureUrl, err
 }

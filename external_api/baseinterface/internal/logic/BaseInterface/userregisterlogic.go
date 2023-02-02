@@ -5,7 +5,7 @@ import (
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
-	"SimpleTikTok/oprations/mysqlconnect"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -37,18 +37,13 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 		}, err
 	}
 
-	db := mysqlconnect.GormDB
-	// if err != nil {
-	// 	logx.Errorf("SqlConnect err: %v", err)
-	// 	return &types.UserRegisterHandlerResponse{
-	// 		StatusCode: 400,
-	// 		StatusMsg:  "用户已存在，请直接登录",
-	// 		UserID:     -1,
-	// 		Token:      "",
-	// 	}, err
-	// }
-	res, err := mysqlconnect.FindUserIsExist(db, req.UserName, req.PassWord)
-	if err != nil {
+	uid, err := l.svcCtx.MySQLManageRpc.UserRigster(l.ctx, &mysqlmanageserver.UserRegisterRequest{
+		Username: req.UserName,
+		Password: req.PassWord,
+	})
+	logx.Infof("%d", uid)
+
+	if err != nil && uid.UserId == -2 {
 		logx.Errorf("UserRegisterLogic FindUserIsExist err: %v", err)
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: 400,
@@ -57,19 +52,17 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 			Token:      "",
 		}, err
 	}
-	if res != 0 {
+	if uid.UserId == -3 {
 		logx.Infof("UserRegisterLogic Find User is exist err: %v", err)
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: 400,
 			StatusMsg:  "用户已存在，请直接登录",
-			UserID:     int64(res),
+			UserID:     -1,
 			Token:      "",
 		}, err
 	}
 
-	uid, err := mysqlconnect.CreateUser(db, req.UserName, req.PassWord)
-	logx.Infof("%d", uid)
-	if uid == -1 {
+	if uid.UserId == -1 {
 		return &types.UserRegisterHandlerResponse{
 			StatusCode: -1,
 			StatusMsg:  "注册失败",
@@ -86,11 +79,11 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 	// 	return nil, tokenErr
 	// }
 
-	TokenString, err := tools.CreateToken(uid)
+	TokenString, err := tools.CreateToken(int(uid.UserId))
 	return &types.UserRegisterHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "注册成功",
-		UserID:     int64(uid),
+		UserID:     uid.UserId,
 		Token:      TokenString,
 	}, err
 }

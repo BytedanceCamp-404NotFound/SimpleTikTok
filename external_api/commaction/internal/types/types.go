@@ -67,6 +67,16 @@ type Video struct {
 	VideoTitle    string `form:"video_title"`
 }
 
+type VideoTest struct {
+	Id            int64  `form:"id"`
+	Author        User   `form:"author"`
+	PlayUrl       string `form:"play_url"`
+	CoverUrl      string `form:"cover_url"`
+	FavoriteCount int64  `form:"favorite_count"`
+	CommentCount  int64  `form:"comment_count"`
+	IsFavotite    bool   `form:"is_favorite"`
+}
+
 type User struct {
 	UserId        int64  `gorm:"column:user_id"        json:"id"               form:"user_id"        bson:"user_id"`
 	Name          string `gorm:"column:user_nick_name" json:"name"             form:"name"           bson:"name"`
