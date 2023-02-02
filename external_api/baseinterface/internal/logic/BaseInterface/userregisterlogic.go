@@ -83,7 +83,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterHandlerRequest) 
 	return &types.UserRegisterHandlerResponse{
 		StatusCode: 0,
 		StatusMsg:  "注册成功",
-		UserID:     uid.UserId,
+		UserID:     int64(uid.UserId),
 		Token:      TokenString,
 	}, err
 }
