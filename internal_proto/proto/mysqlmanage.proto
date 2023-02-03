@@ -90,6 +90,37 @@ message VideoNumResponse {
     int64 num = 1;
 }
   
+
+message RelationActionRequest{
+    int64 UserID =1;
+    int64 ToUserID =2;
+    int32 ActionType =3;
+}
+message RelationActionResponse{
+    bool ok=1;
+}
+message RelationFollowerListRequest{
+    int64 LoginUserID = 1;
+    int64 UserID = 2;
+}
+message RelationFollowerListResponse{
+    repeated RelationUser RelationUser = 1;
+}
+message RelationFollowListRequest{
+    int64 LoginUserID = 1;
+    int64 UserID = 2;
+}
+message RelationFollowListResponse{
+    repeated RelationUser RelationUser = 1;
+}
+
+message RelationUser  {
+    int64 Id            =1;
+    string Name         =2;
+    int64 FollowCount   =3;
+    int64 FollowerCount =4;
+    bool IsFollow       =5;
+}
 service MySQLManageServer {
 
     // 用户登陆校验
@@ -107,4 +138,14 @@ service MySQLManageServer {
     rpc GetVideoList(GetVideoListRequest) returns(GetVideoListResponse);
     // 发布列表视频数量
     rpc VideoNum(VideoNumRequest) returns(VideoNumResponse);
+
+
+    //关注、取消关注
+    rpc RelationAction(RelationActionRequest) returns(RelationActionResponse);
+    //粉丝列表
+    rpc RelationFollowerList(RelationFollowerListRequest) returns(RelationFollowerListResponse);
+    //关注列表
+    rpc RelationFollowList(RelationFollowListRequest) returns(RelationFollowListResponse);
+    
+
 }

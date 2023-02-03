@@ -36,6 +36,12 @@ type MySQLManageServerClient interface {
 	GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error)
 	// 发布列表视频数量
 	VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error)
+	// 关注、取消关注
+	RelationAction(ctx context.Context, in *RelationActionRequest, opts ...grpc.CallOption) (*RelationActionResponse, error)
+	// 粉丝列表
+	RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error)
+	// 关注列表
+	RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error)
 }
 
 type mySQLManageServerClient struct {
@@ -109,6 +115,33 @@ func (c *mySQLManageServerClient) VideoNum(ctx context.Context, in *VideoNumRequ
 	return out, nil
 }
 
+func (c *mySQLManageServerClient) RelationAction(ctx context.Context, in *RelationActionRequest, opts ...grpc.CallOption) (*RelationActionResponse, error) {
+	out := new(RelationActionResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/RelationAction", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mySQLManageServerClient) RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error) {
+	out := new(RelationFollowerListResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/RelationFollowerList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mySQLManageServerClient) RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error) {
+	out := new(RelationFollowListResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/RelationFollowList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MySQLManageServerServer is the server API for MySQLManageServer service.
 // All implementations must embed UnimplementedMySQLManageServerServer
 // for forward compatibility
@@ -127,6 +160,12 @@ type MySQLManageServerServer interface {
 	GetVideoList(context.Context, *GetVideoListRequest) (*GetVideoListResponse, error)
 	// 发布列表视频数量
 	VideoNum(context.Context, *VideoNumRequest) (*VideoNumResponse, error)
+	// 关注、取消关注
+	RelationAction(context.Context, *RelationActionRequest) (*RelationActionResponse, error)
+	// 粉丝列表
+	RelationFollowerList(context.Context, *RelationFollowerListRequest) (*RelationFollowerListResponse, error)
+	// 关注列表
+	RelationFollowList(context.Context, *RelationFollowListRequest) (*RelationFollowListResponse, error)
 	mustEmbedUnimplementedMySQLManageServerServer()
 }
 
@@ -154,6 +193,15 @@ func (UnimplementedMySQLManageServerServer) GetVideoList(context.Context, *GetVi
 }
 func (UnimplementedMySQLManageServerServer) VideoNum(context.Context, *VideoNumRequest) (*VideoNumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VideoNum not implemented")
+}
+func (UnimplementedMySQLManageServerServer) RelationAction(context.Context, *RelationActionRequest) (*RelationActionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RelationAction not implemented")
+}
+func (UnimplementedMySQLManageServerServer) RelationFollowerList(context.Context, *RelationFollowerListRequest) (*RelationFollowerListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RelationFollowerList not implemented")
+}
+func (UnimplementedMySQLManageServerServer) RelationFollowList(context.Context, *RelationFollowListRequest) (*RelationFollowListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RelationFollowList not implemented")
 }
 func (UnimplementedMySQLManageServerServer) mustEmbedUnimplementedMySQLManageServerServer() {}
 
@@ -294,6 +342,60 @@ func _MySQLManageServer_VideoNum_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MySQLManageServer_RelationAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelationActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).RelationAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/RelationAction",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).RelationAction(ctx, req.(*RelationActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MySQLManageServer_RelationFollowerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelationFollowerListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).RelationFollowerList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/RelationFollowerList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).RelationFollowerList(ctx, req.(*RelationFollowerListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MySQLManageServer_RelationFollowList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelationFollowListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).RelationFollowList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/RelationFollowList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).RelationFollowList(ctx, req.(*RelationFollowListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MySQLManageServer_ServiceDesc is the grpc.ServiceDesc for MySQLManageServer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -328,6 +430,18 @@ var MySQLManageServer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VideoNum",
 			Handler:    _MySQLManageServer_VideoNum_Handler,
+		},
+		{
+			MethodName: "RelationAction",
+			Handler:    _MySQLManageServer_RelationAction_Handler,
+		},
+		{
+			MethodName: "RelationFollowerList",
+			Handler:    _MySQLManageServer_RelationFollowerList_Handler,
+		},
+		{
+			MethodName: "RelationFollowList",
+			Handler:    _MySQLManageServer_RelationFollowList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

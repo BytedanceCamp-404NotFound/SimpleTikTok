@@ -1,3 +1,13 @@
 Name: RelationFollowInterface
 Host: 0.0.0.0
 Port: 8810
+Timeout: 15000  #设置http请求最长的超时时间
+
+
+
+MySQLManageRpc:
+  Timeout: 10000 #设置rpc响应的超时时间
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: mysqlmanage.rpc
