@@ -1,6 +1,8 @@
 Name: mysqlmanage.rpc
 ListenOn: 0.0.0.0:8082
 Timeout: 10000  #设置rpc响应的超时时间
+Log:
+  Encoding: plain
 Etcd:
   Timeout: 10000  #设置rpc响应的超时时间
   Hosts:

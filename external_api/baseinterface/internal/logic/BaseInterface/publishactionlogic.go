@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/disintegration/imaging"
+	"github.com/google/uuid"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
@@ -17,6 +18,7 @@ import (
 
 	// "SimpleTikTok/oprations/commonerror"
 	minio "SimpleTikTok/oprations/minioconnect"
+	"SimpleTikTok/oprations/mysqlconnect"
 	// tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -82,26 +84,26 @@ func UploadData(r *http.Request, userId int, title string) {
 	// _ = snapshotName
 
 	// _, _, err = minioUpDate(r) // Minio 上传文件
-	// minioVideoUrl, minioPictureUrl, err := minioUpDate(r) // Minio 上传文件
-	// if err != nil {
-	// 	logx.Errorf("[pkg]logic [func]PublishAction [msg]minioUpDate is fail [err]%v", err)
-	// 	// return &types.PublishActionHandlerResponse{
-	// 	// 	StatusCode: int32(commonerror.CommonErr_PAGE_NOT_EXIT),
-	// 	// 	StatusMsg:  "没有收到视频文件或者出现其他错误",
-	// 	// }, err
-	// }
+	minioVideoUrl, minioPictureUrl, err := minioUpDate(r) // Minio 上传文件
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]PublishAction [msg]minioUpDate is fail [err]%v", err)
+		// return &types.PublishActionHandlerResponse{
+		// 	StatusCode: int32(commonerror.CommonErr_PAGE_NOT_EXIT),
+		// 	StatusMsg:  "没有收到视频文件或者出现其他错误",
+		// }, err
+	}
 
-	// VideoInfo := &mysqlconnect.PublishActionVideoInfo{
-	// 	Video_id:       int32(uuid.New().ID()),
-	// 	Author_id:      int64(userId),
-	// 	Play_url:       minioVideoUrl,
-	// 	Cover_url:      minioPictureUrl,
-	// 	Favorite_count: 0,
-	// 	Comment_count:  0,
-	// 	Video_title:    title,
-	// }
-	// // gorm创建一条信息
-	// err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
+	VideoInfo := &mysqlconnect.PublishActionVideoInfo{
+		Video_id:       int32(uuid.New().ID()),
+		Author_id:      int64(userId),
+		Play_url:       minioVideoUrl,
+		Cover_url:      minioPictureUrl,
+		Favorite_count: 0,
+		Comment_count:  0,
+		Video_title:    title,
+	}
+	// gorm创建一条信息
+	err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
 }
 
 // TODO: 将保存的文件名转化为传输的名字

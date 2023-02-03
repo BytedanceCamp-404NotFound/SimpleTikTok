@@ -2,7 +2,8 @@ Name: RelationFollowInterface
 Host: 0.0.0.0
 Port: 8810
 Timeout: 15000  #设置http请求最长的超时时间
-
+Log:
+  Encoding: plain
 
 
 MySQLManageRpc:
