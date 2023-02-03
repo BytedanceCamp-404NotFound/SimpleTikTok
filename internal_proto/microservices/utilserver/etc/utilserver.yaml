@@ -1,5 +1,7 @@
 Name: utilserver.rpc
 ListenOn: 0.0.0.0:8083
+Log:
+  Encoding: plain
 Etcd:
   Hosts:
   - 127.0.0.1:2379

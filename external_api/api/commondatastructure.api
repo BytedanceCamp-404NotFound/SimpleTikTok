@@ -11,7 +11,7 @@ type Video {
 }
 
 type VideoTest {
-		Id            int64  `form:"id" json:"id"`
+	Id            int64  `form:"id" json:"id"`
 	Author        User   `form:"author" json:"author"`
 	PlayUrl       string `form:"play_url" json:"play_url"`
 	CoverUrl      string `form:"cover_url" json:"cover_url"`

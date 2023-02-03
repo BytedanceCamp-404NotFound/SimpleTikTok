@@ -26,10 +26,11 @@ func GetFeedUserInfo(UserId int) (FeedUserInfo, error) {
 	return tmpFeedUserInfo, err
 }
 
-func GetFeedVideoList(userId int) ([]VideoInfo, error) {
+func GetFeedVideoList() ([]VideoInfo, error) {
 	db := GormDB
 	var tmpFeedVideoList []VideoInfo
-	err := db.Table("video_info").Where("author_id = ?", userId).Scan(&tmpFeedVideoList).Limit(10).Error
+	err := db.Table("video_info").Order("update_time").Scan(&tmpFeedVideoList).Limit(10).Error
+	// err := db.Table("video_info").Where("author_id = ?", userId).Scan(&tmpFeedVideoList).Limit(10).Error
 	if err != nil {
 		logx.Errorf("[pkg]mysqlconnect [func]GetFeedVideoList [msg]gorm [err]%v", err)
 		return []VideoInfo{}, err

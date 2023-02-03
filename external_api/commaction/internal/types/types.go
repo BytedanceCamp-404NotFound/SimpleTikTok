@@ -68,13 +68,13 @@ type Video struct {
 }
 
 type VideoTest struct {
-	Id            int64  `form:"id"`
-	Author        User   `form:"author"`
-	PlayUrl       string `form:"play_url"`
-	CoverUrl      string `form:"cover_url"`
-	FavoriteCount int64  `form:"favorite_count"`
-	CommentCount  int64  `form:"comment_count"`
-	IsFavotite    bool   `form:"is_favorite"`
+	Id            int64  `form:"id" json:"id"`
+	Author        User   `form:"author" json:"author"`
+	PlayUrl       string `form:"play_url" json:"play_url"`
+	CoverUrl      string `form:"cover_url" json:"cover_url"`
+	FavoriteCount int64  `form:"favorite_count" json:"favorite_count"`
+	CommentCount  int64  `form:"comment_count" json:"comment_count"`
+	IsFavotite    bool   `form:"is_favorite" json:"is_favorite"`
 }
 
 type User struct {

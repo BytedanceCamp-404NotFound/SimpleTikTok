@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -11,7 +12,8 @@ import (
 	"SimpleTikTok/external_api/baseinterface/internal/types"
 	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
-	tools "SimpleTikTok/tools/token"
+
+	// tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,58 +33,28 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 }
 
 func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandlerResponse, err error) {
-	// userIdTTT := fmt.Sprintf("%v", l.ctx.Value("userIdentity"))
-	// // 这里的key和生成jwt token时传入的key一致
-	// userId, err := strconv.Atoi(userIdTTT)
-	// logx.Infof("userId: %v",userId)
-
-	ok, userId, err := tools.CheckToke(req.Token)
-	if err != nil {
-		return &types.FeedHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
-			StatusMsg:  "Token校验出错",
-			VideoList:  []types.VideoTest{},
-			NextTime:   time.Now().Unix(), // 暂时返回当前时间
-		}, nil
-	}
-	if !ok {
-		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
-		return &types.FeedHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
-			StatusMsg:  "登录过期，请重新登陆",
-			VideoList:  []types.VideoTest{},
-			NextTime:   time.Now().Unix(), // 暂时返回当前时间
-		}, nil
-	}
-
-	feedUserInfo, err := mysqlconnect.GetFeedUserInfo(userId)
-	if err != nil {
-		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedUserInfo [err]%v", err)
-		return &types.FeedHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
-			StatusMsg:  "获取用户信息失败",
-			VideoList:  []types.VideoTest{},
-			NextTime:   time.Now().Unix(), // 暂时返回当前时间
-		}, nil
-	}
-	if feedUserInfo.UserNickName == "" {
-		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
-		return &types.FeedHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
-			StatusMsg:  "用户信息为空",
-			VideoList:  []types.VideoTest{},
-			NextTime:   time.Now().Unix(), // 暂时返回当前时间
-		}, nil
-	}
-	var respFeedUserInfo types.User
-	respFeedUserInfo.UserId = feedUserInfo.UserID
-	respFeedUserInfo.Name = feedUserInfo.UserNickName
-	respFeedUserInfo.FollowCount = feedUserInfo.FollowCount
-	respFeedUserInfo.FollowerCount = feedUserInfo.FollowerCount
-	respFeedUserInfo.IsFollow = feedUserInfo.IsFollow
+	// 暂时不知道token什么作用
+	// ok, userId, err := tools.CheckToke(req.Token)
+	// if err != nil {
+	// 	return &types.FeedHandlerResponse{
+	// 		StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+	// 		StatusMsg:  "Token校验出错",
+	// 		VideoList:  []types.VideoTest{},
+	// 		NextTime:   time.Now().Unix(), // 暂时返回当前时间
+	// 	}, nil
+	// }
+	// if !ok {
+	// 	logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
+	// 	return &types.FeedHandlerResponse{
+	// 		StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
+	// 		StatusMsg:  "登录过期，请重新登陆",
+	// 		VideoList:  []types.VideoTest{},
+	// 		NextTime:   time.Now().Unix(), // 暂时返回当前时间
+	// 	}, nil
+	// }
 
 	var feedVideLists []mysqlconnect.VideoInfo
-	feedVideLists, err = mysqlconnect.GetFeedVideoList(userId)
+	feedVideLists, err = mysqlconnect.GetFeedVideoList()
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedVideoList [err]%v", err)
 		return &types.FeedHandlerResponse{
@@ -104,15 +76,13 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 
 	var respFeedVideoList = make([]types.VideoTest, len(feedVideLists))
 	for index, val := range feedVideLists {
-		// respFeedVideoList[index].Id = val.VideoID
-		respFeedVideoList[index].Id = 1
-		respFeedVideoList[index].Author = respFeedUserInfo
-		// respFeedVideoList[index].PlayUrl = "175.178.93.55:9001/test-minio/vidoeFile/790ae4b3-cce7-43fe-bfd6-8ee82a23ca74-video_test6.mp4"
-		// respFeedVideoList[index].PlayUrl = "http://175.178.93.55:9001/test-minio/vidoeFile/94e010c6-4c6e-4c2c-8d0b-b9afea9760d6-video_test12.mp4"
-		keyval ,_ := DecodeFileKey(val.PlayUrl)
-		respFeedVideoList[index].PlayUrl = keyval.Key
-		// keyval, _ := DecodeFileKey(val.CoverUrl)
-		// respFeedVideoList[index].CoverUrl = val.CoverUrl
+		respFeedVideoList[index].Id = val.VideoID
+		tmpAuthor, _ := getUserInfo(int(val.AuthorID))
+		respFeedVideoList[index].Author = tmpAuthor
+		realPlayUrl, _ := getPlayUrl(val.PlayUrl)
+		respFeedVideoList[index].PlayUrl = realPlayUrl
+		// realCoverUrl, _ := getPlayUrl(val.CoverUrl)
+		// _ = realCoverUrl
 		respFeedVideoList[index].CoverUrl = "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
 		respFeedVideoList[index].FavoriteCount = val.FavoriteCount
 		respFeedVideoList[index].CommentCount = val.CommentCount
@@ -164,4 +134,35 @@ func DecodeFileKey(key string) (*MinioKeyVal, error) {
 	keyval.Bucket = decodeString[:index]
 	keyval.Key = decodeString[index+len(separator):]
 	return keyval, nil
+}
+
+func getUserInfo(userID int) (types.User, error) {
+	feedUserInfo, err := mysqlconnect.GetFeedUserInfo(userID)
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedUserInfo [err]%v", err)
+		return types.User{}, err
+	}
+	if feedUserInfo.UserNickName == "" {
+		logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
+		return types.User{}, nil
+	}
+	var respFeedUserInfo types.User
+	respFeedUserInfo.UserId = feedUserInfo.UserID
+	respFeedUserInfo.Name = feedUserInfo.UserNickName
+	respFeedUserInfo.FollowCount = feedUserInfo.FollowCount
+	respFeedUserInfo.FollowerCount = feedUserInfo.FollowerCount
+	respFeedUserInfo.IsFollow = feedUserInfo.IsFollow
+	return respFeedUserInfo, nil
+}
+
+func getPlayUrl(playUrl string) (string, error) {
+	decodeKey, err := DecodeFileKey(playUrl)
+	if err != nil {
+		logx.Errorf("decode base64 error:%v", err)
+		return "", err
+	}
+	minioUrl := "http://175.178.93.55:9001"
+
+	resPlayUrl := fmt.Sprintf("%s/%s/%s", minioUrl, decodeKey.Bucket, decodeKey.Key)
+	return resPlayUrl, nil
 }
