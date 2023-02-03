@@ -39,7 +39,7 @@ func (l *RelationActionLogic) RelationAction(in *mysqlmanageserver.RelationActio
 	db := svc.DB
 	if in.ActionType == 1 { //关注
 		//#关注账号 user_id：被关注的账号  follower_id：哪个账号要关注
-		insertData := follow_and_follower_list{UserID: in.UserID, FollowerId: in.ToUserID, RecordTime: time.Now()}
+		insertData := follow_and_follower_list{UserID: in.ToUserID, FollowerId: in.UserID, RecordTime: time.Now()}
 		if err := db.Table("follow_and_follower_list").Create(&insertData).Error; err != nil {
 			return &mysqlmanageserver.RelationActionResponse{Ok: false}, err
 		}
