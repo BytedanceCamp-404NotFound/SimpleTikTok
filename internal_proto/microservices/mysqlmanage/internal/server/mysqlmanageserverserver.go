@@ -63,3 +63,21 @@ func (s *MySQLManageServerServer) VideoNum(ctx context.Context, in *mysqlmanages
 	l := logic.NewVideoNumLogic(ctx, s.svcCtx)
 	return l.VideoNum(in)
 }
+
+// 关注、取消关注
+func (s *MySQLManageServerServer) RelationAction(ctx context.Context, in *mysqlmanageserver.RelationActionRequest) (*mysqlmanageserver.RelationActionResponse, error) {
+	l := logic.NewRelationActionLogic(ctx, s.svcCtx)
+	return l.RelationAction(in)
+}
+
+// 粉丝列表
+func (s *MySQLManageServerServer) RelationFollowerList(ctx context.Context, in *mysqlmanageserver.RelationFollowerListRequest) (*mysqlmanageserver.RelationFollowerListResponse, error) {
+	l := logic.NewRelationFollowerListLogic(ctx, s.svcCtx)
+	return l.RelationFollowerList(in)
+}
+
+// 关注列表
+func (s *MySQLManageServerServer) RelationFollowList(ctx context.Context, in *mysqlmanageserver.RelationFollowListRequest) (*mysqlmanageserver.RelationFollowListResponse, error) {
+	l := logic.NewRelationFollowListLogic(ctx, s.svcCtx)
+	return l.RelationFollowList(in)
+}

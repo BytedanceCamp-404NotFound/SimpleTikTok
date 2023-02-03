@@ -6,8 +6,8 @@ import (
 
 	"SimpleTikTok/external_api/relationfollow/internal/svc"
 	"SimpleTikTok/external_api/relationfollow/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -52,15 +52,22 @@ func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerReq
 		}, nil
 	}
 
-	// ！！！胡海龙：我先将sql代码抽离出来，有没有bug暂时没测试，过两天考试驾驶证再调试！！！
-
-	ok, err2 := mysqlconnect.RelationAction(int64(id), req.To_user_id, int8(req.Sction_type))
-	if ok {
+	result, err := l.svcCtx.MySQLManageRpc.RelationAction(l.ctx, &mysqlmanageserver.RelationActionRequest{
+		UserID:     int64(id),
+		ToUserID:   req.To_user_id,
+		ActionType: int32(req.Sction_type),
+	})
+	if err != nil {
+		resultJson.StatusCode = int32(commonerror.CommonErr_TIMEOUT)
+		resultJson.StatusMsg = err.Error()
+		return &resultJson, err
+	}
+	if result.Ok {
 		resultJson.StatusCode = 0
 		resultJson.StatusMsg = "success"
 	} else {
 		resultJson.StatusCode = 500
 		resultJson.StatusMsg = err.Error()
 	}
-	return &resultJson, err2
+	return &resultJson, err
 }

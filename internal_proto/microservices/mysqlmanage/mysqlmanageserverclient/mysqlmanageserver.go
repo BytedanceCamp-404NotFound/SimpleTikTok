@@ -13,23 +13,30 @@ import (
 )
 
 type (
-	CheckIsFollowRequest  = mysqlmanageserver.CheckIsFollowRequest
-	CheckIsFollowResponse = mysqlmanageserver.CheckIsFollowResponse
-	CheckUserInfRequest   = mysqlmanageserver.CheckUserInfRequest
-	CheckUserInfResponse  = mysqlmanageserver.CheckUserInfResponse
-	GetVideoListRequest   = mysqlmanageserver.GetVideoListRequest
-	GetVideoListResponse  = mysqlmanageserver.GetVideoListResponse
-	IsFavotiteRequest     = mysqlmanageserver.IsFavotiteRequest
-	IsFavotiteResponse    = mysqlmanageserver.IsFavotiteResponse
-	UserInf               = mysqlmanageserver.UserInf
-	UserLoginRequest      = mysqlmanageserver.UserLoginRequest
-	UserLoginResponse     = mysqlmanageserver.UserLoginResponse
-	UserRegisterRequest   = mysqlmanageserver.UserRegisterRequest
-	UserRegisterResponse  = mysqlmanageserver.UserRegisterResponse
-	Users                 = mysqlmanageserver.Users
-	VideoInfo             = mysqlmanageserver.VideoInfo
-	VideoNumRequest       = mysqlmanageserver.VideoNumRequest
-	VideoNumResponse      = mysqlmanageserver.VideoNumResponse
+	CheckIsFollowRequest         = mysqlmanageserver.CheckIsFollowRequest
+	CheckIsFollowResponse        = mysqlmanageserver.CheckIsFollowResponse
+	CheckUserInfRequest          = mysqlmanageserver.CheckUserInfRequest
+	CheckUserInfResponse         = mysqlmanageserver.CheckUserInfResponse
+	GetVideoListRequest          = mysqlmanageserver.GetVideoListRequest
+	GetVideoListResponse         = mysqlmanageserver.GetVideoListResponse
+	IsFavotiteRequest            = mysqlmanageserver.IsFavotiteRequest
+	IsFavotiteResponse           = mysqlmanageserver.IsFavotiteResponse
+	RelationActionRequest        = mysqlmanageserver.RelationActionRequest
+	RelationActionResponse       = mysqlmanageserver.RelationActionResponse
+	RelationFollowListRequest    = mysqlmanageserver.RelationFollowListRequest
+	RelationFollowListResponse   = mysqlmanageserver.RelationFollowListResponse
+	RelationFollowerListRequest  = mysqlmanageserver.RelationFollowerListRequest
+	RelationFollowerListResponse = mysqlmanageserver.RelationFollowerListResponse
+	RelationUser                 = mysqlmanageserver.RelationUser
+	UserInf                      = mysqlmanageserver.UserInf
+	UserLoginRequest             = mysqlmanageserver.UserLoginRequest
+	UserLoginResponse            = mysqlmanageserver.UserLoginResponse
+	UserRegisterRequest          = mysqlmanageserver.UserRegisterRequest
+	UserRegisterResponse         = mysqlmanageserver.UserRegisterResponse
+	Users                        = mysqlmanageserver.Users
+	VideoInfo                    = mysqlmanageserver.VideoInfo
+	VideoNumRequest              = mysqlmanageserver.VideoNumRequest
+	VideoNumResponse             = mysqlmanageserver.VideoNumResponse
 
 	MySQLManageServer interface {
 		// 用户登陆校验
@@ -46,6 +53,12 @@ type (
 		GetVideoList(ctx context.Context, in *GetVideoListRequest, opts ...grpc.CallOption) (*GetVideoListResponse, error)
 		// 发布列表视频数量
 		VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error)
+		// 关注、取消关注
+		RelationAction(ctx context.Context, in *RelationActionRequest, opts ...grpc.CallOption) (*RelationActionResponse, error)
+		// 粉丝列表
+		RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error)
+		// 关注列表
+		RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error)
 	}
 
 	defaultMySQLManageServer struct {
@@ -99,4 +112,22 @@ func (m *defaultMySQLManageServer) GetVideoList(ctx context.Context, in *GetVide
 func (m *defaultMySQLManageServer) VideoNum(ctx context.Context, in *VideoNumRequest, opts ...grpc.CallOption) (*VideoNumResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
 	return client.VideoNum(ctx, in, opts...)
+}
+
+// 关注、取消关注
+func (m *defaultMySQLManageServer) RelationAction(ctx context.Context, in *RelationActionRequest, opts ...grpc.CallOption) (*RelationActionResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.RelationAction(ctx, in, opts...)
+}
+
+// 粉丝列表
+func (m *defaultMySQLManageServer) RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.RelationFollowerList(ctx, in, opts...)
+}
+
+// 关注列表
+func (m *defaultMySQLManageServer) RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.RelationFollowList(ctx, in, opts...)
 }

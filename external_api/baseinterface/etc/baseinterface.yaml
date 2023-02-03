@@ -8,16 +8,19 @@ Timeout: 100000 # 增加了请求时长，因为数据库响应太慢了
 #   AccessSecret: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 #   AccessExpire: 64800
 MinioManageRpc:
+  Timeout: 10000 #设置rpc响应的超时时间
   Etcd:
     Hosts:
     - 127.0.0.1:2379
     Key: miniomanage.rpc
 MySQLManageRpc:
+  Timeout: 10000 #设置rpc响应的超时时间
   Etcd:
     Hosts:
     - 127.0.0.1:2379
     Key: mysqlmanage.rpc
 UtilServerRpc:
+  Timeout: 10000 #设置rpc响应的超时时间
   Etcd:
     Hosts:
     - 127.0.0.1:2379

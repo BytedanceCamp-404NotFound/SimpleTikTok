@@ -5,8 +5,8 @@ import (
 
 	"SimpleTikTok/external_api/relationfollow/internal/svc"
 	"SimpleTikTok/external_api/relationfollow/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -43,22 +43,27 @@ func (l *RelationFollowListLogic) RelationFollowList(req *types.RelationFollowLi
 		}, nil
 	}
 	resultJson := &types.RelationFollowListHandlerResponse{}
-
-	// ！！！胡海龙：我先将sql代码抽离出来，有没有bug暂时没测试，过两天考试驾驶证再调试！！！
-
-	rflhr, err2 := mysqlconnect.GetFollowList(int64(id), req.UserId)
+	rflhr, err := l.svcCtx.MySQLManageRpc.RelationFollowList(l.ctx, &mysqlmanageserver.RelationFollowListRequest{
+		LoginUserID: int64(id),
+		UserID:      req.UserId,
+	})
+	if err != nil {
+		resultJson.StatusCode = int32(commonerror.CommonErr_TIMEOUT)
+		resultJson.StatusMsg = err.Error()
+		return resultJson, err
+	}
 	Userlist := make([]types.RelationUser, 0)
-	for i := 0; i < len(rflhr); i++ {
-		Userlist[i] = types.RelationUser{
-			Id:            rflhr[i].Id,
-			Name:          rflhr[i].Name,
-			FollowCount:   rflhr[i].FollowCount,
-			FollowerCount: rflhr[i].FollowerCount,
-			IsFollow:      rflhr[i].IsFollow,
-		}
+	for i := 0; i < len(rflhr.RelationUser); i++ {
+		Userlist = append(Userlist, types.RelationUser{
+			Id:            rflhr.RelationUser[i].Id,
+			Name:          rflhr.RelationUser[i].Name,
+			FollowCount:   rflhr.RelationUser[i].FollowCount,
+			FollowerCount: rflhr.RelationUser[i].FollowerCount,
+			IsFollow:      rflhr.RelationUser[i].IsFollow,
+		})
 		resultJson.StatusCode = 0
 		resultJson.StatusMsg = "success"
 	}
 	resultJson.UserList = Userlist
-	return resultJson, err2
+	return resultJson, err
 }

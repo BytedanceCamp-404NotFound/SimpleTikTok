@@ -1,6 +1,8 @@
 Name: mongodbmanage.rpc
 ListenOn: 0.0.0.0:8081
+Timeout: 10000  #设置rpc响应的超时时间
 Etcd:
+  Timeout: 10000  #设置rpc响应的超时时间
   Hosts:
   - 127.0.0.1:2379
   Key: mongodbmanage.rpc
