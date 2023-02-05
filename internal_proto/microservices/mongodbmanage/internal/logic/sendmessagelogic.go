@@ -57,3 +57,4 @@ func (l *SendMessageLogic) SendMessage(in *mongodbmanageserver.MessageActionRequ
 	}
 	return &mongodbmanageserver.MessageActionResponse{}, nil
 }
+
