@@ -121,6 +121,42 @@ message RelationUser  {
     int64 FollowerCount =4;
     bool IsFollow       =5;
 }
+
+message FavoriteVideoNumRequest {
+    int64 userID = 1;
+}
+
+message FavoriteVideoNumResponse {
+    int64 n = 1;
+}
+
+message GetFavoriteVideoListRequest {
+    int64 userID = 1;
+}
+
+message GetFavoriteVideoListResponse {
+    repeated VideoInfo videoInfo = 1;
+}
+
+message AddVideoFavoriteRequest {
+    int64 userID = 1;
+    int64 videoID = 2;
+}
+
+message AddVideoFavoriteResponse {
+    int64 ok = 1;
+}
+
+message SubVideoFavoriteRequest {
+    int64 userID = 1;
+    int64 videoID = 2;
+}
+
+message SubVideoFavoriteResponse {
+    int64 ok = 1;
+}
+
+
 service MySQLManageServer {
 
     // 用户登陆校验
@@ -148,4 +184,12 @@ service MySQLManageServer {
     rpc RelationFollowList(RelationFollowListRequest) returns(RelationFollowListResponse);
     
 
+    //喜欢视频数量
+    rpc FavoriteVideoNum(FavoriteVideoNumRequest) returns(FavoriteVideoNumResponse);
+    //获取喜欢列表
+    rpc GetFavoriteVideoList(GetFavoriteVideoListRequest) returns(GetFavoriteVideoListResponse);
+    //点赞
+    rpc AddVideoFavorite(AddVideoFavoriteRequest) returns(AddVideoFavoriteResponse);
+    //取消点赞
+    rpc SubVideoFavorite(SubVideoFavoriteRequest) returns(SubVideoFavoriteResponse);
 }

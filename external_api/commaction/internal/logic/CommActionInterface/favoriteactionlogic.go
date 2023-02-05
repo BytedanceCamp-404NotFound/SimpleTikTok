@@ -5,8 +5,8 @@ import (
 
 	"SimpleTikTok/external_api/commaction/internal/svc"
 	"SimpleTikTok/external_api/commaction/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -43,23 +43,28 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 		}, nil
 	}
 
+
 	if req.ActionType == 1 {
-		ok, err := mysqlconnect.AddVideoFavorite(int64(id), req.VideoId)
-		if ok == 0 || err != nil {
+		//ok, err := l.svcCtx.MySQLManageRpc.AddVideoFavorite(int64(id), req.VideoId)
+		ok, err := l.svcCtx.MySQLManageRpc.AddVideoFavorite(l.ctx,&mysqlmanageserver.AddVideoFavoriteRequest{
+			UserID: int64(id),
+			VideoID: req.VideoId,
+		})
+		if ok.Ok == 0 || err != nil {
 			logx.Errorf("[pkg]logic [func]FavoriteAction [msg]func AddVideoFavorite [err]%v", err)
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 				StatusMsg:  "点赞失败，稍后重试",
 			}, nil
 		}
-		if ok == -1 {
+		if ok.Ok == -1 {
 			logx.Infof("[pkg]logic [func]FavoriteAction [msg]favorite already")
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
 				StatusMsg:  "无法点赞不存在的视频",
 			}, nil
 		}
-		if ok == -2 {
+		if ok.Ok == -2 {
 			logx.Infof("[pkg]logic [func]FavoriteAction [msg]Video does no exist")
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
@@ -71,22 +76,26 @@ func (l *FavoriteActionLogic) FavoriteAction(req *types.FavoriteActionHandlerReq
 			StatusMsg:  "点赞成功",
 		}, nil
 	} else if req.ActionType == 2 {
-		ok, err := mysqlconnect.SubVideoFavorite(int64(id), req.VideoId)
-		if ok == 0 || err != nil {
+		//ok, err := l.svcCtx.MySQLManageRpc.SubVideoFavorite(int64(id), req.VideoId)
+		ok, err := l.svcCtx.MySQLManageRpc.SubVideoFavorite(l.ctx,&mysqlmanageserver.SubVideoFavoriteRequest{
+			UserID: int64(id),
+			VideoID: req.VideoId,
+		})
+		if ok.Ok == 0 || err != nil {
 			logx.Errorf("[pkg]logic [func]FavoriteAction [msg]func SubVideoFavorite [err]%v", err)
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
 				StatusMsg:  "取消点赞失败，稍后重试",
 			}, nil
 		}
-		if ok == -1 {
+		if ok.Ok == -1 {
 			logx.Infof("[pkg]logic [func]FavoriteAction [msg]Video does no exist")
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
 				StatusMsg:  "已经取消点赞过",
 			}, nil
 		}
-		if ok == -2 {
+		if ok.Ok == -2 {
 			logx.Infof("[pkg]logic [func]FavoriteAction [msg]favorite already")
 			return &types.FavoriteActionHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),

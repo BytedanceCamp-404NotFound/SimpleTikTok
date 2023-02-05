@@ -13,10 +13,16 @@ import (
 )
 
 type (
+	AddVideoFavoriteRequest      = mysqlmanageserver.AddVideoFavoriteRequest
+	AddVideoFavoriteResponse     = mysqlmanageserver.AddVideoFavoriteResponse
 	CheckIsFollowRequest         = mysqlmanageserver.CheckIsFollowRequest
 	CheckIsFollowResponse        = mysqlmanageserver.CheckIsFollowResponse
 	CheckUserInfRequest          = mysqlmanageserver.CheckUserInfRequest
 	CheckUserInfResponse         = mysqlmanageserver.CheckUserInfResponse
+	FavoriteVideoNumRequest      = mysqlmanageserver.FavoriteVideoNumRequest
+	FavoriteVideoNumResponse     = mysqlmanageserver.FavoriteVideoNumResponse
+	GetFavoriteVideoListRequest  = mysqlmanageserver.GetFavoriteVideoListRequest
+	GetFavoriteVideoListResponse = mysqlmanageserver.GetFavoriteVideoListResponse
 	GetVideoListRequest          = mysqlmanageserver.GetVideoListRequest
 	GetVideoListResponse         = mysqlmanageserver.GetVideoListResponse
 	IsFavotiteRequest            = mysqlmanageserver.IsFavotiteRequest
@@ -28,6 +34,8 @@ type (
 	RelationFollowerListRequest  = mysqlmanageserver.RelationFollowerListRequest
 	RelationFollowerListResponse = mysqlmanageserver.RelationFollowerListResponse
 	RelationUser                 = mysqlmanageserver.RelationUser
+	SubVideoFavoriteRequest      = mysqlmanageserver.SubVideoFavoriteRequest
+	SubVideoFavoriteResponse     = mysqlmanageserver.SubVideoFavoriteResponse
 	UserInf                      = mysqlmanageserver.UserInf
 	UserLoginRequest             = mysqlmanageserver.UserLoginRequest
 	UserLoginResponse            = mysqlmanageserver.UserLoginResponse
@@ -59,6 +67,14 @@ type (
 		RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error)
 		// 关注列表
 		RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error)
+		// 喜欢视频数量
+		FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error)
+		// 获取喜欢列表
+		GetFavoriteVideoList(ctx context.Context, in *GetFavoriteVideoListRequest, opts ...grpc.CallOption) (*GetFavoriteVideoListResponse, error)
+		// 点赞
+		AddVideoFavorite(ctx context.Context, in *AddVideoFavoriteRequest, opts ...grpc.CallOption) (*AddVideoFavoriteResponse, error)
+		// 取消点赞
+		SubVideoFavorite(ctx context.Context, in *SubVideoFavoriteRequest, opts ...grpc.CallOption) (*SubVideoFavoriteResponse, error)
 	}
 
 	defaultMySQLManageServer struct {
@@ -130,4 +146,28 @@ func (m *defaultMySQLManageServer) RelationFollowerList(ctx context.Context, in 
 func (m *defaultMySQLManageServer) RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
 	return client.RelationFollowList(ctx, in, opts...)
+}
+
+// 喜欢视频数量
+func (m *defaultMySQLManageServer) FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.FavoriteVideoNum(ctx, in, opts...)
+}
+
+// 获取喜欢列表
+func (m *defaultMySQLManageServer) GetFavoriteVideoList(ctx context.Context, in *GetFavoriteVideoListRequest, opts ...grpc.CallOption) (*GetFavoriteVideoListResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.GetFavoriteVideoList(ctx, in, opts...)
+}
+
+// 点赞
+func (m *defaultMySQLManageServer) AddVideoFavorite(ctx context.Context, in *AddVideoFavoriteRequest, opts ...grpc.CallOption) (*AddVideoFavoriteResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.AddVideoFavorite(ctx, in, opts...)
+}
+
+// 取消点赞
+func (m *defaultMySQLManageServer) SubVideoFavorite(ctx context.Context, in *SubVideoFavoriteRequest, opts ...grpc.CallOption) (*SubVideoFavoriteResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.SubVideoFavorite(ctx, in, opts...)
 }

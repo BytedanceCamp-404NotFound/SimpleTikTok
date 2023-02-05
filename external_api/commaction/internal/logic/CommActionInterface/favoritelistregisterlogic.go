@@ -5,8 +5,9 @@ import (
 
 	"SimpleTikTok/external_api/commaction/internal/svc"
 	"SimpleTikTok/external_api/commaction/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mysqlconnect"
+
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -45,7 +46,9 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 		}, nil
 	}
 
-	n, err := mysqlconnect.FavoriteVideoNum(req.UserID)
+	n, err := l.svcCtx.MySQLManageRpc.FavoriteVideoNum(l.ctx, &mysqlmanageserver.FavoriteVideoNumRequest{
+		UserID: int64(id),
+	})
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]FavoriteListRegister [msg]func FavoriteVideoNum [err]%v", err)
 		return &types.FavoriteListRegisterHandlerResponse{
@@ -54,7 +57,7 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 			VideoList:  []types.Video{},
 		}, nil
 	}
-	if n == -1 {
+	if n.N == -1 {
 		logx.Infof("[pkg]logic [func]FavoriteListRegister [msg]User does not exit ")
 		return &types.FavoriteListRegisterHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_DB_ERROR),
@@ -63,7 +66,9 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 		}, nil
 	}
 
-	v, err := mysqlconnect.GetFavoriteVideoList(req.UserID)
+	v, err := l.svcCtx.MySQLManageRpc.GetFavoriteVideoList(l.ctx, &mysqlmanageserver.GetFavoriteVideoListRequest{
+		UserID: int64(id),
+	})
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]FavoriteListRegister [msg]func GetFavoriteVideoList [err]%v", err)
 		return &types.FavoriteListRegisterHandlerResponse{
@@ -73,10 +78,14 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 		}, nil
 	}
 
-	videolist := make([]types.Video, n)
-	for i := 0; i < int(n); i++ {
-		user, ok := mysqlconnect.CheckUserInf(int(v[i].AuthorID), id)
-		if !ok {
+	videolist := make([]types.Video, n.N)
+	for i := 0; i < int(n.N); i++ {
+		//user, ok := l.svcCtx.MySQLManageRpc.CheckUserInf(int(v[i].AuthorID), id)
+		user, ok := l.svcCtx.MySQLManageRpc.CheckUserInf(l.ctx, &mysqlmanageserver.CheckUserInfRequest{
+			UserId:     int64(v.VideoInfo[i].AuthorId),
+			FollowerId: int64(id),
+		})
+		if ok != nil {
 			logx.Infof("[pkg]logic [func]FavoriteListRegister [msg]User does not exist")
 			return &types.FavoriteListRegisterHandlerResponse{
 				StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
@@ -85,20 +94,20 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 			}, nil
 		}
 		videolist[i] = types.Video{
-			Id: v[i].VideoID,
+			Id: v.VideoInfo[i].VideoId,
 			Author: types.User{
-				UserId:        user.User.UserID,
-				Name:          user.User.UserNickName,
-				FollowCount:   user.User.FollowCount,
-				FollowerCount: user.User.FollowerCount,
-				IsFollow:      user.IsFollow,
+				UserId:        user.User.Users.UserId,
+				Name:          user.User.Users.UserNickName,
+				FollowCount:   user.User.Users.FollowCount,
+				FollowerCount: user.User.Users.FollowerCount,
+				IsFollow:      user.User.IsFollow,
 			},
-			PlayUrl:       v[i].PlayUrl,
-			CoverUrl:      v[i].CoverUrl,
-			FavoriteCount: v[i].FavoriteCount,
-			CommentCount:  v[i].CommentCount,
-			IsFavotite:    v[i].IsFavotite,
-			VideoTitle:    v[i].VideoTitle,
+			PlayUrl:       v.VideoInfo[i].PlayUrl,
+			CoverUrl:      v.VideoInfo[i].CoverUrl,
+			FavoriteCount: v.VideoInfo[i].FavoriteCount,
+			CommentCount:  v.VideoInfo[i].CommentCount,
+			IsFavotite:    v.VideoInfo[i].IsFavotite,
+			VideoTitle:    v.VideoInfo[i].VideoTitle,
 		}
 	}
 	return &types.FavoriteListRegisterHandlerResponse{
