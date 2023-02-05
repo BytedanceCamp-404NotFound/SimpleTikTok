@@ -9,4 +9,5 @@ import (
 type Config struct {
 	rest.RestConf
 	MySQLManageRpc zrpc.RpcClientConf
+	MongoDBManageRpc zrpc.RpcClientConf
 }

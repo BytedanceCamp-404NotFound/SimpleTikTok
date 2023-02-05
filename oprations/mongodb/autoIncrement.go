@@ -7,6 +7,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+
+func InitAutoIncrement(collection *mongo.Collection) {
+	filter := bson.D{{
+		Key:   "name",
+		Value: "auto_increment",
+	}}
+	num, _ := collection.CountDocuments(context.Background(), filter)
+	if num == 0 {
+		increment := autoIncrement{
+			Name:  "auto_increment",
+			Value: 0,
+		}
+		collection.InsertOne(context.Background(), increment)
+	}
+}
+
 // get comment_id
 func GetId(collection *mongo.Collection) (int64, error) {
 	filter := bson.D{{

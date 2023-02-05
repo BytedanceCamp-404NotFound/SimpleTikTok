@@ -22,7 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MongodbManageServerClient interface {
-	GetMinio(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*MinioResponse, error)
+	MakeComment(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error)
+	GetComment(ctx context.Context, in *CommentListRequest, opts ...grpc.CallOption) (*CommentListResponse, error)
+	GetMessage(ctx context.Context, in *MessageChatRequest, opts ...grpc.CallOption) (*MessageChatResponse, error)
+	SendMessage(ctx context.Context, in *MessageActionRequest, opts ...grpc.CallOption) (*MessageActionResponse, error)
 }
 
 type mongodbManageServerClient struct {
@@ -33,9 +36,36 @@ func NewMongodbManageServerClient(cc grpc.ClientConnInterface) MongodbManageServ
 	return &mongodbManageServerClient{cc}
 }
 
-func (c *mongodbManageServerClient) GetMinio(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*MinioResponse, error) {
-	out := new(MinioResponse)
-	err := c.cc.Invoke(ctx, "/mongodbmanageserver.MongodbManageServer/getMinio", in, out, opts...)
+func (c *mongodbManageServerClient) MakeComment(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error) {
+	out := new(CommentActionResponse)
+	err := c.cc.Invoke(ctx, "/mongodbmanageserver.MongodbManageServer/MakeComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mongodbManageServerClient) GetComment(ctx context.Context, in *CommentListRequest, opts ...grpc.CallOption) (*CommentListResponse, error) {
+	out := new(CommentListResponse)
+	err := c.cc.Invoke(ctx, "/mongodbmanageserver.MongodbManageServer/GetComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mongodbManageServerClient) GetMessage(ctx context.Context, in *MessageChatRequest, opts ...grpc.CallOption) (*MessageChatResponse, error) {
+	out := new(MessageChatResponse)
+	err := c.cc.Invoke(ctx, "/mongodbmanageserver.MongodbManageServer/GetMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mongodbManageServerClient) SendMessage(ctx context.Context, in *MessageActionRequest, opts ...grpc.CallOption) (*MessageActionResponse, error) {
+	out := new(MessageActionResponse)
+	err := c.cc.Invoke(ctx, "/mongodbmanageserver.MongodbManageServer/SendMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +76,10 @@ func (c *mongodbManageServerClient) GetMinio(ctx context.Context, in *IdRequest,
 // All implementations must embed UnimplementedMongodbManageServerServer
 // for forward compatibility
 type MongodbManageServerServer interface {
-	GetMinio(context.Context, *IdRequest) (*MinioResponse, error)
+	MakeComment(context.Context, *CommentActionRequest) (*CommentActionResponse, error)
+	GetComment(context.Context, *CommentListRequest) (*CommentListResponse, error)
+	GetMessage(context.Context, *MessageChatRequest) (*MessageChatResponse, error)
+	SendMessage(context.Context, *MessageActionRequest) (*MessageActionResponse, error)
 	mustEmbedUnimplementedMongodbManageServerServer()
 }
 
@@ -54,8 +87,17 @@ type MongodbManageServerServer interface {
 type UnimplementedMongodbManageServerServer struct {
 }
 
-func (UnimplementedMongodbManageServerServer) GetMinio(context.Context, *IdRequest) (*MinioResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMinio not implemented")
+func (UnimplementedMongodbManageServerServer) MakeComment(context.Context, *CommentActionRequest) (*CommentActionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MakeComment not implemented")
+}
+func (UnimplementedMongodbManageServerServer) GetComment(context.Context, *CommentListRequest) (*CommentListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetComment not implemented")
+}
+func (UnimplementedMongodbManageServerServer) GetMessage(context.Context, *MessageChatRequest) (*MessageChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMessage not implemented")
+}
+func (UnimplementedMongodbManageServerServer) SendMessage(context.Context, *MessageActionRequest) (*MessageActionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
 func (UnimplementedMongodbManageServerServer) mustEmbedUnimplementedMongodbManageServerServer() {}
 
@@ -70,20 +112,74 @@ func RegisterMongodbManageServerServer(s grpc.ServiceRegistrar, srv MongodbManag
 	s.RegisterService(&MongodbManageServer_ServiceDesc, srv)
 }
 
-func _MongodbManageServer_GetMinio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IdRequest)
+func _MongodbManageServer_MakeComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommentActionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MongodbManageServerServer).GetMinio(ctx, in)
+		return srv.(MongodbManageServerServer).MakeComment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mongodbmanageserver.MongodbManageServer/getMinio",
+		FullMethod: "/mongodbmanageserver.MongodbManageServer/MakeComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MongodbManageServerServer).GetMinio(ctx, req.(*IdRequest))
+		return srv.(MongodbManageServerServer).MakeComment(ctx, req.(*CommentActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MongodbManageServer_GetComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommentListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MongodbManageServerServer).GetComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mongodbmanageserver.MongodbManageServer/GetComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MongodbManageServerServer).GetComment(ctx, req.(*CommentListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MongodbManageServer_GetMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MongodbManageServerServer).GetMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mongodbmanageserver.MongodbManageServer/GetMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MongodbManageServerServer).GetMessage(ctx, req.(*MessageChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MongodbManageServer_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MongodbManageServerServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mongodbmanageserver.MongodbManageServer/SendMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MongodbManageServerServer).SendMessage(ctx, req.(*MessageActionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +192,20 @@ var MongodbManageServer_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MongodbManageServerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "getMinio",
-			Handler:    _MongodbManageServer_GetMinio_Handler,
+			MethodName: "MakeComment",
+			Handler:    _MongodbManageServer_MakeComment_Handler,
+		},
+		{
+			MethodName: "GetComment",
+			Handler:    _MongodbManageServer_GetComment_Handler,
+		},
+		{
+			MethodName: "GetMessage",
+			Handler:    _MongodbManageServer_GetMessage_Handler,
+		},
+		{
+			MethodName: "SendMessage",
+			Handler:    _MongodbManageServer_SendMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

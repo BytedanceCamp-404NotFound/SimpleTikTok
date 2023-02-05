@@ -24,7 +24,6 @@ MongoDB:
  mongoUrl: 192.168.31.132
  mongoPort: 27017
  mongoDatabase: "tiktok"
- mongoTable: "comment"
 
 gormpool:
  MaxIdleConns: 25

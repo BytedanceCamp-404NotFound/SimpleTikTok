@@ -13,11 +13,23 @@ import (
 )
 
 type (
-	IdRequest     = mongodbmanageserver.IdRequest
-	MinioResponse = mongodbmanageserver.MinioResponse
+	Comment               = mongodbmanageserver.Comment
+	CommentActionRequest  = mongodbmanageserver.CommentActionRequest
+	CommentActionResponse = mongodbmanageserver.CommentActionResponse
+	CommentListRequest    = mongodbmanageserver.CommentListRequest
+	CommentListResponse   = mongodbmanageserver.CommentListResponse
+	Message               = mongodbmanageserver.Message
+	MessageActionRequest  = mongodbmanageserver.MessageActionRequest
+	MessageActionResponse = mongodbmanageserver.MessageActionResponse
+	MessageChatRequest    = mongodbmanageserver.MessageChatRequest
+	MessageChatResponse   = mongodbmanageserver.MessageChatResponse
+	User                  = mongodbmanageserver.User
 
 	MongodbManageServer interface {
-		GetMinio(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*MinioResponse, error)
+		MakeComment(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error)
+		GetComment(ctx context.Context, in *CommentListRequest, opts ...grpc.CallOption) (*CommentListResponse, error)
+		GetMessage(ctx context.Context, in *MessageChatRequest, opts ...grpc.CallOption) (*MessageChatResponse, error)
+		SendMessage(ctx context.Context, in *MessageActionRequest, opts ...grpc.CallOption) (*MessageActionResponse, error)
 	}
 
 	defaultMongodbManageServer struct {
@@ -31,7 +43,22 @@ func NewMongodbManageServer(cli zrpc.Client) MongodbManageServer {
 	}
 }
 
-func (m *defaultMongodbManageServer) GetMinio(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*MinioResponse, error) {
+func (m *defaultMongodbManageServer) MakeComment(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error) {
 	client := mongodbmanageserver.NewMongodbManageServerClient(m.cli.Conn())
-	return client.GetMinio(ctx, in, opts...)
+	return client.MakeComment(ctx, in, opts...)
+}
+
+func (m *defaultMongodbManageServer) GetComment(ctx context.Context, in *CommentListRequest, opts ...grpc.CallOption) (*CommentListResponse, error) {
+	client := mongodbmanageserver.NewMongodbManageServerClient(m.cli.Conn())
+	return client.GetComment(ctx, in, opts...)
+}
+
+func (m *defaultMongodbManageServer) GetMessage(ctx context.Context, in *MessageChatRequest, opts ...grpc.CallOption) (*MessageChatResponse, error) {
+	client := mongodbmanageserver.NewMongodbManageServerClient(m.cli.Conn())
+	return client.GetMessage(ctx, in, opts...)
+}
+
+func (m *defaultMongodbManageServer) SendMessage(ctx context.Context, in *MessageActionRequest, opts ...grpc.CallOption) (*MessageActionResponse, error) {
+	client := mongodbmanageserver.NewMongodbManageServerClient(m.cli.Conn())
+	return client.SendMessage(ctx, in, opts...)
 }

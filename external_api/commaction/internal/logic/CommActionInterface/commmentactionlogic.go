@@ -5,15 +5,11 @@ import (
 
 	"SimpleTikTok/external_api/commaction/internal/svc"
 	"SimpleTikTok/external_api/commaction/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mongodbmanage/types/mongodbmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mongodb"
-	"SimpleTikTok/oprations/mysqlconnect"
 	tools "SimpleTikTok/tools/token"
-	"fmt"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type CommmentActionLogic struct {
@@ -32,75 +28,54 @@ func NewCommmentActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Co
 
 func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerRequest) (resp *types.CommmentActionHandlerResponse, err error) {
 	//parse token
-	resp = new(types.CommmentActionHandlerResponse)
 	flag, userId, err := tools.CheckToke(req.Token)
-	if !flag {
+	if !flag || err != nil {
 		logx.Errorf("[pkg]logic [func]CommentAction [msg]parse token failed, [err]%v", err)
-		resp.StatusCode = int32(commonerror.CommonErr_PARSE_TOKEN_ERROR)
-		resp.StatusMsg = "parse token failed"
-		return resp, err
+		return &types.CommmentActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
+			StatusMsg:  "parse token failed",
+		}, err
 	}
-	//get collection from mongodb
-	collection := mongodb.MongoDBCollection
-	actionType := req.ActionType
-	videoId := req.VideoId
-	if actionType == 2 {
-		//delete comment
-		commentId := req.CommentId
-		filter := bson.D{{
-			Key:   "_id",
-			Value: commentId,
+	rpcResponse, err := l.svcCtx.MongoDBMangerRpc.MakeComment(l.ctx, &mongodbmanageserver.CommentActionRequest{
+		UserId:      int64(userId),
+		VideoId:     req.VideoId,
+		ActionType:  req.ActionType,
+		CommentText: &req.CommentText,
+		CommentId:   &req.CommentId,
+	})
+	if err != nil {
+		logx.Errorf("[pkg]logic [func]CommentAction [msg]make comment failed, [err]%v", err)
+		return &types.CommmentActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_RPC_RETUEN_ERROR),
+			StatusMsg:  "make comment failed",
+			Comment:    types.CommentResp{},
+		}, err
+	}
+
+	if req.ActionType == 2 {
+		return &types.CommmentActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+			StatusMsg:  "delete comment success",
+			Comment:    types.CommentResp{},
+		}, nil
+	}
+
+	comment := types.CommentResp{
+		Id: rpcResponse.Comment.Id,
+		User: types.User{
+			UserId:        rpcResponse.Comment.User.UserId,
+			Name:          rpcResponse.Comment.User.UserNickName,
+			FollowCount:   rpcResponse.Comment.User.FollowCount,
+			FollowerCount: rpcResponse.Comment.User.FollowerCount,
+			IsFollow:      rpcResponse.Comment.User.IsFollow,
 		},
-			{
-				Key:   "video_id",
-				Value: videoId,
-			}}
-		_, err = collection.DeleteOne(context.Background(), filter)
-		if err != nil {
-			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
-			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
-			resp.StatusMsg = "delete comment failed"
-			return resp, err
-		}
-		resp.StatusCode = int32(commonerror.CommonErr_STATUS_OK)
-		resp.StatusMsg = "delete success"
-	} else {
-		//insert comment
-		comUser, err := mysqlconnect.CommentGetUserByUserId(userId)
-		if err != nil {
-			logx.Errorf("[pkg]logic [func]CommentAction [msg]search user_info failed, [err]%v", err)
-			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
-			resp.StatusMsg = "search user_info failed"
-			return resp, err
-		}
-		user := types.User(comUser)
-		content := req.CommentText
-		date := time.Now()
-		createDate := fmt.Sprintf("%d-%v", date.Month(), date.Day())
-		id, err := mongodb.GetId(collection)
-		if err != nil {
-			logx.Errorf("[pkg]logic [func]CommentAction [msg]get id failed, [err]%v", err)
-			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
-			resp.StatusMsg = "get id failed"
-			return resp, err
-		}
-		comment := types.Comment{
-			Id:         id,
-			VideoId:    videoId,
-			User:       user,
-			Content:    content,
-			CreateDate: createDate,
-		}
-		_, err = collection.InsertOne(context.Background(), comment)
-		if err != nil {
-			logx.Errorf("[pkg]logic [func]CommentAction [msg]insert comment failed, [err]%v", err)
-			resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
-			resp.StatusMsg = "insert comment failed"
-			return resp, err
-		}
-		resp.StatusCode = int32(commonerror.CommonErr_STATUS_OK)
-		resp.StatusMsg = "insert success"
-		resp.Comment = comment
+		Content:    rpcResponse.Comment.Content,
+		CreateDate: rpcResponse.Comment.CreateDate,
 	}
-	return
+
+	return &types.CommmentActionHandlerResponse{
+		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusMsg:  "make comment success",
+		Comment:    comment,
+	}, nil
 }
