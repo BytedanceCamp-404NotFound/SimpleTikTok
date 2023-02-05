@@ -5,6 +5,32 @@ package mysqlmanageserver;
 // protoc-gen-go 版本大于1.4.0, proto文件需要加上go_package,否则无法生成
 option go_package = "./mysqlmanageserver";
   
+message FeedUserInfo {
+	int64 UserID = 1;        // 用户ID
+	string UserNickName = 2;   // 用户名称
+	int64 FollowCount = 3;     // 关注总数
+	int64 FollowerCount = 4;   // 粉丝总数
+	bool IsFollow = 5;         // true-已关注
+}
+
+// 取流接口获取用户信息
+message GetFeedUserInfoRequest {
+    int64 userID = 1;
+}
+
+message GetFeedUserInfoResponse {
+    FeedUserInfo FeedUserInfo = 1;
+}
+
+// 取流接口获取视频列表
+message GetFeedVideoListRequest {
+
+}
+
+message GetFeedVideoListResponse {
+    repeated VideoInfo videoInfo = 1;
+}
+
 message UserLoginRequest {
     string username = 1;
     string password = 2;
@@ -21,6 +47,27 @@ message UserRegisterRequest {
 
 message UserRegisterResponse {
     int64 userId = 1;
+}
+
+
+// 上传视频的结构体定义
+message PublishActionVideoInfo{
+	int32  Video_id = 1;       
+	int64 Author_id =2;     
+    string Play_url=3;       // 视频播放地址
+	string Cover_url=4;       // 视频封面地址
+	int64 Favorite_count=5;   // 视频的点赞总数
+	int64 Comment_count=6;    // 视频的评论总数
+	string Video_title=7;     // 视频标题
+}
+
+// 视频上传接口创建视频信息
+message CreatePublishActionViedeInfoRequest {
+    PublishActionVideoInfo VideoInfo = 1;
+}
+
+message CreatePublishActionViedeInfoResponse {
+
 }
 
 message User_inf {
@@ -157,12 +204,21 @@ message SubVideoFavoriteResponse {
 }
 
 
+
+
 service MySQLManageServer {
+    // 取流接口获取用户信息
+    rpc GetFeedUserInfo(GetFeedUserInfoRequest) returns(GetFeedUserInfoResponse);
+    // 取流接口获取视频列表
+    rpc GetFeedVideoList(GetFeedVideoListRequest) returns(GetFeedVideoListResponse);
 
     // 用户登陆校验
     rpc UserLogin(UserLoginRequest) returns(UserLoginResponse);
     // 用户注册
     rpc UserRigster(UserRegisterRequest) returns(UserRegisterResponse);
+
+    // 视频上传接口创建视频信息
+    rpc CreatePublishActionViedeInfo(CreatePublishActionViedeInfoRequest) returns(CreatePublishActionViedeInfoResponse);
 
     // 获得用户信息
     rpc CheckUserInf(CheckUserInfRequest) returns(CheckUserInfResponse);

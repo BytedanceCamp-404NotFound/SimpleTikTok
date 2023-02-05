@@ -15,10 +15,10 @@ import (
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 
 	// "SimpleTikTok/oprations/commonerror"
 	minio "SimpleTikTok/oprations/minioconnect"
-	"SimpleTikTok/oprations/mysqlconnect"
 	// tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -58,7 +58,7 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	// }
 	userId := 1
 
-	go UploadData(r, userId, req.Title) //任务量太多，开协程传输
+	go l.UploadData(r, userId, req.Title) //任务量太多，开协程传输
 
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]PublishAction [msg]CreatePublishActionViedeInfo is err [err]%v", err)
@@ -70,8 +70,8 @@ func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerReques
 	}, err
 }
 
-func UploadData(r *http.Request, userId int, title string) {
-
+// 上传视频的总协程
+func (l *PublishActionLogic) UploadData(r *http.Request, userId int, title string) {
 	DownloadFile(r)
 
 	// videoPath := "/yzx/src/SimpleTikTok/source/video/video_test2.mp4"
@@ -87,40 +87,40 @@ func UploadData(r *http.Request, userId int, title string) {
 	minioVideoUrl, minioPictureUrl, err := minioUpDate(r) // Minio 上传文件
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]PublishAction [msg]minioUpDate is fail [err]%v", err)
-		// return &types.PublishActionHandlerResponse{
-		// 	StatusCode: int32(commonerror.CommonErr_PAGE_NOT_EXIT),
-		// 	StatusMsg:  "没有收到视频文件或者出现其他错误",
-		// }, err
 	}
 
-	VideoInfo := &mysqlconnect.PublishActionVideoInfo{
-		Video_id:       int32(uuid.New().ID()),
-		Author_id:      int64(userId),
-		Play_url:       minioVideoUrl,
-		Cover_url:      minioPictureUrl,
-		Favorite_count: 0,
-		Comment_count:  0,
-		Video_title:    title,
+	tmpvideoInfo := &mysqlmanageserver.PublishActionVideoInfo{
+		VideoId:       int32(uuid.New().ID()),
+		AuthorId:      int64(userId),
+		PlayUrl:       minioVideoUrl,
+		CoverUrl:      minioPictureUrl,
+		FavoriteCount: 0,
+		CommentCount:  0,
+		VideoTitle:    title,
 	}
 	// gorm创建一条信息
-	err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
+	// err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
+	resp, err := l.svcCtx.MySQLManageRpc.CreatePublishActionViedeInfo(l.ctx, &mysqlmanageserver.CreatePublishActionViedeInfoRequest{
+		VideoInfo: tmpvideoInfo,
+	})
+	_ = resp
 }
 
 // TODO: 将保存的文件名转化为传输的名字
 // https://zhuanlan.zhihu.com/p/136410759
-func DownloadFile(r *http.Request) error {
+func DownloadFile(r *http.Request) (string, error) {
 	fileType := r.PostFormValue("data")
 	_ = fileType
 	file, _, err := r.FormFile("data")
 	if err != nil {
 		logx.Errorf("err:%v", err)
-		return err
+		return "", err
 	}
 	defer file.Close()
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		logx.Errorf("err:%v", err)
-		return err
+		return "", err
 	}
 	filetypecheck := http.DetectContentType(fileBytes)
 	_ = filetypecheck
@@ -129,15 +129,15 @@ func DownloadFile(r *http.Request) error {
 	newFile, err := os.Create(newPath)
 	if err != nil {
 		logx.Errorf("err:%v", err)
-		return err
+		return "", err
 	}
 	defer newFile.Close()
 	_, err = newFile.Write(fileBytes)
 	if err != nil {
 		logx.Errorf("err:%v", err)
-		return err
+		return "", err
 	}
-	return nil
+	return newPath, nil
 }
 
 func GetSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName string, err error) {
@@ -171,13 +171,6 @@ func GetSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 
 // 图片和视频上传到minio
 func minioUpDate(r *http.Request) (string, string, error) {
-	// TOTEMP
-	// exePath, _ := os.Executable()
-	// sourceFile := filepath.Dir(filepath.Dir(exePath))
-	//vidoeFile := fmt.Sprintf("%s/source/video/video_test1.mp4", sourceFile)
-	// pictureFile := fmt.Sprintf("%s/source/pic/pic_test2.jpg", sourceFile)
-	// content, err := os.ReadFile(vidoeFile)
-
 	bucketName := "testminio"
 	minioClient, err := minio.MinioConnect()
 	if err != nil {

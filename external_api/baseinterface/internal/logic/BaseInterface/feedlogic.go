@@ -10,6 +10,7 @@ import (
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/mysqlconnect"
 
@@ -53,8 +54,9 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	// 	}, nil
 	// }
 
-	var feedVideLists []mysqlconnect.VideoInfo
-	feedVideLists, err = mysqlconnect.GetFeedVideoList()
+	// var feedVideLists []mysqlconnect.VideoInfo
+	feedVideLists, err := l.svcCtx.MySQLManageRpc.GetFeedVideoList(l.ctx, &mysqlmanageserver.GetFeedVideoListRequest{})
+	// feedVideLists, err = mysqlconnect.GetFeedVideoList()
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedVideoList [err]%v", err)
 		return &types.FeedHandlerResponse{
@@ -74,20 +76,26 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 		}, nil
 	}
 
-	var respFeedVideoList = make([]types.VideoTest, len(feedVideLists))
-	for index, val := range feedVideLists {
-		respFeedVideoList[index].Id = val.VideoID
-		tmpAuthor, _ := getUserInfo(int(val.AuthorID))
-		respFeedVideoList[index].Author = tmpAuthor
-		realPlayUrl, _ := getPlayUrl(val.PlayUrl)
-		respFeedVideoList[index].PlayUrl = realPlayUrl
-		// realCoverUrl, _ := getPlayUrl(val.CoverUrl)
-		// _ = realCoverUrl
-		respFeedVideoList[index].CoverUrl = "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
-		respFeedVideoList[index].FavoriteCount = val.FavoriteCount
-		respFeedVideoList[index].CommentCount = val.CommentCount
-		respFeedVideoList[index].IsFavotite = val.IsFavotite
-		// respFeedVideoList[index].VideoTitle = val.VideoTitle
+	// var respFeedVideoList = make([]types.VideoTest, len(feedVideLists.VideoInfo))
+	var respFeedVideoList = make([]types.VideoTest, 0)
+	for _, val := range feedVideLists.VideoInfo {
+		if val.PlayUrl == ""{
+			continue
+		}
+		tmpAuthor, _ := getUserInfo(int(val.AuthorId))
+		if tmpAuthor.Name == ""{
+			continue
+		}
+		// realPlayUrl, _ := getPlayUrl(val.PlayUrl)
+		respFeedVideoList = append(respFeedVideoList, types.VideoTest{
+			Id:            val.VideoId,
+			Author:        tmpAuthor,
+			PlayUrl:       "http://175.178.93.55:9001/test-minio/vidoeFile/94e010c6-4c6e-4c2c-8d0b-b9afea9760d6-video_test12.mp4",
+			CoverUrl:      "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png",
+			FavoriteCount: val.FavoriteCount,
+			CommentCount:  val.CommentCount,
+			IsFavotite:    val.IsFavotite,
+		})
 	}
 
 	return &types.FeedHandlerResponse{
@@ -136,6 +144,28 @@ func DecodeFileKey(key string) (*MinioKeyVal, error) {
 	return keyval, nil
 }
 
+// func (l *FeedLogic) getUserInfo(userID int) (types.User, error) {
+// 	resp, err := l.svcCtx.MySQLManageRpc.GetFeedUserInfo(l.ctx, &mysqlmanageserver.GetFeedUserInfoRequest{
+// 		UserID: int64(userID),
+// 	})
+// 	// feedUserInfo, err := mysqlconnect.GetFeedUserInfo(userID)
+// 	if err != nil {
+// 		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedUserInfo [err]%v", err)
+// 		return types.User{}, err
+// 	}
+// 	if resp.FeedUserInfo == nil {
+// 		return types.User{}, err
+// 	}
+
+// 	var respFeedUserInfo types.User
+// 	respFeedUserInfo.UserId = resp.FeedUserInfo.UserID
+// 	respFeedUserInfo.Name = resp.FeedUserInfo.UserNickName
+// 	respFeedUserInfo.FollowCount = resp.FeedUserInfo.FollowCount
+// 	respFeedUserInfo.FollowerCount = resp.FeedUserInfo.FollowerCount
+// 	respFeedUserInfo.IsFollow = resp.FeedUserInfo.IsFollow
+// 	return respFeedUserInfo, nil
+// }
+
 func getUserInfo(userID int) (types.User, error) {
 	feedUserInfo, err := mysqlconnect.GetFeedUserInfo(userID)
 	if err != nil {
@@ -156,6 +186,10 @@ func getUserInfo(userID int) (types.User, error) {
 }
 
 func getPlayUrl(playUrl string) (string, error) {
+	if playUrl == "" {
+		logx.Infof("[pkg]BaseInterface [func]getPlayUrl [msg]playUrl is nil")
+		return "", nil
+	}
 	decodeKey, err := DecodeFileKey(playUrl)
 	if err != nil {
 		logx.Errorf("decode base64 error:%v", err)

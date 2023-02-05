@@ -22,6 +22,18 @@ func NewMySQLManageServerServer(svcCtx *svc.ServiceContext) *MySQLManageServerSe
 	}
 }
 
+// 取流接口获取用户信息
+func (s *MySQLManageServerServer) GetFeedUserInfo(ctx context.Context, in *mysqlmanageserver.GetFeedUserInfoRequest) (*mysqlmanageserver.GetFeedUserInfoResponse, error) {
+	l := logic.NewGetFeedUserInfoLogic(ctx, s.svcCtx)
+	return l.GetFeedUserInfo(in)
+}
+
+// 取流接口获取视频列表
+func (s *MySQLManageServerServer) GetFeedVideoList(ctx context.Context, in *mysqlmanageserver.GetFeedVideoListRequest) (*mysqlmanageserver.GetFeedVideoListResponse, error) {
+	l := logic.NewGetFeedVideoListLogic(ctx, s.svcCtx)
+	return l.GetFeedVideoList(in)
+}
+
 // 用户登陆校验
 func (s *MySQLManageServerServer) UserLogin(ctx context.Context, in *mysqlmanageserver.UserLoginRequest) (*mysqlmanageserver.UserLoginResponse, error) {
 	l := logic.NewUserLoginLogic(ctx, s.svcCtx)
@@ -32,6 +44,12 @@ func (s *MySQLManageServerServer) UserLogin(ctx context.Context, in *mysqlmanage
 func (s *MySQLManageServerServer) UserRigster(ctx context.Context, in *mysqlmanageserver.UserRegisterRequest) (*mysqlmanageserver.UserRegisterResponse, error) {
 	l := logic.NewUserRigsterLogic(ctx, s.svcCtx)
 	return l.UserRigster(in)
+}
+
+// 视频上传接口创建视频信息
+func (s *MySQLManageServerServer) CreatePublishActionViedeInfo(ctx context.Context, in *mysqlmanageserver.CreatePublishActionViedeInfoRequest) (*mysqlmanageserver.CreatePublishActionViedeInfoResponse, error) {
+	l := logic.NewCreatePublishActionViedeInfoLogic(ctx, s.svcCtx)
+	return l.CreatePublishActionViedeInfo(in)
 }
 
 // 获得用户信息
