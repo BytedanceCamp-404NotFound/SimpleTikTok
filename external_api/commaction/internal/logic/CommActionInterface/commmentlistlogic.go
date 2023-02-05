@@ -5,13 +5,11 @@ import (
 
 	"SimpleTikTok/external_api/commaction/internal/svc"
 	"SimpleTikTok/external_api/commaction/internal/types"
+	"SimpleTikTok/internal_proto/microservices/mongodbmanage/types/mongodbmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/mongodb"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type CommmentListLogic struct {
@@ -29,61 +27,44 @@ func NewCommmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Comm
 }
 
 func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) (resp *types.CommmentListHandlerResponse, err error) {
-	resp = new(types.CommmentListHandlerResponse)
-	resp.StatusCode = 400
-	var comments []types.Comment
-	token := req.Token
-	flag, _, err := tools.CheckToke(token)
-	if !flag {
+	flag, _, err := tools.CheckToke(req.Token)
+	if !flag || err != nil {
 		logx.Errorf("[pkg]logic [func]CommmentList [msg]parse token failed, [err]%v", err)
-		resp.StatusCode = int32(commonerror.CommonErr_PARSE_TOKEN_ERROR)
-		resp.StatusMsg = "parse token failed"
-		return resp, err
+		return &types.CommmentListHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
+			StatusMsg:  "parse token failed",
+		}, err
 	}
-	videoId := req.VideoId
-	collection := mongodb.MongoDBCollection
-	filter := bson.D{{
-		Key:   "video_id",
-		Value: videoId,
-	}}
-	opts := &options.FindOptions{}
-	sortOption := bson.D{{
-		Key:   "create_date",
-		Value: -1,
-	}, {
-		Key:   "_id",
-		Value: -1,
-	}}
-	opts.Sort = sortOption
-	cur, err := collection.Find(context.Background(), filter, opts)
-	if err != nil {
-		logx.Errorf("[pkg]logic [func]CommmentList [msg]find comments failed, [err]%v", err)
-		resp.StatusCode = int32(commonerror.CommonErr_DB_ERROR)
-		resp.StatusMsg = "find comments failed"
-		return resp, err
-	}
-	for cur.Next(context.Background()) {
-		var comment types.Comment
-		err = cur.Decode(&comment)
-		if err != nil {
-			logx.Errorf("[pkg]logic [func]CommmentList [msg]decode comment failed, [err]%v", err)
-			resp.StatusCode = int32(commonerror.CommonErr_PARAMETER_FAILED)
-			resp.StatusMsg = "decode comment failed"
-			return resp, err
-		}
-		comments = append(comments, comment)
 
-	}
-	err = cur.Err()
+	rpcResponse, err := l.svcCtx.MongoDBMangerRpc.GetComment(l.ctx, &mongodbmanageserver.CommentListRequest{
+		VideoId: req.VideoId,
+	})
 	if err != nil {
-		logx.Errorf("[pkg]logic [func]CommmentList [msg]cur has an error, [err]%v", err)
-		resp.StatusCode = int32(commonerror.CommonErr_PARAMETER_FAILED)
-		resp.StatusMsg = "cur has an error"
-		return resp, err
+		logx.Errorf("[pkg]logic [func]CommmentList [msg]get comment list, [err]%v", err)
+		return &types.CommmentListHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
+			StatusMsg:  "get comment list",
+		}, err
 	}
-	cur.Close(context.Background())
-	resp.StatusCode = int32(commonerror.CommonErr_STATUS_OK)
-	resp.StatusMsg = "get commentList success"
-	resp.CommentList = comments
-	return resp, nil
+	var commentList []types.CommentResp
+	for _, v := range rpcResponse.CommentList {
+		singleComment := types.CommentResp{
+			Id: v.Id,
+			User: types.User{
+				UserId:        v.User.UserId,
+				Name:          v.User.UserNickName,
+				FollowCount:   v.User.FollowCount,
+				FollowerCount: v.User.FollowerCount,
+				IsFollow:      v.User.IsFollow,
+			},
+			Content:    v.Content,
+			CreateDate: v.CreateDate,
+		}
+		commentList = append(commentList, singleComment)
+	}
+	return &types.CommmentListHandlerResponse{
+		StatusCode:  int32(commonerror.CommonErr_STATUS_OK),
+		StatusMsg:   "get message list success",
+		CommentList: commentList,
+	}, nil
 }

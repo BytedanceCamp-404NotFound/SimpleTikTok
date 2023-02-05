@@ -42,6 +42,43 @@ type RelationUser struct {
 	IsFollow      bool   `from:"is_follow"`
 }
 
+type Message struct {
+	Id         int64  `json:"id"                    form:"id"                    bson:"_id"`
+	ToUserId   int64  `json:"to_user_id"            form:"to_user_id"            bson:"to_user_id"`
+	FromUserId int64  `json:"from_user_id"          form:"from_user_id"          bson:"from_user_id"`
+	Content    string `json:"content"               form:"content"               bson:"content"`
+	CreateTime string `json:"create_time,optional"  form:"create_time,optional"  bson:"create_time"`
+}
+
+type SingleMessage struct {
+	Id         int64  `json:"id"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_time"`
+}
+
+type MessageChatHandlerRequest struct {
+	Token    string `form:"token"`
+	ToUserId int64  `form:"to_user_id"`
+}
+
+type MessageChatHandlerResponse struct {
+	StatusCode  int32           `json:"status_code"`
+	StatusMsg   string          `json:"status_msg"`
+	MessageList []SingleMessage `json:"message_list"`
+}
+
+type MessageActionHandlerRequest struct {
+	Token      string `form:"token"`
+	ToUserId   int64  `form:"to_user_id"`
+	ActionType int32  `form:"action_type"`
+	Content    string `form:"content"`
+}
+
+type MessageActionHandlerResponse struct {
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+}
+
 type Video struct {
 	Id            int64  `form:"id"`
 	Author        User   `form:"author"`

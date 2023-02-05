@@ -36,7 +36,6 @@ type MongoConfig struct {
 	MongoUrl      string
 	MongoPort     int
 	MongoDB       string
-	MongoTable    string
 }
 
 // 获取当前可执行文件位置
@@ -121,7 +120,6 @@ func ConfigReadToMongoDB() (*MongoConfig, error) {
 		MongoUrl:      config.GetString("mongoUrl"),
 		MongoPort:     config.GetInt("mongoPort"),
 		MongoDB:       config.GetString("mongoDatabase"),
-		MongoTable:    config.GetString("mongoTable"),
 	}
 	return mongoClient, nil
 }

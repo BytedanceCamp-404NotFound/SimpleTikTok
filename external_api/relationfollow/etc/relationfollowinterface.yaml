@@ -12,3 +12,10 @@ MySQLManageRpc:
     Hosts:
     - 127.0.0.1:2379
     Key: mysqlmanage.rpc
+
+MongoDBManageRpc:
+  Timeout: 10000
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    key: mongodbmanage.rpc

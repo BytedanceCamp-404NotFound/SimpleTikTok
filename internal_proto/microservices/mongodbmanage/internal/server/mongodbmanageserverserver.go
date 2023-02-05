@@ -22,7 +22,22 @@ func NewMongodbManageServerServer(svcCtx *svc.ServiceContext) *MongodbManageServ
 	}
 }
 
-func (s *MongodbManageServerServer) GetMinio(ctx context.Context, in *mongodbmanageserver.IdRequest) (*mongodbmanageserver.MinioResponse, error) {
-	l := logic.NewGetMinioLogic(ctx, s.svcCtx)
-	return l.GetMinio(in)
+func (s *MongodbManageServerServer) MakeComment(ctx context.Context, in *mongodbmanageserver.CommentActionRequest) (*mongodbmanageserver.CommentActionResponse, error) {
+	l := logic.NewMakeCommentLogic(ctx, s.svcCtx)
+	return l.MakeComment(in)
+}
+
+func (s *MongodbManageServerServer) GetComment(ctx context.Context, in *mongodbmanageserver.CommentListRequest) (*mongodbmanageserver.CommentListResponse, error) {
+	l := logic.NewGetCommentLogic(ctx, s.svcCtx)
+	return l.GetComment(in)
+}
+
+func (s *MongodbManageServerServer) GetMessage(ctx context.Context, in *mongodbmanageserver.MessageChatRequest) (*mongodbmanageserver.MessageChatResponse, error) {
+	l := logic.NewGetMessageLogic(ctx, s.svcCtx)
+	return l.GetMessage(in)
+}
+
+func (s *MongodbManageServerServer) SendMessage(ctx context.Context, in *mongodbmanageserver.MessageActionRequest) (*mongodbmanageserver.MessageActionResponse, error) {
+	l := logic.NewSendMessageLogic(ctx, s.svcCtx)
+	return l.SendMessage(in)
 }

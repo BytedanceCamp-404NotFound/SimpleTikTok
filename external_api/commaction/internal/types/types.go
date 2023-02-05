@@ -24,11 +24,18 @@ type FavoriteListRegisterHandlerResponse struct {
 }
 
 type Comment struct {
-	Id         int64  `json:"id"          form:"_id"         bson:"_id"`
+	Id         int64  `json:"id"          form:"id"         bson:"_id"`
 	VideoId    int64  `json:"video_id"    form:"video_id"    bson:"video_id"` //视频id
 	User       User   `json:"user"        form:"user"        bson:"user"`
 	Content    string `json:"content"     form:"content"     bson:"content"`
 	CreateDate string `json:"create_date" form:"create_date" bson:"create_date"`
+}
+
+type CommentResp struct {
+	Id         int64  `json:"id"`
+	User       User   `json:"user"`
+	Content    string `json:"content"`
+	CreateDate string `json:"create_date"`
 }
 
 type CommmentActionHandlerRequest struct {
@@ -40,9 +47,9 @@ type CommmentActionHandlerRequest struct {
 }
 
 type CommmentActionHandlerResponse struct {
-	StatusCode int32   `json:"status_code"`
-	StatusMsg  string  `json:"status_msg"`
-	Comment    Comment `json:"comment"`
+	StatusCode int32       `json:"status_code"`
+	StatusMsg  string      `json:"status_msg"`
+	Comment    CommentResp `json:"comment"`
 }
 
 type CommmentListHandlerRequest struct {
@@ -51,9 +58,9 @@ type CommmentListHandlerRequest struct {
 }
 
 type CommmentListHandlerResponse struct {
-	StatusCode  int32     `json:"status_code"`
-	StatusMsg   string    `json:"status_msg"`
-	CommentList []Comment `json:"comment_list"`
+	StatusCode  int32         `json:"status_code"`
+	StatusMsg   string        `json:"status_msg"`
+	CommentList []CommentResp `json:"comment_list"`
 }
 
 type Video struct {

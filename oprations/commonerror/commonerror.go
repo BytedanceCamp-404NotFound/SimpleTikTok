@@ -11,6 +11,7 @@ const (
 	CommonErr_INTERNAL_ERROR    CommonErr = 500 // 服务内部错误
 	CommonErr_TIMEOUT           CommonErr = 504 // 超时
 	CommonErr_PARSE_TOKEN_ERROR CommonErr = 700 //解析token失败
+	CommonErr_RPC_RETUEN_ERROR  CommonErr = 800
 )
 
 var (
@@ -23,6 +24,7 @@ var (
 		500: "INTERNAL_ERROR",
 		504: "TIMEOUT",
 		700: "PARSE_TOKEN_ERROR",
+		800: "RPC_RETURN_ERROR",
 	}
 	CommonErr_value = map[string]int32{
 		"UNKNOW_ERROR":      0,
@@ -33,5 +35,6 @@ var (
 		"INTERNAL_ERROR":    500,
 		"TIMEOUT":           504,
 		"PARSE_TOKEN_ERROR": 700,
+		"RPC_RETURN_ERROR":  800,
 	}
 )
