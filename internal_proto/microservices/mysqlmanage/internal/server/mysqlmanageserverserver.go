@@ -81,3 +81,27 @@ func (s *MySQLManageServerServer) RelationFollowList(ctx context.Context, in *my
 	l := logic.NewRelationFollowListLogic(ctx, s.svcCtx)
 	return l.RelationFollowList(in)
 }
+
+// 喜欢视频数量
+func (s *MySQLManageServerServer) FavoriteVideoNum(ctx context.Context, in *mysqlmanageserver.FavoriteVideoNumRequest) (*mysqlmanageserver.FavoriteVideoNumResponse, error) {
+	l := logic.NewFavoriteVideoNumLogic(ctx, s.svcCtx)
+	return l.FavoriteVideoNum(in)
+}
+
+// 获取喜欢列表
+func (s *MySQLManageServerServer) GetFavoriteVideoList(ctx context.Context, in *mysqlmanageserver.GetFavoriteVideoListRequest) (*mysqlmanageserver.GetFavoriteVideoListResponse, error) {
+	l := logic.NewGetFavoriteVideoListLogic(ctx, s.svcCtx)
+	return l.GetFavoriteVideoList(in)
+}
+
+// 点赞
+func (s *MySQLManageServerServer) AddVideoFavorite(ctx context.Context, in *mysqlmanageserver.AddVideoFavoriteRequest) (*mysqlmanageserver.AddVideoFavoriteResponse, error) {
+	l := logic.NewAddVideoFavoriteLogic(ctx, s.svcCtx)
+	return l.AddVideoFavorite(in)
+}
+
+// 取消点赞
+func (s *MySQLManageServerServer) SubVideoFavorite(ctx context.Context, in *mysqlmanageserver.SubVideoFavoriteRequest) (*mysqlmanageserver.SubVideoFavoriteResponse, error) {
+	l := logic.NewSubVideoFavoriteLogic(ctx, s.svcCtx)
+	return l.SubVideoFavorite(in)
+}
