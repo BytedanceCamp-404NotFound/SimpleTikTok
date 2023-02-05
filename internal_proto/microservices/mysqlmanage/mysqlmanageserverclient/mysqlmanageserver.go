@@ -13,44 +13,58 @@ import (
 )
 
 type (
-	AddVideoFavoriteRequest      = mysqlmanageserver.AddVideoFavoriteRequest
-	AddVideoFavoriteResponse     = mysqlmanageserver.AddVideoFavoriteResponse
-	CheckIsFollowRequest         = mysqlmanageserver.CheckIsFollowRequest
-	CheckIsFollowResponse        = mysqlmanageserver.CheckIsFollowResponse
-	CheckUserInfRequest          = mysqlmanageserver.CheckUserInfRequest
-	CheckUserInfResponse         = mysqlmanageserver.CheckUserInfResponse
-	FavoriteVideoNumRequest      = mysqlmanageserver.FavoriteVideoNumRequest
-	FavoriteVideoNumResponse     = mysqlmanageserver.FavoriteVideoNumResponse
-	GetFavoriteVideoListRequest  = mysqlmanageserver.GetFavoriteVideoListRequest
-	GetFavoriteVideoListResponse = mysqlmanageserver.GetFavoriteVideoListResponse
-	GetVideoListRequest          = mysqlmanageserver.GetVideoListRequest
-	GetVideoListResponse         = mysqlmanageserver.GetVideoListResponse
-	IsFavotiteRequest            = mysqlmanageserver.IsFavotiteRequest
-	IsFavotiteResponse           = mysqlmanageserver.IsFavotiteResponse
-	RelationActionRequest        = mysqlmanageserver.RelationActionRequest
-	RelationActionResponse       = mysqlmanageserver.RelationActionResponse
-	RelationFollowListRequest    = mysqlmanageserver.RelationFollowListRequest
-	RelationFollowListResponse   = mysqlmanageserver.RelationFollowListResponse
-	RelationFollowerListRequest  = mysqlmanageserver.RelationFollowerListRequest
-	RelationFollowerListResponse = mysqlmanageserver.RelationFollowerListResponse
-	RelationUser                 = mysqlmanageserver.RelationUser
-	SubVideoFavoriteRequest      = mysqlmanageserver.SubVideoFavoriteRequest
-	SubVideoFavoriteResponse     = mysqlmanageserver.SubVideoFavoriteResponse
-	UserInf                      = mysqlmanageserver.UserInf
-	UserLoginRequest             = mysqlmanageserver.UserLoginRequest
-	UserLoginResponse            = mysqlmanageserver.UserLoginResponse
-	UserRegisterRequest          = mysqlmanageserver.UserRegisterRequest
-	UserRegisterResponse         = mysqlmanageserver.UserRegisterResponse
-	Users                        = mysqlmanageserver.Users
-	VideoInfo                    = mysqlmanageserver.VideoInfo
-	VideoNumRequest              = mysqlmanageserver.VideoNumRequest
-	VideoNumResponse             = mysqlmanageserver.VideoNumResponse
+	AddVideoFavoriteRequest              = mysqlmanageserver.AddVideoFavoriteRequest
+	AddVideoFavoriteResponse             = mysqlmanageserver.AddVideoFavoriteResponse
+	CheckIsFollowRequest                 = mysqlmanageserver.CheckIsFollowRequest
+	CheckIsFollowResponse                = mysqlmanageserver.CheckIsFollowResponse
+	CheckUserInfRequest                  = mysqlmanageserver.CheckUserInfRequest
+	CheckUserInfResponse                 = mysqlmanageserver.CheckUserInfResponse
+	CreatePublishActionViedeInfoRequest  = mysqlmanageserver.CreatePublishActionViedeInfoRequest
+	CreatePublishActionViedeInfoResponse = mysqlmanageserver.CreatePublishActionViedeInfoResponse
+	FavoriteVideoNumRequest              = mysqlmanageserver.FavoriteVideoNumRequest
+	FavoriteVideoNumResponse             = mysqlmanageserver.FavoriteVideoNumResponse
+	FeedUserInfo                         = mysqlmanageserver.FeedUserInfo
+	GetFavoriteVideoListRequest          = mysqlmanageserver.GetFavoriteVideoListRequest
+	GetFavoriteVideoListResponse         = mysqlmanageserver.GetFavoriteVideoListResponse
+	GetFeedUserInfoRequest               = mysqlmanageserver.GetFeedUserInfoRequest
+	GetFeedUserInfoResponse              = mysqlmanageserver.GetFeedUserInfoResponse
+	GetFeedVideoListRequest              = mysqlmanageserver.GetFeedVideoListRequest
+	GetFeedVideoListResponse             = mysqlmanageserver.GetFeedVideoListResponse
+	GetVideoListRequest                  = mysqlmanageserver.GetVideoListRequest
+	GetVideoListResponse                 = mysqlmanageserver.GetVideoListResponse
+	IsFavotiteRequest                    = mysqlmanageserver.IsFavotiteRequest
+	IsFavotiteResponse                   = mysqlmanageserver.IsFavotiteResponse
+	PublishActionVideoInfo               = mysqlmanageserver.PublishActionVideoInfo
+	RelationActionRequest                = mysqlmanageserver.RelationActionRequest
+	RelationActionResponse               = mysqlmanageserver.RelationActionResponse
+	RelationFollowListRequest            = mysqlmanageserver.RelationFollowListRequest
+	RelationFollowListResponse           = mysqlmanageserver.RelationFollowListResponse
+	RelationFollowerListRequest          = mysqlmanageserver.RelationFollowerListRequest
+	RelationFollowerListResponse         = mysqlmanageserver.RelationFollowerListResponse
+	RelationUser                         = mysqlmanageserver.RelationUser
+	SubVideoFavoriteRequest              = mysqlmanageserver.SubVideoFavoriteRequest
+	SubVideoFavoriteResponse             = mysqlmanageserver.SubVideoFavoriteResponse
+	UserInf                              = mysqlmanageserver.UserInf
+	UserLoginRequest                     = mysqlmanageserver.UserLoginRequest
+	UserLoginResponse                    = mysqlmanageserver.UserLoginResponse
+	UserRegisterRequest                  = mysqlmanageserver.UserRegisterRequest
+	UserRegisterResponse                 = mysqlmanageserver.UserRegisterResponse
+	Users                                = mysqlmanageserver.Users
+	VideoInfo                            = mysqlmanageserver.VideoInfo
+	VideoNumRequest                      = mysqlmanageserver.VideoNumRequest
+	VideoNumResponse                     = mysqlmanageserver.VideoNumResponse
 
 	MySQLManageServer interface {
+		// 取流接口获取用户信息
+		GetFeedUserInfo(ctx context.Context, in *GetFeedUserInfoRequest, opts ...grpc.CallOption) (*GetFeedUserInfoResponse, error)
+		// 取流接口获取视频列表
+		GetFeedVideoList(ctx context.Context, in *GetFeedVideoListRequest, opts ...grpc.CallOption) (*GetFeedVideoListResponse, error)
 		// 用户登陆校验
 		UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 		// 用户注册
 		UserRigster(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error)
+		// 视频上传接口创建视频信息
+		CreatePublishActionViedeInfo(ctx context.Context, in *CreatePublishActionViedeInfoRequest, opts ...grpc.CallOption) (*CreatePublishActionViedeInfoResponse, error)
 		// 获得用户信息
 		CheckUserInf(ctx context.Context, in *CheckUserInfRequest, opts ...grpc.CallOption) (*CheckUserInfResponse, error)
 		// 是否关注
@@ -88,6 +102,18 @@ func NewMySQLManageServer(cli zrpc.Client) MySQLManageServer {
 	}
 }
 
+// 取流接口获取用户信息
+func (m *defaultMySQLManageServer) GetFeedUserInfo(ctx context.Context, in *GetFeedUserInfoRequest, opts ...grpc.CallOption) (*GetFeedUserInfoResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.GetFeedUserInfo(ctx, in, opts...)
+}
+
+// 取流接口获取视频列表
+func (m *defaultMySQLManageServer) GetFeedVideoList(ctx context.Context, in *GetFeedVideoListRequest, opts ...grpc.CallOption) (*GetFeedVideoListResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.GetFeedVideoList(ctx, in, opts...)
+}
+
 // 用户登陆校验
 func (m *defaultMySQLManageServer) UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
@@ -98,6 +124,12 @@ func (m *defaultMySQLManageServer) UserLogin(ctx context.Context, in *UserLoginR
 func (m *defaultMySQLManageServer) UserRigster(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
 	return client.UserRigster(ctx, in, opts...)
+}
+
+// 视频上传接口创建视频信息
+func (m *defaultMySQLManageServer) CreatePublishActionViedeInfo(ctx context.Context, in *CreatePublishActionViedeInfoRequest, opts ...grpc.CallOption) (*CreatePublishActionViedeInfoResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.CreatePublishActionViedeInfo(ctx, in, opts...)
 }
 
 // 获得用户信息
