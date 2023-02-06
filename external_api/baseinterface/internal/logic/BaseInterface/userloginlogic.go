@@ -31,7 +31,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 		Username: req.UserName,
 		Password: req.PassWord,
 	})
-	if err != nil || userId < 0{
+	if err != nil || uid.userId < 0{
 		logx.Error("Check user rpc err: %v", err)
 		return &types.UserloginHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
