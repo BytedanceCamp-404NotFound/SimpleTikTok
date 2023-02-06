@@ -1,13 +1,12 @@
 package BaseInterface
 
 import (
-	"context"
-
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
 	tools "SimpleTikTok/tools/token"
+	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +30,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 		Username: req.UserName,
 		Password: req.PassWord,
 	})
-	if err != nil || uid.userId < 0{
+	if err != nil || uid.UserId < 0 {
 		logx.Error("Check user rpc err: %v", err)
 		return &types.UserloginHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
