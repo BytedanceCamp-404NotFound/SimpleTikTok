@@ -31,7 +31,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 		Username: req.UserName,
 		Password: req.PassWord,
 	})
-	if err != nil {
+	if err != nil || userId < 0{
 		logx.Error("Check user rpc err: %v", err)
 		return &types.UserloginHandlerResponse{
 			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
@@ -40,7 +40,7 @@ func (l *UserloginLogic) Userlogin(req *types.UserloginHandlerRequest) (resp *ty
 	}
 
 	logx.Infof("UserloginLogic CheckUser,uid:%v", uid)
-	if uid.UserId == -1 {
+	if uid.UserId == 0 {
 		return &types.UserloginHandlerResponse{
 			StatusCode: -1,
 			StatusMsg:  "用户名或密码错误，请重试",
