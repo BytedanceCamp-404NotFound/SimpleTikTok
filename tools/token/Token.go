@@ -30,8 +30,8 @@ func CreateToken(id int) (string, error) {
 	c := MyCliams{
 		Id: id,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(), //签发时间
-			Issuer:    "yyy",                                //签发人
+			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(), //签发时间
+			Issuer:    "yyy",                                 //签发人
 		},
 	}
 

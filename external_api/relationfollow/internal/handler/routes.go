@@ -30,6 +30,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/douyin/relation/friend/list",
+				Handler: RelationFollowInterface.RelationFriendListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/douyin/message/chat",
 				Handler: RelationFollowInterface.MessageChatHandler(serverCtx),
 			},

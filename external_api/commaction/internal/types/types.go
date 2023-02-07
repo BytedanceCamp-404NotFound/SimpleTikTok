@@ -8,8 +8,8 @@ type FavoriteActionHandlerRequest struct {
 }
 
 type FavoriteActionHandlerResponse struct {
-	StatusCode int32  `form:"status_code"`
-	StatusMsg  string `form:"status_msg"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type FavoriteListRegisterHandlerRequest struct {
@@ -18,9 +18,9 @@ type FavoriteListRegisterHandlerRequest struct {
 }
 
 type FavoriteListRegisterHandlerResponse struct {
-	StatusCode int32   `form:"status_code"`
-	StatusMsg  string  `form:"status_msg"`
-	VideoList  []Video `form:"video_list"`
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg"`
+	VideoList  []Video `json:"video_list"`
 }
 
 type Comment struct {
@@ -64,14 +64,14 @@ type CommmentListHandlerResponse struct {
 }
 
 type Video struct {
-	Id            int64  `form:"id"`
-	Author        User   `form:"author"`
-	PlayUrl       string `form:"play_url"`
-	CoverUrl      string `form:"cover_url"`
-	FavoriteCount int64  `form:"favorite_count"`
-	CommentCount  int64  `form:"comment_count"`
-	IsFavotite    bool   `form:"is_favorite"`
-	VideoTitle    string `form:"video_title"`
+	Id            int64  `json:"id"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url"`
+	CoverUrl      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsFavotite    bool   `json:"is_favorite"`
+	VideoTitle    string `json:"title"`
 }
 
 type VideoTest struct {
