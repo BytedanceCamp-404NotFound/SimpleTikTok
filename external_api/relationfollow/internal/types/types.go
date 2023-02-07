@@ -8,8 +8,8 @@ type RelationActionHandlerRequest struct {
 }
 
 type RelationActionHandlerResponse struct {
-	StatusCode int32  `from:"status_code"`
-	StatusMsg  string `from:"status_msg"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type RelationFollowListHandlerRequest struct {
@@ -18,9 +18,9 @@ type RelationFollowListHandlerRequest struct {
 }
 
 type RelationFollowListHandlerResponse struct {
-	StatusCode int32          `from:"status_code"`
-	StatusMsg  string         `from:"status_msg"`
-	UserList   []RelationUser `from:"user_list"`
+	StatusCode int32          `json:"status_code"`
+	StatusMsg  string         `json:"status_msg"`
+	UserList   []RelationUser `json:"user_list"`
 }
 
 type RelationFollowerListHandlerRequest struct {
@@ -29,17 +29,17 @@ type RelationFollowerListHandlerRequest struct {
 }
 
 type RelationFollowerListHandlerResponse struct {
-	StatusCode int32          `from:"status_code"`
-	StatusMsg  string         `from:"status_msg"`
-	UserList   []RelationUser `from:"user_list"`
+	StatusCode int32          `json:"status_code"`
+	StatusMsg  string         `json:"status_msg"`
+	UserList   []RelationUser `json:"user_list"`
 }
 
 type RelationUser struct {
-	Id            int64  `from:"id" gorm:"column:user_id"`
-	Name          string `from:"name" gorm:"column:user_nick_name"`
-	FollowCount   int64  `form:"follow_count" gorm:"column:follow_count"`
-	FollowerCount int64  `from:"follower_count" gorm:"column:follower_count"`
-	IsFollow      bool   `from:"is_follow"`
+	Id            int64  `json:"id" gorm:"column:user_id"`
+	Name          string `json:"name" gorm:"column:user_nick_name"`
+	FollowCount   int64  `json:"follow_count" gorm:"column:follow_count"`
+	FollowerCount int64  `json:"follower_count" gorm:"column:follower_count"`
+	IsFollow      bool   `json:"is_follow"`
 }
 
 type Message struct {
@@ -79,15 +79,37 @@ type MessageActionHandlerResponse struct {
 	StatusMsg  string `json:"status_msg"`
 }
 
+type RelationFriendListHandlerRequest struct {
+	Token  string `form:"token"`
+	UserId int64  `form:"user_id"`
+}
+
+type RelationFriendListHandlerResponse struct {
+	StatusCode int32        `json:"status_code"`
+	StatusMsg  string       `json:"status_msg"`
+	Userlist   []FriendUser `json:"user_list"`
+}
+
+type FriendUser struct {
+	Id            int64  `json:"id" gorm:"column:user_id"`
+	Name          string `json:"name" gorm:"column:user_nick_name"`
+	FollowCount   int64  `json:"follow_count" gorm:"column:follow_count"`
+	FollowerCount int64  `json:"follower_count" gorm:"column:follower_count"`
+	IsFollow      bool   `json:"is_follow"`
+	Avatar        string `json:"avatar"`  //用户头像url
+	Message       string `json:"message"` // 和该好友的最新聊天消息
+	MsgType       int64  `json:"msgType"` //// message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+}
+
 type Video struct {
-	Id            int64  `form:"id"`
-	Author        User   `form:"author"`
-	PlayUrl       string `form:"play_url"`
-	CoverUrl      string `form:"cover_url"`
-	FavoriteCount int64  `form:"favorite_count"`
-	CommentCount  int64  `form:"comment_count"`
-	IsFavotite    bool   `form:"is_favorite"`
-	VideoTitle    string `form:"video_title"`
+	Id            int64  `json:"id"`
+	Author        User   `json:"author"`
+	PlayUrl       string `json:"play_url"`
+	CoverUrl      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsFavotite    bool   `json:"is_favorite"`
+	VideoTitle    string `json:"title"`
 }
 
 type VideoTest struct {

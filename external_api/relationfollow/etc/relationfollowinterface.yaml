@@ -7,6 +7,7 @@ Log:
 
 
 MySQLManageRpc:
+  NonBlock: true  #设置弱依赖，当prc没有启动时，也允许运行api，不设置改选项，rpc没有期待，api也会报错
   Timeout: 10000 #设置rpc响应的超时时间
   Etcd:
     Hosts:
@@ -14,6 +15,7 @@ MySQLManageRpc:
     Key: mysqlmanage.rpc
 
 MongoDBManageRpc:
+  NonBlock: true  #设置弱依赖，当prc没有启动时，也允许运行api，不设置改选项，rpc没有期待，api也会报错
   Timeout: 10000
   Etcd:
     Hosts:

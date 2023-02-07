@@ -10,8 +10,8 @@ type FavoriteActionHandlerRequest {
 }
 
 type FavoriteActionHandlerResponse {
-	StatusCode int32  `form:"status_code"`
-	StatusMsg  string `form:"status_msg"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 // 喜欢列表
@@ -21,9 +21,9 @@ type FavoriteListRegisterHandlerRequest {
 }
 
 type FavoriteListRegisterHandlerResponse {
-	StatusCode int32   `form:"status_code"`
-	StatusMsg  string  `form:"status_msg"`
-	VideoList  []Video `form:"video_list"`
+	StatusCode int32   `json:"status_code"`
+	StatusMsg  string  `json:"status_msg"`
+	VideoList  []Video `json:"video_list"`
 }
 
 // 评论操作
