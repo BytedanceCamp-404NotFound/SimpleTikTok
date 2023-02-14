@@ -46,6 +46,33 @@ useage: ./GoZeroUse.sh kill # 显示帮助信息，一定要填写参数
 useage: ./GoZeroUse.sh clear 
 ```
 
+
+# nginx脚本说明
+
+## 安装nginx
+目前nginx没有装载于docker中，具体原因开会的时候再细说
+没有安装nginx环境的可以用
+```Shell
+./NginxUse.sh install
+```
+执行Nginx安装
+
+## 配置nginx
+nginx配置文件即文件目录下的default.conf（nginx默认配置）
+快速配置该文件
+```Shell
+./NginxUse.sh use
+```
+
+## 对漏桶限流的一些补充说明
+目前在网上查找到的资料只有nginx配置漏桶限流，具体参数含义我在配置文件中注释了
+
+以目前参数为例，假设1s内user接受30个req
+其中15个req被处理，5个req背放入桶中。剩下的10个被drop
+
+这里具体每个参数的值设为多少最好待调试
+
+
 # commit类型
 用于说明 commit 的类别，只允许使用下面7个标识。
 feat：新功能（feature）</br>
