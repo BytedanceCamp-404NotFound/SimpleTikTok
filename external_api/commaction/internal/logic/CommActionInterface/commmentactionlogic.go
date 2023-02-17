@@ -74,7 +74,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	}
 
 	return &types.CommmentActionHandlerResponse{
-		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusCode: 0,
 		StatusMsg:  "make comment success",
 		Comment:    comment,
 	}, nil
