@@ -36,9 +36,6 @@ func (l *GetCommentLogic) GetComment(in *mongodbmanageserver.CommentListRequest)
 	}}
 	opts := &options.FindOptions{}
 	sortOption := bson.D{{
-		Key:   "create_date",
-		Value: -1,
-	}, {
 		Key:   "_id",
 		Value: -1,
 	}}

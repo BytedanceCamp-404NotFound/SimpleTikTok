@@ -68,7 +68,7 @@ func (l *MessageChatLogic) MessageChat(req *types.MessageChatHandlerRequest) (re
 		res = append(res, message)
 	}
 	return &types.MessageChatHandlerResponse{
-		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusCode: 0,
 		StatusMsg: "get message list success",
 		MessageList: res,
 	}, nil

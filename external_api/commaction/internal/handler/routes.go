@@ -25,12 +25,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/douyin/commment/action",
+				Path:    "/douyin/comment/action",
 				Handler: CommActionInterface.CommmentActionHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/douyin/commment/list",
+				Path:    "/douyin/comment/list",
 				Handler: CommActionInterface.CommmentListHandler(serverCtx),
 			},
 		},

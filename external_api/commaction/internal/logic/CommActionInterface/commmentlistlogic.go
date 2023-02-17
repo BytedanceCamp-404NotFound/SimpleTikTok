@@ -63,7 +63,7 @@ func (l *CommmentListLogic) CommmentList(req *types.CommmentListHandlerRequest) 
 		commentList = append(commentList, singleComment)
 	}
 	return &types.CommmentListHandlerResponse{
-		StatusCode:  int32(commonerror.CommonErr_STATUS_OK),
+		StatusCode:  0,
 		StatusMsg:   "get message list success",
 		CommentList: commentList,
 	}, nil
