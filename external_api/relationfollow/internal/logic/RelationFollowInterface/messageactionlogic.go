@@ -57,7 +57,7 @@ func (l *MessageActionLogic) MessageAction(req *types.MessageActionHandlerReques
 		}, err
 	}
 	return &types.MessageActionHandlerResponse{
-		StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+		StatusCode: 0,
 		StatusMsg: "send message success",
 	}, nil
 }

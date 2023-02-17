@@ -82,8 +82,8 @@ service CommActionInterface {
 	get /douyin/favorite/list(FavoriteListRegisterHandlerRequest) returns (FavoriteListRegisterHandlerResponse)
 	// 评论操作
 	@handler CommmentActionHandler
-	post /douyin/commment/action (CommmentActionHandlerRequest) returns (CommmentActionHandlerResponse)
+	post /douyin/comment/action (CommmentActionHandlerRequest) returns (CommmentActionHandlerResponse)
 	// 视频评论列表
 	@handler CommmentListHandler
-	get /douyin/commment/list (CommmentListHandlerRequest) returns (CommmentListHandlerResponse)
+	get /douyin/comment/list (CommmentListHandlerRequest) returns (CommmentListHandlerResponse)
 }
