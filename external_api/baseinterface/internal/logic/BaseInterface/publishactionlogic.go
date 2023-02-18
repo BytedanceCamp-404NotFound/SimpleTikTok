@@ -15,10 +15,12 @@ import (
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
+	tools "SimpleTikTok/tools/token"
 
 	// "SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 
 	// "SimpleTikTok/oprations/commonerror"
+	"SimpleTikTok/oprations/commonerror"
 	minio "SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
 
@@ -49,21 +51,21 @@ func NewPublishActionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pub
 // TODO 还需要处理传输过来的byte,暂时先用本地MP4和png代替
 // TODO 兼容多种视频和图片格式？avi,mp4
 func (l *PublishActionLogic) PublishAction(req *types.PublishActionHandlerRequest, httpReq *http.Request) (resp *types.PublishActionHandlerResponse, err error) {
-	// ok, userId, err := tools.CheckToke(req.Token)
-	// if err != nil {
-	// 	return &types.PublishActionHandlerResponse{
-	// 		StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
-	// 		StatusMsg:  "Token校验出错",
-	// 	}, nil
-	// }
-	// if !ok {
-	// 	logx.Infof("[pkg]logic [func]PublishAction [msg]feedUserInfo.Name is nuil ")
-	// 	return &types.PublishActionHandlerResponse{
-	// 		StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
-	// 		StatusMsg:  "登录过期，请重新登陆",
-	// 	}, nil
-	// }
-	userId := 1
+	ok, userId, err := tools.CheckToke(req.Token)
+	if err != nil {
+		return &types.PublishActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
+			StatusMsg:  "Token校验出错",
+		}, nil
+	}
+	if !ok {
+		logx.Infof("[pkg]logic [func]PublishAction [msg]feedUserInfo.Name is nuil ")
+		return &types.PublishActionHandlerResponse{
+			StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
+			StatusMsg:  "登录过期，请重新登陆",
+		}, nil
+	}
+	//userId := 1
 
 	go l.UploadData(httpReq, userId, req.Title) //任务量太多，开协程传输
 
