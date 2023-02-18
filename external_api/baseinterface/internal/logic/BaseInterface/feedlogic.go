@@ -2,16 +2,13 @@ package BaseInterface
 
 import (
 	"context"
-	"encoding/base64"
-	"errors"
-	"fmt"
-	"strings"
 	"time"
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
+	"SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
 
 	// tools "SimpleTikTok/tools/token"
@@ -79,20 +76,24 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 	// var respFeedVideoList = make([]types.VideoTest, len(feedVideLists.VideoInfo))
 	var respFeedVideoList = make([]types.VideoTest, 0)
 	for _, val := range feedVideLists.VideoInfo {
-		if val.PlayUrl == ""{
+		if val.PlayUrl == "" {
 			continue
 		}
 		tmpAuthor, _ := getUserInfo(int(val.AuthorId))
-		if tmpAuthor.Name == ""{
+		if tmpAuthor.Name == "" {
 			continue
 		}
-		realPlayUrl, _ := getPlayUrl(val.PlayUrl)
+
+		realPlayUrl, _ := minioconnect.GetPlayUrl(val.PlayUrl)
+		realCoverUrl, _ := minioconnect.GetPlayUrl(val.CoverUrl)
+
 		respFeedVideoList = append(respFeedVideoList, types.VideoTest{
-			Id:            val.VideoId,
-			Author:        tmpAuthor,
-			PlayUrl:       realPlayUrl,
+			Id:      val.VideoId,
+			Author:  tmpAuthor,
+			PlayUrl: realPlayUrl,
 			// PlayUrl:       "http://175.178.93.55:9001/test-minio/vidoeFile/94e010c6-4c6e-4c2c-8d0b-b9afea9760d6-video_test12.mp4",
-			CoverUrl:      "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png",
+			//	CoverUrl:      "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png",
+			CoverUrl:      realCoverUrl,
 			FavoriteCount: val.FavoriteCount,
 			CommentCount:  val.CommentCount,
 			IsFavotite:    val.IsFavotite,
@@ -105,44 +106,6 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 		VideoList:  respFeedVideoList,
 		NextTime:   time.Now().Unix(), // 暂时返回当前时间
 	}, nil
-}
-
-const (
-	sourcetype = "minio"
-	separator  = "_"
-)
-
-type MinioKeyVal struct {
-	SourceType string
-	Bucket     string
-	Key        string
-}
-
-func DecodeFileKey(key string) (*MinioKeyVal, error) {
-	keyval := &MinioKeyVal{}
-	if !strings.Contains(key, separator) {
-		return nil, errors.New("invalid filekey fail")
-	}
-	keyparts := strings.Split(key, separator)
-	if len(keyparts) != 2 {
-		return nil, errors.New("cant Split")
-	}
-	keyval.SourceType = keyparts[0]
-	keyData, err := base64.StdEncoding.DecodeString(keyparts[1])
-	if err != nil {
-		logx.Errorf("decode base64 error:", err.Error())
-		return nil, err
-	}
-
-	decodeString := string(keyData)
-	index := strings.Index(decodeString, separator)
-	if index <= 0 {
-		return nil, errors.New("cant find separator")
-	}
-
-	keyval.Bucket = decodeString[:index]
-	keyval.Key = decodeString[index+len(separator):]
-	return keyval, nil
 }
 
 // func (l *FeedLogic) getUserInfo(userID int) (types.User, error) {
@@ -184,20 +147,4 @@ func getUserInfo(userID int) (types.User, error) {
 	respFeedUserInfo.FollowerCount = feedUserInfo.FollowerCount
 	respFeedUserInfo.IsFollow = feedUserInfo.IsFollow
 	return respFeedUserInfo, nil
-}
-
-func getPlayUrl(playUrl string) (string, error) {
-	if playUrl == "" {
-		logx.Infof("[pkg]BaseInterface [func]getPlayUrl [msg]playUrl is nil")
-		return "", nil
-	}
-	decodeKey, err := DecodeFileKey(playUrl)
-	if err != nil {
-		logx.Errorf("decode base64 error:%v", err)
-		return "", err
-	}
-	minioUrl := "http://175.178.93.55:9001"
-
-	resPlayUrl := fmt.Sprintf("%s/%s/%s", minioUrl, decodeKey.Bucket, decodeKey.Key)
-	return resPlayUrl, nil
 }

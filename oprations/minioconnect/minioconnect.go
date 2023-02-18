@@ -2,8 +2,11 @@ package minioconnect
 
 import (
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"io"
 	"path/filepath"
+	"strings"
 
 	"SimpleTikTok/oprations/viperconfigread"
 
@@ -57,8 +60,7 @@ func MinioFileUploader(minioClient *minio.Client, bucketName string, objectPre s
 
 	objectName := objectPre + newfilePath // 要上传的文件的名字
 	logx.Infof("MinioFileUploader, objectName:%s, newfilePath:%s", objectName, newfilePath)
-	contentType := "video/mp4" // 类型
-
+	contentType := ""
 	n, err := minioClient.FPutObject(bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
 
 	if err != nil {
@@ -95,4 +97,62 @@ func MinioFileUploader_byte(minioClient *minio.Client, bucketName string, object
 	strbytes := []byte(str)
 	bucket_filepath := "minio_" + base64.StdEncoding.EncodeToString(strbytes)
 	return bucket_filepath, nil
+}
+
+type MinioKeyVal struct {
+	SourceType string
+	Bucket     string
+	Key        string
+}
+
+const (
+	sourcetype = "minio"
+	separator  = "_"
+)
+
+func GetPlayUrl(playUrl string) (string, error) {
+	if playUrl == "" {
+		logx.Infof("[pkg]BaseInterface [func]getPlayUrl [msg]playUrl is nil")
+		return "", nil
+	}
+	decodeKey, err := DecodeFileKey(playUrl)
+	if err != nil {
+		logx.Errorf("decode base64 error:%v", err)
+		return "", err
+	}
+
+	ConfigReadToMinio, err := viperconfigread.ConfigReadToMinio()
+	if err != nil {
+		logx.Errorf("SqlConnect error:%v", err)
+		return "获取域名失败，->", err
+	}
+	minioUrl := "http://" + ConfigReadToMinio.Endpoint
+	resPlayUrl := fmt.Sprintf("%s/%s/%s", minioUrl, decodeKey.Bucket, decodeKey.Key)
+	return resPlayUrl, nil
+}
+func DecodeFileKey(key string) (*MinioKeyVal, error) {
+	keyval := &MinioKeyVal{}
+	if !strings.Contains(key, separator) {
+		return nil, errors.New("invalid filekey fail")
+	}
+	keyparts := strings.Split(key, separator)
+	if len(keyparts) != 2 {
+		return nil, errors.New("cant Split")
+	}
+	keyval.SourceType = keyparts[0]
+	keyData, err := base64.StdEncoding.DecodeString(keyparts[1])
+	if err != nil {
+		logx.Errorf("decode base64 error:", err.Error())
+		return nil, err
+	}
+
+	decodeString := string(keyData)
+	index := strings.Index(decodeString, separator)
+	if index <= 0 {
+		return nil, errors.New("cant find separator")
+	}
+
+	keyval.Bucket = decodeString[:index]
+	keyval.Key = decodeString[index+len(separator):]
+	return keyval, nil
 }

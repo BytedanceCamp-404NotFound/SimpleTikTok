@@ -1,7 +1,7 @@
 MySQL:
  UserName: root
- PassWord: mynewpassword  
- Host: 192.168.64.4
+ PassWord: 119149349j  
+ Host: 175.178.93.55
  Port: 3306
  DBname: SimpleTikTok
  TimeOut: 10s

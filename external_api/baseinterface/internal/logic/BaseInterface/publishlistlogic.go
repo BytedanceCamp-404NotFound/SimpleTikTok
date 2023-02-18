@@ -5,6 +5,7 @@ import (
 	"SimpleTikTok/external_api/baseinterface/internal/types"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
+	"SimpleTikTok/oprations/minioconnect"
 	tools "SimpleTikTok/tools/token"
 	"context"
 
@@ -54,7 +55,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		}, nil
 	}
 
-	videoNumResponse, err :=  l.svcCtx.MySQLManageRpc.VideoNum(l.ctx, &mysqlmanageserver.VideoNumRequest{AuthorId: req.UserID})
+	videoNumResponse, err := l.svcCtx.MySQLManageRpc.VideoNum(l.ctx, &mysqlmanageserver.VideoNumRequest{AuthorId: req.UserID})
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]PublishList [msg]rpc VideoNum [err]%v", err)
 		return &types.PublishListHandlerResponse{
@@ -64,9 +65,9 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 		}, nil
 	}
 
-	getVideoListResponse, err :=  l.svcCtx.MySQLManageRpc.GetVideoList(l.ctx, &mysqlmanageserver.GetVideoListRequest{
+	getVideoListResponse, err := l.svcCtx.MySQLManageRpc.GetVideoList(l.ctx, &mysqlmanageserver.GetVideoListRequest{
 		AuthorId: req.UserID,
-		UserId: int64(id),
+		UserId:   int64(id),
 	})
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]PublishList [msg]rpc GetVideoList [err]%v", err)
@@ -79,7 +80,7 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 
 	videolist := make([]types.Video, videoNumResponse.Num)
 	for i, vi := range getVideoListResponse.VideoInfo {
-		checkIsFollow, err := l.svcCtx.MySQLManageRpc.CheckIsFollow(l.ctx,&mysqlmanageserver.CheckIsFollowRequest{UserId: req.UserID, FollowerId: int64(id)})
+		checkIsFollow, err := l.svcCtx.MySQLManageRpc.CheckIsFollow(l.ctx, &mysqlmanageserver.CheckIsFollowRequest{UserId: req.UserID, FollowerId: int64(id)})
 		if err != nil {
 			logx.Errorf("[pkg]logic [func]PublishList [msg]rpc checkIsFollow [err]%v", err)
 			return &types.PublishListHandlerResponse{
@@ -88,6 +89,8 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 				VideoList:  []types.Video{},
 			}, nil
 		}
+		realPlayUrl, _ := minioconnect.GetPlayUrl(vi.PlayUrl)
+		realCoverUrl, _ := minioconnect.GetPlayUrl(vi.CoverUrl)
 		videolist[i] = types.Video{
 			Id: vi.VideoId,
 			Author: types.User{
@@ -97,8 +100,8 @@ func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (re
 				FollowerCount: user.User.Users.FollowerCount,
 				IsFollow:      checkIsFollow.Ok,
 			},
-			PlayUrl:       vi.PlayUrl,
-			CoverUrl:      vi.CoverUrl,
+			PlayUrl:       realPlayUrl,
+			CoverUrl:      realCoverUrl,
 			FavoriteCount: vi.FavoriteCount,
 			CommentCount:  vi.CommentCount,
 			IsFavotite:    vi.IsFavotite,

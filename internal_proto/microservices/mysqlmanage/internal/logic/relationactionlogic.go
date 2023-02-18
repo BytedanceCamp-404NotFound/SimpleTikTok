@@ -35,7 +35,6 @@ type follow_and_follower_list struct {
 // 关注、取消关注
 func (l *RelationActionLogic) RelationAction(in *mysqlmanageserver.RelationActionRequest) (*mysqlmanageserver.RelationActionResponse, error) {
 	// todo: add your logic here and delete this line
-
 	db := svc.DB
 	if in.ActionType == 1 { //关注
 		//#关注账号 user_id：被关注的账号  follower_id：哪个账号要关注
@@ -43,20 +42,24 @@ func (l *RelationActionLogic) RelationAction(in *mysqlmanageserver.RelationActio
 		if err := db.Table("follow_and_follower_list").Create(&insertData).Error; err != nil {
 			return &mysqlmanageserver.RelationActionResponse{Ok: false}, err
 		}
-
-		if err := db.Table("user_info").Where("user_id = ?", in.UserID).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
-			return &mysqlmanageserver.RelationActionResponse{Ok: true}, nil
+		if err := db.Table("user_info").Where("user_id = ?", in.ToUserID).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
+			return &mysqlmanageserver.RelationActionResponse{Ok: false}, nil
 		}
-
+		if err := db.Table("user_info").Where("user_id = ?", in.UserID).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
+			return &mysqlmanageserver.RelationActionResponse{Ok: false}, nil
+		}
+		return &mysqlmanageserver.RelationActionResponse{Ok: true}, nil
 	} else if in.ActionType == 2 { //取消关注
 		//取消关注.  user_id：要被取消关注的账号   follower_id：哪个账号要取消关注
 
 		if err := db.Table("follow_and_follower_list").Where("user_id = ? and follower_id = ?", in.ToUserID, in.UserID).Delete(nil).Error; err != nil {
 			return &mysqlmanageserver.RelationActionResponse{Ok: false}, err
 		}
-
-		if err := db.Table("user_info").Where("user_id = ?", in.UserID).Update("follower_count", gorm.Expr("follower_count - ?", 1)).Error; err != nil {
-			return &mysqlmanageserver.RelationActionResponse{Ok: true}, nil
+		if err := db.Table("user_info").Where("user_id = ?", in.ToUserID).Update("follower_count", gorm.Expr("follower_count - ?", 1)).Error; err != nil {
+			return &mysqlmanageserver.RelationActionResponse{Ok: false}, nil
+		}
+		if err := db.Table("user_info").Where("user_id = ?", in.UserID).Update("follow_count", gorm.Expr("follow_count - ?", 1)).Error; err != nil {
+			return &mysqlmanageserver.RelationActionResponse{Ok: false}, nil
 		}
 	} else {
 		return &mysqlmanageserver.RelationActionResponse{Ok: false}, errors.New("无效动作")

@@ -7,6 +7,7 @@ import (
 	"SimpleTikTok/external_api/commaction/internal/types"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
+	"SimpleTikTok/oprations/minioconnect"
 
 	tools "SimpleTikTok/tools/token"
 
@@ -93,6 +94,8 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 				VideoList:  []types.Video{},
 			}, nil
 		}
+		realPlayUrl, _ := minioconnect.GetPlayUrl(v.VideoInfo[i].PlayUrl)
+		realCoverUrl, _ := minioconnect.GetPlayUrl(v.VideoInfo[i].CoverUrl)
 		videolist[i] = types.Video{
 			Id: v.VideoInfo[i].VideoId,
 			Author: types.User{
@@ -102,8 +105,8 @@ func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteList
 				FollowerCount: user.User.Users.FollowerCount,
 				IsFollow:      user.User.IsFollow,
 			},
-			PlayUrl:       v.VideoInfo[i].PlayUrl,
-			CoverUrl:      v.VideoInfo[i].CoverUrl,
+			PlayUrl:       realPlayUrl,
+			CoverUrl:      realCoverUrl,
 			FavoriteCount: v.VideoInfo[i].FavoriteCount,
 			CommentCount:  v.VideoInfo[i].CommentCount,
 			IsFavotite:    v.VideoInfo[i].IsFavotite,
