@@ -27,6 +27,14 @@ func NewPublishListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Publi
 }
 
 func (l *PublishListLogic) PublishList(req *types.PublishListHandlerRequest) (resp *types.PublishListHandlerResponse, err error) {
+
+	if req.Token == "" { //APP没有登录账号就请求了该API，为了不让前端报错，直接返回空数据
+		return &types.PublishListHandlerResponse{
+			StatusCode: 0,
+			VideoList:  []types.Video{},
+		}, nil
+	}
+
 	ok, id, err := tools.CheckToke(req.Token)
 	if !ok {
 		logx.Infof("[pkg]logic [func]PublishList [msg]req.Token is wrong ")

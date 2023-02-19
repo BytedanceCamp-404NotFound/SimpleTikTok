@@ -29,6 +29,11 @@ func NewFavoriteListRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *FavoriteListRegisterLogic) FavoriteListRegister(req *types.FavoriteListRegisterHandlerRequest) (resp *types.FavoriteListRegisterHandlerResponse, err error) {
+	if req.Token == "" { //APP没有登录账号就请求了该API，为了不让前端报错，直接返回空数据
+		return &types.FavoriteListRegisterHandlerResponse{
+			StatusCode: 0,
+		}, nil
+	}
 	ok, id, err := tools.CheckToke(req.Token)
 	if !ok {
 		logx.Infof("[pkg]logic [func]FavoriteListRegister [msg]req.Token is wrong ")

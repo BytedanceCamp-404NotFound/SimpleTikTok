@@ -17,7 +17,7 @@ type FavoriteActionHandlerResponse {
 // 喜欢列表
 type FavoriteListRegisterHandlerRequest {
 	UserID int64  `form:"user_id"`
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 }
 
 type FavoriteListRegisterHandlerResponse {

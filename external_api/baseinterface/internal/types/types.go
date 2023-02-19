@@ -3,7 +3,7 @@ package types
 
 type FeedHandlerRequest struct {
 	LatestTime int64  `form:"latest_time"`
-	Token      string `form:"token"`
+	Token      string `form:"token,optional"`
 }
 
 type FeedHandlerResponse struct {
@@ -60,7 +60,7 @@ type PublishActionHandlerResponse struct {
 
 type PublishListHandlerRequest struct {
 	UserID int64  `form:"user_id"`
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 }
 
 type PublishListHandlerResponse struct {

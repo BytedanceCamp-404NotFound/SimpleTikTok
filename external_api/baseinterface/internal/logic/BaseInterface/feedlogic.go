@@ -10,6 +10,7 @@ import (
 	"SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
+	tools "SimpleTikTok/tools/token"
 
 	// tools "SimpleTikTok/tools/token"
 
@@ -32,27 +33,13 @@ func NewFeedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FeedLogic {
 
 func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandlerResponse, err error) {
 	// 暂时不知道token什么作用
-	// ok, userId, err := tools.CheckToke(req.Token)
-	// if err != nil {
-	// 	return &types.FeedHandlerResponse{
-	// 		StatusCode: int32(commonerror.CommonErr_INTERNAL_ERROR),
-	// 		StatusMsg:  "Token校验出错",
-	// 		VideoList:  []types.VideoTest{},
-	// 		NextTime:   time.Now().Unix(), // 暂时返回当前时间
-	// 	}, nil
-	// }
-	// if !ok {
-	// 	logx.Infof("[pkg]logic [func]Feed [msg]feedUserInfo.Name is nuil ")
-	// 	return &types.FeedHandlerResponse{
-	// 		StatusCode: int32(commonerror.CommonErr_PARAMETER_FAILED),
-	// 		StatusMsg:  "登录过期，请重新登陆",
-	// 		VideoList:  []types.VideoTest{},
-	// 		NextTime:   time.Now().Unix(), // 暂时返回当前时间
-	// 	}, nil
+	_, userId, err := tools.CheckToke(req.Token)
+	// if err != nil || !ok {   //表示Token已失效，或者当前APP没有登录账号
+
 	// }
 
 	// var feedVideLists []mysqlconnect.VideoInfo
-	feedVideLists, err := l.svcCtx.MySQLManageRpc.GetFeedVideoList(l.ctx, &mysqlmanageserver.GetFeedVideoListRequest{})
+	feedVideLists, err := l.svcCtx.MySQLManageRpc.GetFeedVideoList(l.ctx, &mysqlmanageserver.GetFeedVideoListRequest{UserId: int64(userId)})
 	// feedVideLists, err = mysqlconnect.GetFeedVideoList()
 	if err != nil {
 		logx.Errorf("[pkg]logic [func]Feed [msg]gorm GetFeedVideoList [err]%v", err)
