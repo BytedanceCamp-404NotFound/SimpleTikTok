@@ -112,24 +112,25 @@ const (
 
 func GetPlayUrl(playUrl string) (string, error) {
 	if playUrl == "" {
-		logx.Infof("[pkg]BaseInterface [func]getPlayUrl [msg]playUrl is nil")
+		logx.Infof("[pkg]BaseInterface [func]GetPlayUrl [msg]playUrl is nil")
 		return "", nil
 	}
 	decodeKey, err := DecodeFileKey(playUrl)
 	if err != nil {
-		logx.Errorf("decode base64 error:%v", err)
+		logx.Errorf("[pkg]BaseInterface [func]GetPlayUrl [msg]decode base64 error:%v", err)
 		return "", err
 	}
 
 	ConfigReadToMinio, err := viperconfigread.ConfigReadToMinio()
 	if err != nil {
-		logx.Errorf("SqlConnect error:%v", err)
+		logx.Errorf("[pkg]BaseInterface [func]GetPlayUrl [msg]SqlConnect error:%v", err)
 		return "获取域名失败，->", err
 	}
 	minioUrl := "http://" + ConfigReadToMinio.Endpoint
 	resPlayUrl := fmt.Sprintf("%s/%s/%s", minioUrl, decodeKey.Bucket, decodeKey.Key)
 	return resPlayUrl, nil
 }
+
 func DecodeFileKey(key string) (*MinioKeyVal, error) {
 	keyval := &MinioKeyVal{}
 	if !strings.Contains(key, separator) {

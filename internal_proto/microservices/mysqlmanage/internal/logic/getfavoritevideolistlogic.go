@@ -50,15 +50,16 @@ func (l *GetFavoriteVideoListLogic) GetFavoriteVideoList(in *mysqlmanageserver.G
 
 	for i := 0; i < len(VideoIdList); i++ {
 		var vl VideoInfo
-		insb := mysqlmanageserver.IsFavotiteRequest{UserId:in.UserID,VideoId:vl.VideoID}
 		err = svc.DB.Table("video_info").Where("video_id = ?", VideoIdList[i]).Take(&vl).Error
 		if err != nil {
 			logx.Errorf("[pkg]logic [func]GetVideoList [msg]gorm VideoInfo.Find [err]%v", err)
 			return &mysqlmanageserver.GetFavoriteVideoListResponse{}, err
 		}
 		//vl.IsFavotite, err = lsb.IsFavotite(&insb)
-		test, err := lsb.IsFavotite(&insb)
-		vl.IsFavotite = test.Ok
+		// 一定得查完视频信息后才能查询是否点赞，不然没有视频ID
+		inss := mysqlmanageserver.IsFavotiteRequest{UserId: in.UserID, VideoId: vl.VideoID}
+		outss, err := lsb.IsFavotite(&inss)
+		vl.IsFavotite = outss.Ok
 		if err != nil {
 			logx.Errorf("[pkg]logic [func]GetVideoList [msg]func IsFavotite [err]%v", err)
 			return &mysqlmanageserver.GetFavoriteVideoListResponse{}, nil

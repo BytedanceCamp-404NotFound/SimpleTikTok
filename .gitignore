@@ -18,3 +18,4 @@ vendor/
 bin/
 default.etcd/
 source/
+config/databaseconfig_local.yaml

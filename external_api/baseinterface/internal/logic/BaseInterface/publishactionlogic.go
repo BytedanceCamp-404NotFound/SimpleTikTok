@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/disintegration/imaging"
 	"github.com/google/uuid"
@@ -17,14 +18,9 @@ import (
 	"SimpleTikTok/external_api/baseinterface/internal/types"
 	tools "SimpleTikTok/tools/token"
 
-	// "SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
-
-	// "SimpleTikTok/oprations/commonerror"
 	"SimpleTikTok/oprations/commonerror"
 	minio "SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
-
-	// tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -98,6 +94,7 @@ func (l *PublishActionLogic) UploadData(httpReq *http.Request, userId int, video
 		logx.Errorf("[pkg]logic [func]PublishAction [msg]minioUpDate is fail [err]%v", err)
 	}
 
+	// 在协程中不能使用rpc调用，可能是rpc已经结束了
 	// tmpvideoInfo := &mysqlmanageserver.PublishActionVideoInfo{
 	// 	VideoId:       int32(uuid.New().ID()),
 	// 	AuthorId:      int64(userId),
@@ -107,7 +104,6 @@ func (l *PublishActionLogic) UploadData(httpReq *http.Request, userId int, video
 	// 	CommentCount:  0,
 	// 	VideoTitle:    videoTitle,
 	// }
-	// err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
 	// resp, err := l.svcCtx.MySQLManageRpc.CreatePublishActionViedeInfo(l.ctx, &mysqlmanageserver.CreatePublishActionViedeInfoRequest{
 	// 	VideoInfo: tmpvideoInfo,
 	// })
@@ -121,8 +117,9 @@ func (l *PublishActionLogic) UploadData(httpReq *http.Request, userId int, video
 		Cover_url:      minioPictureUrl,
 		Favorite_count: 0,
 		Comment_count:  0,
+		Video_title:    videoTitle,
+		Update_time:    time.Now(),
 	}
-	// gorm创建一条信息
 	err = mysqlconnect.CreatePublishActionViedeInfo(VideoInfo)
 }
 
