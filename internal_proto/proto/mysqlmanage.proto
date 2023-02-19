@@ -24,7 +24,7 @@ message GetFeedUserInfoResponse {
 
 // 取流接口获取视频列表
 message GetFeedVideoListRequest {
-
+    int64 userId = 1;
 }
 
 message GetFeedVideoListResponse {

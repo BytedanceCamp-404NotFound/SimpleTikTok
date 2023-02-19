@@ -34,6 +34,13 @@ func (l *GetFeedVideoListLogic) GetFeedVideoList(in *mysqlmanageserver.GetFeedVi
 
 	var getFeedVideoListResponse mysqlmanageserver.GetFeedVideoListResponse
 	for _, val := range tmpFeedVideoList {
+		inss := mysqlmanageserver.IsFavotiteRequest{UserId: in.UserId, VideoId: val.VideoID}
+		var lss IsFavotiteLogic
+		outss, err := lss.IsFavotite(&inss) // 获取是否点赞
+		if err != nil {
+			logx.Errorf("[pkg]logic [func]GetFeedVideoList [msg]rpc IsFavotite %v", err)
+			return &mysqlmanageserver.GetFeedVideoListResponse{}, nil
+		}
 		getFeedVideoListResponse.VideoInfo = append(getFeedVideoListResponse.VideoInfo, &mysqlmanageserver.VideoInfo{
 			VideoId:       val.VideoID,
 			VideoTitle:    val.VideoTitle,
@@ -42,6 +49,7 @@ func (l *GetFeedVideoListLogic) GetFeedVideoList(in *mysqlmanageserver.GetFeedVi
 			PlayUrl:       val.PlayUrl,
 			FavoriteCount: val.FavoriteCount,
 			CommentCount:  val.CommentCount,
+			IsFavotite:    outss.Ok,
 		})
 	}
 
