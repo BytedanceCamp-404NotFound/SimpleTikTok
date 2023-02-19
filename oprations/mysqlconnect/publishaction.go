@@ -1,15 +1,20 @@
 package mysqlconnect
 
-import "github.com/zeromicro/go-zero/core/logx"
+import (
+	"time"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
 
 type PublishActionVideoInfo struct {
 	Video_id       int32
 	Author_id      int64
-	Play_url       string // 视频播放地址
-	Cover_url      string // 视频封面地址
-	Favorite_count int64  // 视频的点赞总数
-	Comment_count  int64  // 视频的评论总数
-	Video_title    string // 视频标题
+	Play_url       string    // 视频播放地址
+	Cover_url      string    // 视频封面地址
+	Favorite_count int64     // 视频的点赞总数
+	Comment_count  int64     // 视频的评论总数
+	Video_title    string    // 视频标题
+	Update_time    time.Time // 视频上传时间
 }
 
 func CreatePublishActionViedeInfo(tmpvideoInfo *PublishActionVideoInfo) error {
