@@ -5,7 +5,7 @@ import (
 // 视频流接口
 type FeedHandlerRequest {
 	LatestTime int64  `form:"latest_time"`
-	Token      string `form:"token"`
+	Token      string `form:"token,optional"`
 }
 
 type FeedHandlerResponse {
@@ -68,7 +68,7 @@ type PublishActionHandlerResponse {
 // 发布列表
 type PublishListHandlerRequest {
 	UserID int64  `form:"user_id"`
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 }
 
 type PublishListHandlerResponse {

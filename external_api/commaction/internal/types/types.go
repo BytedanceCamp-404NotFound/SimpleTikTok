@@ -14,7 +14,7 @@ type FavoriteActionHandlerResponse struct {
 
 type FavoriteListRegisterHandlerRequest struct {
 	UserID int64  `form:"user_id"`
-	Token  string `form:"token"`
+	Token  string `form:"token,optional"`
 }
 
 type FavoriteListRegisterHandlerResponse struct {
