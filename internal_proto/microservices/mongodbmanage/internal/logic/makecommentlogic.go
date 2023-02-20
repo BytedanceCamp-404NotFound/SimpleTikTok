@@ -70,7 +70,6 @@ func (l *MakeCommentLogic) MakeComment(in *mongodbmanageserver.CommentActionRequ
 		}
 		err = mysqlconnect.UpdateComment(videoId, actionType)
 		if err != nil {
-			fmt.Println("================================", err)
 			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
 			return &mongodbmanageserver.CommentActionResponse{
 				Comment: &mongodbmanageserver.Comment{},
@@ -118,7 +117,6 @@ func (l *MakeCommentLogic) MakeComment(in *mongodbmanageserver.CommentActionRequ
 		}
 		err = mysqlconnect.UpdateComment(videoId, actionType)
 		if err != nil {
-			fmt.Println("================================", err)
 			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
 			return &mongodbmanageserver.CommentActionResponse{
 				Comment: &mongodbmanageserver.Comment{},
