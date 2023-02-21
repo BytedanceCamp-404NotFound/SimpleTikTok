@@ -22,7 +22,8 @@ func NewUtilserverServer(svcCtx *svc.ServiceContext) *UtilserverServer {
 	}
 }
 
-func (s *UtilserverServer) GetMinio(ctx context.Context, in *utilserver.IdRequest) (*utilserver.MinioResponse, error) {
-	l := logic.NewGetMinioLogic(ctx, s.svcCtx)
-	return l.GetMinio(in)
+// 通过ffmpeg来截图
+func (s *UtilserverServer) GetSnapshot(ctx context.Context, in *utilserver.GetSnapshotRequest) (*utilserver.GetSnapshotResponse, error) {
+	l := logic.NewGetSnapshotLogic(ctx, s.svcCtx)
+	return l.GetSnapshot(in)
 }

@@ -16,6 +16,7 @@ import (
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
+	"SimpleTikTok/internal_proto/microservices/utilserver/types/utilserver"
 	tools "SimpleTikTok/tools/token"
 
 	"SimpleTikTok/oprations/commonerror"
@@ -84,7 +85,14 @@ func (l *PublishActionLogic) UploadData(httpReq *http.Request, userId int, video
 	frameNum := 1
 	_ = DownloadVideo(httpReq, videoName, videoTitle) // 下载视频文件
 
-	_ = GetSnapshot(videoName, snapshotName, frameNum)
+
+	// 截图通过微服务实现
+	l.svcCtx.UtilServerRpc.GetSnapshot(l.ctx,&utilserver.GetSnapshotRequest{
+		VideoName: videoName,
+		SnapshotName: snapshotName,
+		FrameNum: int64(frameNum),
+	})
+	// _ = GetSnapshot(videoName, snapshotName, frameNum)
 
 	// _, _, err = minioUpDate(httpReq) // Minio 上传文件
 	minioVideoUrl, minioPictureUrl, err := minioUpDate(httpReq, snapshotName) // Minio 上传文件
