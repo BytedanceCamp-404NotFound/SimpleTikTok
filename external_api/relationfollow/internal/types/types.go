@@ -47,7 +47,7 @@ type Message struct {
 	ToUserId   int64  `json:"to_user_id"            form:"to_user_id"            bson:"to_user_id"`
 	FromUserId int64  `json:"from_user_id"          form:"from_user_id"          bson:"from_user_id"`
 	Content    string `json:"content"               form:"content"               bson:"content"`
-	CreateTime string `json:"create_time,optional"  form:"create_time,optional"  bson:"create_time"`
+	CreateTime int64  `json:"create_time,optional"  form:"create_time,optional"  bson:"create_time"`
 }
 
 type SingleMessage struct {
@@ -57,14 +57,15 @@ type SingleMessage struct {
 }
 
 type MessageChatHandlerRequest struct {
-	Token    string `form:"token"`
-	ToUserId int64  `form:"to_user_id"`
+	Token      string `form:"token"`
+	ToUserId   int64  `form:"to_user_id"`
+	PreMsgTime int64  `form:"pre_msg_time,optional"`
 }
 
 type MessageChatHandlerResponse struct {
-	StatusCode  int32           `json:"status_code"`
-	StatusMsg   string          `json:"status_msg"`
-	MessageList []SingleMessage `json:"message_list"`
+	StatusCode  int32     `json:"status_code"`
+	StatusMsg   string    `json:"status_msg"`
+	MessageList []Message `json:"message_list"`
 }
 
 type MessageActionHandlerRequest struct {

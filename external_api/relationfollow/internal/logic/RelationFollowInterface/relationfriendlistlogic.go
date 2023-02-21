@@ -63,7 +63,7 @@ func (l *RelationFriendListLogic) RelationFriendList(req *types.RelationFriendLi
 			FollowerCount: rflhr.RelationUser[i].FollowerCount,
 			IsFollow:      rflhr.RelationUser[i].IsFollow,
 			Avatar:        "http://www.bailinzhe.com/image/2019-11-08/0ab5979f578d4f8bf15b20e6e51f0f2a.jpg",
-			Message:       "msg",
+			Message:       "",
 			MsgType:       1,
 		})
 		resultJson.StatusCode = 0
