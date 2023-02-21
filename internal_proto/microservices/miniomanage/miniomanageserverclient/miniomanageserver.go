@@ -15,6 +15,8 @@ import (
 type (
 	GetFileDownloaderRequest    = miniomanageserver.GetFileDownloaderRequest
 	GetFileDownloaderResponse   = miniomanageserver.GetFileDownloaderResponse
+	GetPlayUrlRequest           = miniomanageserver.GetPlayUrlRequest
+	GetPlayUrlResponse          = miniomanageserver.GetPlayUrlResponse
 	PutFileUploaderByteRequest  = miniomanageserver.PutFileUploaderByteRequest
 	PutFileUploaderByteResponse = miniomanageserver.PutFileUploaderByteResponse
 	PutFileUploaderRequest      = miniomanageserver.PutFileUploaderRequest
@@ -27,6 +29,8 @@ type (
 		PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteResponse, error)
 		// 文件下载
 		GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error)
+		// 获取Minio视频播放的URL
+		GetPlayUrl(ctx context.Context, in *GetPlayUrlRequest, opts ...grpc.CallOption) (*GetPlayUrlResponse, error)
 	}
 
 	defaultMinioManageServer struct {
@@ -56,4 +60,10 @@ func (m *defaultMinioManageServer) PutFileUploaderByte(ctx context.Context, in *
 func (m *defaultMinioManageServer) GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error) {
 	client := miniomanageserver.NewMinioManageServerClient(m.cli.Conn())
 	return client.GetFileDownloader(ctx, in, opts...)
+}
+
+// 获取Minio视频播放的URL
+func (m *defaultMinioManageServer) GetPlayUrl(ctx context.Context, in *GetPlayUrlRequest, opts ...grpc.CallOption) (*GetPlayUrlResponse, error) {
+	client := miniomanageserver.NewMinioManageServerClient(m.cli.Conn())
+	return client.GetPlayUrl(ctx, in, opts...)
 }

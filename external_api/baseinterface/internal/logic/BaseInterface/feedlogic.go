@@ -6,9 +6,9 @@ import (
 
 	"SimpleTikTok/external_api/baseinterface/internal/svc"
 	"SimpleTikTok/external_api/baseinterface/internal/types"
+	"SimpleTikTok/internal_proto/microservices/miniomanage/types/miniomanageserver"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
-	"SimpleTikTok/oprations/minioconnect"
 	"SimpleTikTok/oprations/mysqlconnect"
 
 	// tools "SimpleTikTok/tools/token"
@@ -84,16 +84,25 @@ func (l *FeedLogic) Feed(req *types.FeedHandlerRequest) (resp *types.FeedHandler
 			continue
 		}
 
-		realPlayUrl, _ := minioconnect.GetPlayUrl(val.PlayUrl)
-		realCoverUrl, _ := minioconnect.GetPlayUrl(val.CoverUrl)
+		// 通过rpc调用获取
+		realPlayUrlresp, _ := l.svcCtx.MinioManageRpc.GetPlayUrl(l.ctx, &miniomanageserver.GetPlayUrlRequest{
+			PlayUrl: val.PlayUrl,
+		})
+		realPlayUrl := realPlayUrlresp.ResPlayUrl
+		realCoverUrlresp, _ := l.svcCtx.MinioManageRpc.GetPlayUrl(l.ctx, &miniomanageserver.GetPlayUrlRequest{
+			PlayUrl: val.CoverUrl,
+		})
+		realCoverUrl := realCoverUrlresp.ResPlayUrl
+		// realPlayUrl, _ := minioconnect.GetPlayUrl(val.PlayUrl)
+		// realCoverUrl, _ := minioconnect.GetPlayUrl(val.CoverUrl)
 
 		respFeedVideoList = append(respFeedVideoList, types.VideoTest{
-			Id:      val.VideoId,
-			Author:  tmpAuthor,
-			PlayUrl: realPlayUrl,
+			Id:       val.VideoId,
+			Author:   tmpAuthor,
+			PlayUrl:  realPlayUrl,
+			CoverUrl: realCoverUrl,
 			// PlayUrl:       "http://175.178.93.55:9001/test-minio/vidoeFile/94e010c6-4c6e-4c2c-8d0b-b9afea9760d6-video_test12.mp4",
 			//	CoverUrl:      "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png",
-			CoverUrl:      realCoverUrl,
 			FavoriteCount: val.FavoriteCount,
 			CommentCount:  val.CommentCount,
 			IsFavotite:    val.IsFavotite,
