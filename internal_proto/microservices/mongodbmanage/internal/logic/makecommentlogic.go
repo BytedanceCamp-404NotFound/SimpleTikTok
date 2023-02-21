@@ -57,11 +57,18 @@ func (l *MakeCommentLogic) MakeComment(in *mongodbmanageserver.CommentActionRequ
 			Key:   "_id",
 			Value: commentId,
 		},
-			{
-				Key:   "video_id",
-				Value: videoId,
-			}}
+		{
+			Key:   "video_id",
+			Value: videoId,
+		}}
 		_, err := collection.DeleteOne(context.Background(), filter)
+		if err != nil {
+			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
+			return &mongodbmanageserver.CommentActionResponse{
+				Comment: &mongodbmanageserver.Comment{},
+			}, err
+		}
+		err = mysqlconnect.UpdateComment(videoId, actionType)
 		if err != nil {
 			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
 			return &mongodbmanageserver.CommentActionResponse{
@@ -104,6 +111,13 @@ func (l *MakeCommentLogic) MakeComment(in *mongodbmanageserver.CommentActionRequ
 		}
 		_, err = collection.InsertOne(context.Background(), comment)
 		if err != nil {
+			return &mongodbmanageserver.CommentActionResponse{
+				Comment: &mongodbmanageserver.Comment{},
+			}, err
+		}
+		err = mysqlconnect.UpdateComment(videoId, actionType)
+		if err != nil {
+			logx.Errorf("[pkg]logic [func]CommentAction [msg]delete comment failed, [err]%v", err)
 			return &mongodbmanageserver.CommentActionResponse{
 				Comment: &mongodbmanageserver.Comment{},
 			}, err

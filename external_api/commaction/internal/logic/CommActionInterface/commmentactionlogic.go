@@ -55,7 +55,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 	if req.ActionType == 2 {
 		return &types.CommmentActionHandlerResponse{
 			StatusCode: 0,
-			StatusMsg:  "删除评论成功",
+			StatusMsg:  "delete comment success",
 			Comment:    types.CommentResp{},
 		}, nil
 	}
@@ -75,7 +75,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 
 	return &types.CommmentActionHandlerResponse{
 		StatusCode: 0,
-		StatusMsg:  "发布评论成功",
+		StatusMsg:  "make comment success",
 		Comment:    comment,
 	}, nil
 }
