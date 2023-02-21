@@ -2,6 +2,8 @@ package RelationFollowInterface
 
 import (
 	"context"
+	"sort"
+	"time"
 
 	"SimpleTikTok/external_api/relationfollow/internal/svc"
 	"SimpleTikTok/external_api/relationfollow/internal/types"
@@ -28,48 +30,88 @@ func NewMessageChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Messa
 
 func (l *MessageChatLogic) MessageChat(req *types.MessageChatHandlerRequest) (resp *types.MessageChatHandlerResponse, err error) {
 	ok, uid, err := tools.CheckToke(req.Token)
-	if err!=nil {
+	if err != nil {
 		logx.Errorf("[pkg]RelationFollowInterface [func]MessageChat [msg]checktoken failed, [err]%v", err)
 		return &types.MessageChatHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
-			StatusMsg: "checktoken failed",
-			MessageList: []types.SingleMessage{},
+			StatusCode:  int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
+			StatusMsg:   "checktoken failed",
+			MessageList: []types.Message{},
 		}, err
 	}
 	if !ok {
 		logx.Errorf("[pkg]RelationFollowInterface [func]MessageChat [msg]请重新登录, [err]%v", err)
 		return &types.MessageChatHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
-			StatusMsg: "请重新登录",
-			MessageList: []types.SingleMessage{},
+			StatusCode:  int32(commonerror.CommonErr_PARSE_TOKEN_ERROR),
+			StatusMsg:   "请重新登录",
+			MessageList: []types.Message{},
 		}, err
 	}
-
+	//查找我发过去的消息
 	messageList, err := l.svcCtx.MongoDBMangerRpc.GetMessage(l.ctx, &mongodbmanageserver.MessageChatRequest{
-		ToUserId: req.ToUserId,
+		ToUserId:   req.ToUserId,
 		FromUserId: int64(uid),
 	})
-	if err!=nil {
+	if err != nil {
 		logx.Errorf("[pkg]RelationFollowInterface [func]MessageChat [msg]get message list failed, [err]%v", err)
 		return &types.MessageChatHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_RPC_RETUEN_ERROR),
-			StatusMsg: "get message list failed",
-			MessageList: []types.SingleMessage{},
+			StatusCode:  int32(commonerror.CommonErr_RPC_RETUEN_ERROR),
+			StatusMsg:   "get message list failed",
+			MessageList: []types.Message{},
 		}, err
 	}
 
-	var res []types.SingleMessage
-	for _,v:=range messageList.MessageList {
-		message := types.SingleMessage{
-			Id: v.Id,
-			Content: v.Content,
-			CreateTime: v.CreateTime,
+	var res []types.Message
+	for _, v := range messageList.MessageList {
+		t, _ := time.Parse("2006-01-02 15:04:05", v.CreateTime)
+		if t.Unix() > req.PreMsgTime {
+			message := types.Message{
+				Id:         v.Id,
+				Content:    v.Content,
+				CreateTime: t.Unix(),
+				ToUserId:   v.ToUserId,
+				FromUserId: v.FromUserId,
+			}
+			res = append(res, message)
 		}
-		res = append(res, message)
 	}
+
+	//查找对方发过来的消息
+	messageList, err = l.svcCtx.MongoDBMangerRpc.GetMessage(l.ctx, &mongodbmanageserver.MessageChatRequest{
+		ToUserId:   int64(uid),
+		FromUserId: req.ToUserId,
+	})
+	if err != nil {
+		logx.Errorf("[pkg]RelationFollowInterface [func]MessageChat [msg]get message list failed, [err]%v", err)
+		return &types.MessageChatHandlerResponse{
+			StatusCode:  int32(commonerror.CommonErr_RPC_RETUEN_ERROR),
+			StatusMsg:   "get message list failed",
+			MessageList: []types.Message{},
+		}, err
+	}
+
+	for _, v := range messageList.MessageList {
+		t, _ := time.Parse("2006-01-02 15:04:05", v.CreateTime)
+		if t.Unix() > req.PreMsgTime {
+			message := types.Message{
+				Id:         v.Id,
+				Content:    v.Content,
+				CreateTime: t.Unix(),
+				ToUserId:   v.ToUserId,
+				FromUserId: v.FromUserId,
+			}
+			res = append(res, message)
+		}
+	}
+	sort.Slice(res, func(i, j int) bool {
+		if res[i].CreateTime < res[j].CreateTime {
+			return true
+		}
+		return false
+	})
+
 	return &types.MessageChatHandlerResponse{
-		StatusCode: 0,
-		StatusMsg: "get message list success",
+		StatusCode:  0,
+		StatusMsg:   "get message list success",
 		MessageList: res,
 	}, nil
 }

@@ -54,8 +54,8 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 
 	if req.ActionType == 2 {
 		return &types.CommmentActionHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_STATUS_OK),
-			StatusMsg:  "delete comment success",
+			StatusCode: 0,
+			StatusMsg:  "删除评论成功",
 			Comment:    types.CommentResp{},
 		}, nil
 	}
@@ -75,7 +75,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 
 	return &types.CommmentActionHandlerResponse{
 		StatusCode: 0,
-		StatusMsg:  "make comment success",
+		StatusMsg:  "发布评论成功",
 		Comment:    comment,
 	}, nil
 }

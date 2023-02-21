@@ -26,7 +26,7 @@ func NewGetFeedVideoListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 // 取流接口获取视频列表
 func (l *GetFeedVideoListLogic) GetFeedVideoList(in *mysqlmanageserver.GetFeedVideoListRequest) (*mysqlmanageserver.GetFeedVideoListResponse, error) {
 	var tmpFeedVideoList []VideoInfo
-	err := svc.DB.Table("video_info").Order("update_time").Limit(30).Scan(&tmpFeedVideoList).Error
+	err := svc.DB.Table("video_info").Order("update_time DESC").Limit(30).Scan(&tmpFeedVideoList).Error
 	if err != nil {
 		logx.Errorf("[pkg]mysqlconnect [func]GetFeedVideoList [msg]gorm [err]%v", err)
 		return &mysqlmanageserver.GetFeedVideoListResponse{}, err
