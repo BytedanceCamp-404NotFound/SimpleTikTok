@@ -54,7 +54,7 @@ func (l *CommmentActionLogic) CommmentAction(req *types.CommmentActionHandlerReq
 
 	if req.ActionType == 2 {
 		return &types.CommmentActionHandlerResponse{
-			StatusCode: int32(commonerror.CommonErr_STATUS_OK),
+			StatusCode: 0,
 			StatusMsg:  "delete comment success",
 			Comment:    types.CommentResp{},
 		}, nil
