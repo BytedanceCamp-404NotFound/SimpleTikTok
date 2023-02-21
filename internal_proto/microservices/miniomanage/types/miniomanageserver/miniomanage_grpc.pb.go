@@ -28,6 +28,8 @@ type MinioManageServerClient interface {
 	PutFileUploaderByte(ctx context.Context, in *PutFileUploaderByteRequest, opts ...grpc.CallOption) (*PutFileUploaderByteResponse, error)
 	// 文件下载
 	GetFileDownloader(ctx context.Context, in *GetFileDownloaderRequest, opts ...grpc.CallOption) (*GetFileDownloaderResponse, error)
+	// 获取Minio视频播放的URL
+	GetPlayUrl(ctx context.Context, in *GetPlayUrlRequest, opts ...grpc.CallOption) (*GetPlayUrlResponse, error)
 }
 
 type minioManageServerClient struct {
@@ -65,6 +67,15 @@ func (c *minioManageServerClient) GetFileDownloader(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *minioManageServerClient) GetPlayUrl(ctx context.Context, in *GetPlayUrlRequest, opts ...grpc.CallOption) (*GetPlayUrlResponse, error) {
+	out := new(GetPlayUrlResponse)
+	err := c.cc.Invoke(ctx, "/miniomanageserver.MinioManageServer/GetPlayUrl", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MinioManageServerServer is the server API for MinioManageServer service.
 // All implementations must embed UnimplementedMinioManageServerServer
 // for forward compatibility
@@ -75,6 +86,8 @@ type MinioManageServerServer interface {
 	PutFileUploaderByte(context.Context, *PutFileUploaderByteRequest) (*PutFileUploaderByteResponse, error)
 	// 文件下载
 	GetFileDownloader(context.Context, *GetFileDownloaderRequest) (*GetFileDownloaderResponse, error)
+	// 获取Minio视频播放的URL
+	GetPlayUrl(context.Context, *GetPlayUrlRequest) (*GetPlayUrlResponse, error)
 	mustEmbedUnimplementedMinioManageServerServer()
 }
 
@@ -90,6 +103,9 @@ func (UnimplementedMinioManageServerServer) PutFileUploaderByte(context.Context,
 }
 func (UnimplementedMinioManageServerServer) GetFileDownloader(context.Context, *GetFileDownloaderRequest) (*GetFileDownloaderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFileDownloader not implemented")
+}
+func (UnimplementedMinioManageServerServer) GetPlayUrl(context.Context, *GetPlayUrlRequest) (*GetPlayUrlResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayUrl not implemented")
 }
 func (UnimplementedMinioManageServerServer) mustEmbedUnimplementedMinioManageServerServer() {}
 
@@ -158,6 +174,24 @@ func _MinioManageServer_GetFileDownloader_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MinioManageServer_GetPlayUrl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlayUrlRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MinioManageServerServer).GetPlayUrl(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/miniomanageserver.MinioManageServer/GetPlayUrl",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MinioManageServerServer).GetPlayUrl(ctx, req.(*GetPlayUrlRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MinioManageServer_ServiceDesc is the grpc.ServiceDesc for MinioManageServer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +210,10 @@ var MinioManageServer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFileDownloader",
 			Handler:    _MinioManageServer_GetFileDownloader_Handler,
+		},
+		{
+			MethodName: "GetPlayUrl",
+			Handler:    _MinioManageServer_GetPlayUrl_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

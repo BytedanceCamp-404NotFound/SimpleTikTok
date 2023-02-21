@@ -7,10 +7,6 @@ package miniomanageserver;
 // protoc-gen-go 版本大于1.4.0, proto文件需要加上go_package,否则无法生成
 option go_package = "./miniomanageserver";
 
-enum RpcErrorCode{
-    UNKNOW_ERROR = 0;      // 未知错误, proto编译必须定义，禁止使用此值
-    STATUS_OK = 200;       // 正常
-}
 
 message PutFileUploaderRequest {
     string bucketName = 1;
@@ -19,7 +15,6 @@ message PutFileUploaderRequest {
 }
   
 message PutFileUploaderResponse {
-    RpcErrorCode error = 1;
     string bucket_filepath = 2;
 }
 
@@ -31,22 +26,24 @@ message PutFileUploaderByteRequest {
 }
   
 message PutFileUploaderByteResponse {
-    RpcErrorCode error = 1;
     string bucket_filepath = 2;
 }
 
 message GetFileDownloaderRequest {
-    // 用户id
-    string id = 1;
-    // 用户名称
-    string name = 2;
-    // 用户性别
-    string gender = 3;
 }
 
 message GetFileDownloaderResponse {
-    RpcErrorCode error = 1;
     string bucket_filepath = 2;
+}
+
+// 获取Minio视频播放的URLRequest
+message GetPlayUrlRequest {
+    string playUrl = 1; // 想要转换的URL
+}
+
+// 获取Minio视频播放的URLResponse
+message GetPlayUrlResponse {
+    string resPlayUrl = 2;  // 实际的URL
 }
   
 service MinioManageServer {
@@ -58,4 +55,7 @@ service MinioManageServer {
 
     // 文件下载
     rpc GetFileDownloader(GetFileDownloaderRequest) returns(GetFileDownloaderResponse);
+
+    // 获取Minio视频播放的URL
+    rpc GetPlayUrl(GetPlayUrlRequest) returns(GetPlayUrlResponse);
 }

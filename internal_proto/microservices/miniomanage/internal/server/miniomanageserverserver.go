@@ -39,3 +39,9 @@ func (s *MinioManageServerServer) GetFileDownloader(ctx context.Context, in *min
 	l := logic.NewGetFileDownloaderLogic(ctx, s.svcCtx)
 	return l.GetFileDownloader(in)
 }
+
+// 获取Minio视频播放的URL
+func (s *MinioManageServerServer) GetPlayUrl(ctx context.Context, in *miniomanageserver.GetPlayUrlRequest) (*miniomanageserver.GetPlayUrlResponse, error) {
+	l := logic.NewGetPlayUrlLogic(ctx, s.svcCtx)
+	return l.GetPlayUrl(in)
+}

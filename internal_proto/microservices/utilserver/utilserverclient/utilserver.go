@@ -13,11 +13,12 @@ import (
 )
 
 type (
-	IdRequest     = utilserver.IdRequest
-	MinioResponse = utilserver.MinioResponse
+	GetSnapshotRequest  = utilserver.GetSnapshotRequest
+	GetSnapshotResponse = utilserver.GetSnapshotResponse
 
 	Utilserver interface {
-		GetMinio(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*MinioResponse, error)
+		// 通过ffmpeg来截图
+		GetSnapshot(ctx context.Context, in *GetSnapshotRequest, opts ...grpc.CallOption) (*GetSnapshotResponse, error)
 	}
 
 	defaultUtilserver struct {
@@ -31,7 +32,8 @@ func NewUtilserver(cli zrpc.Client) Utilserver {
 	}
 }
 
-func (m *defaultUtilserver) GetMinio(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*MinioResponse, error) {
+// 通过ffmpeg来截图
+func (m *defaultUtilserver) GetSnapshot(ctx context.Context, in *GetSnapshotRequest, opts ...grpc.CallOption) (*GetSnapshotResponse, error) {
 	client := utilserver.NewUtilserverClient(m.cli.Conn())
-	return client.GetMinio(ctx, in, opts...)
+	return client.GetSnapshot(ctx, in, opts...)
 }
