@@ -12,6 +12,8 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
+
+
 var configFile = flag.String("f", "etc/relationfollowinterface.yaml", "the config file")
 
 func main() {

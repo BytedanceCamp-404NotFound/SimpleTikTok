@@ -2,15 +2,21 @@ package RelationFollowInterface
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"SimpleTikTok/external_api/relationfollow/internal/svc"
 	"SimpleTikTok/external_api/relationfollow/internal/types"
 	"SimpleTikTok/internal_proto/microservices/mysqlmanage/types/mysqlmanageserver"
 	"SimpleTikTok/oprations/commonerror"
+	"SimpleTikTok/oprations/redisconnect"
 	tools "SimpleTikTok/tools/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
+)
+
+const (
+	KVDBName = "FollowAndFollowerList:" //Redis-Set
 )
 
 type RelationActionLogic struct {
@@ -36,7 +42,6 @@ type Follow_and_follower_list struct {
 func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerRequest) (resp *types.RelationActionHandlerResponse, err error) {
 	ok, id, err := tools.CheckToke(req.Token)
 	resultJson := types.RelationActionHandlerResponse{}
-
 	if !ok {
 		logx.Infof("[pkg]logic [func]PublishList [msg]req.Token is wrong ")
 		return &types.RelationActionHandlerResponse{
@@ -51,6 +56,29 @@ func (l *RelationActionLogic) RelationAction(req *types.RelationActionHandlerReq
 			StatusMsg:  "Token校验出错",
 		}, nil
 	}
+
+	RedisDB, _ := redisconnect.RedisConnect()
+
+	userIDString := fmt.Sprintf("%s%s:%d", KVDBName, "user_id", id)
+	followerIDString := fmt.Sprintf("%s%s:%d", KVDBName, "follower_id", req.To_user_id)
+
+	// 由于使用Redis-Set记录，所以不需要在统计关注量，只需要统计set大小就可以了
+	if req.Sction_type == 1 { //关注
+		// user_id:1 10 11 每个用户的关注列表
+		// 一个巨大的集合
+		err = RedisDB.SAdd(l.ctx, userIDString, req.To_user_id).Err()
+		// follower_id:10 1 每个用户的粉丝列表
+		err = RedisDB.SAdd(l.ctx, followerIDString, id).Err()
+	} else { // 取关
+		// user_id:1 10 11 每个用户的关注列表
+		// 从集合中删除元素
+		err = RedisDB.SRem(l.ctx, userIDString, req.To_user_id).Err()
+		// follower_id:10 1 每个用户的粉丝列表
+		err = RedisDB.SRem(l.ctx, followerIDString, id).Err()
+	}
+	// res1, _ := RedisDB.SMembers(l.ctx, userIDString).Result()
+	// res2, _ := RedisDB.SMembers(l.ctx, followerIDString).Result()
+	// _, _ = res1, res2
 
 	result, err := l.svcCtx.MySQLManageRpc.RelationAction(l.ctx, &mysqlmanageserver.RelationActionRequest{
 		UserID:     int64(id),
