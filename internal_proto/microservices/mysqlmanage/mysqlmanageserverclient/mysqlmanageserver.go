@@ -41,6 +41,8 @@ type (
 	RelationFollowListResponse           = mysqlmanageserver.RelationFollowListResponse
 	RelationFollowerListRequest          = mysqlmanageserver.RelationFollowerListRequest
 	RelationFollowerListResponse         = mysqlmanageserver.RelationFollowerListResponse
+	RelationFriendListRequest            = mysqlmanageserver.RelationFriendListRequest
+	RelationFriendListResponse           = mysqlmanageserver.RelationFriendListResponse
 	RelationUser                         = mysqlmanageserver.RelationUser
 	SubVideoFavoriteRequest              = mysqlmanageserver.SubVideoFavoriteRequest
 	SubVideoFavoriteResponse             = mysqlmanageserver.SubVideoFavoriteResponse
@@ -81,6 +83,8 @@ type (
 		RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error)
 		// 关注列表
 		RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error)
+		// 读取好友列表
+		RelationFriendList(ctx context.Context, in *RelationFriendListRequest, opts ...grpc.CallOption) (*RelationFriendListResponse, error)
 		// 喜欢视频数量
 		FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error)
 		// 获取喜欢列表
@@ -178,6 +182,12 @@ func (m *defaultMySQLManageServer) RelationFollowerList(ctx context.Context, in 
 func (m *defaultMySQLManageServer) RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error) {
 	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
 	return client.RelationFollowList(ctx, in, opts...)
+}
+
+// 读取好友列表
+func (m *defaultMySQLManageServer) RelationFriendList(ctx context.Context, in *RelationFriendListRequest, opts ...grpc.CallOption) (*RelationFriendListResponse, error) {
+	client := mysqlmanageserver.NewMySQLManageServerClient(m.cli.Conn())
+	return client.RelationFriendList(ctx, in, opts...)
 }
 
 // 喜欢视频数量

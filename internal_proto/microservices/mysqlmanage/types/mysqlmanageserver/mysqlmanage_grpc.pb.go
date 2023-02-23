@@ -48,6 +48,8 @@ type MySQLManageServerClient interface {
 	RelationFollowerList(ctx context.Context, in *RelationFollowerListRequest, opts ...grpc.CallOption) (*RelationFollowerListResponse, error)
 	// 关注列表
 	RelationFollowList(ctx context.Context, in *RelationFollowListRequest, opts ...grpc.CallOption) (*RelationFollowListResponse, error)
+	// 读取好友列表
+	RelationFriendList(ctx context.Context, in *RelationFriendListRequest, opts ...grpc.CallOption) (*RelationFriendListResponse, error)
 	// 喜欢视频数量
 	FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error)
 	// 获取喜欢列表
@@ -183,6 +185,15 @@ func (c *mySQLManageServerClient) RelationFollowList(ctx context.Context, in *Re
 	return out, nil
 }
 
+func (c *mySQLManageServerClient) RelationFriendList(ctx context.Context, in *RelationFriendListRequest, opts ...grpc.CallOption) (*RelationFriendListResponse, error) {
+	out := new(RelationFriendListResponse)
+	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/RelationFriendList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *mySQLManageServerClient) FavoriteVideoNum(ctx context.Context, in *FavoriteVideoNumRequest, opts ...grpc.CallOption) (*FavoriteVideoNumResponse, error) {
 	out := new(FavoriteVideoNumResponse)
 	err := c.cc.Invoke(ctx, "/mysqlmanageserver.MySQLManageServer/FavoriteVideoNum", in, out, opts...)
@@ -249,6 +260,8 @@ type MySQLManageServerServer interface {
 	RelationFollowerList(context.Context, *RelationFollowerListRequest) (*RelationFollowerListResponse, error)
 	// 关注列表
 	RelationFollowList(context.Context, *RelationFollowListRequest) (*RelationFollowListResponse, error)
+	// 读取好友列表
+	RelationFriendList(context.Context, *RelationFriendListRequest) (*RelationFriendListResponse, error)
 	// 喜欢视频数量
 	FavoriteVideoNum(context.Context, *FavoriteVideoNumRequest) (*FavoriteVideoNumResponse, error)
 	// 获取喜欢列表
@@ -302,6 +315,9 @@ func (UnimplementedMySQLManageServerServer) RelationFollowerList(context.Context
 }
 func (UnimplementedMySQLManageServerServer) RelationFollowList(context.Context, *RelationFollowListRequest) (*RelationFollowListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RelationFollowList not implemented")
+}
+func (UnimplementedMySQLManageServerServer) RelationFriendList(context.Context, *RelationFriendListRequest) (*RelationFriendListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RelationFriendList not implemented")
 }
 func (UnimplementedMySQLManageServerServer) FavoriteVideoNum(context.Context, *FavoriteVideoNumRequest) (*FavoriteVideoNumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FavoriteVideoNum not implemented")
@@ -562,6 +578,24 @@ func _MySQLManageServer_RelationFollowList_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MySQLManageServer_RelationFriendList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelationFriendListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MySQLManageServerServer).RelationFriendList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mysqlmanageserver.MySQLManageServer/RelationFriendList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MySQLManageServerServer).RelationFriendList(ctx, req.(*RelationFriendListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MySQLManageServer_FavoriteVideoNum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FavoriteVideoNumRequest)
 	if err := dec(in); err != nil {
@@ -692,6 +726,10 @@ var MySQLManageServer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RelationFollowList",
 			Handler:    _MySQLManageServer_RelationFollowList_Handler,
+		},
+		{
+			MethodName: "RelationFriendList",
+			Handler:    _MySQLManageServer_RelationFriendList_Handler,
 		},
 		{
 			MethodName: "FavoriteVideoNum",
