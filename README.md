@@ -73,6 +73,32 @@ nginx配置文件即文件目录下的default.conf（nginx默认配置）
 这里具体每个参数的值设为多少最好待调试
 
 
+# redis相关
+
+```shell
+sudo apt-get update 
+sudo apt-get install redis # 安装
+redis-server -v # 查看redis版本
+redis-cli # 登录redis
+```
+```shell
+set 123 test
+get 123 
+del 123
+ping
+
+keys * # 查一下有什么键
+
+SMEMBERS FollowAndFollowerList:follower_id:323    # 我们的数据类型是set，查询一下关注列表
+SMEMBERS FollowAndFollowerList:user_id:1    # 查询一下粉丝列表
+
+# 获取set值
+smembers follower_id:300
+# 删除当前数据库中的所有Key
+flushdb
+# 删除所有数据库中的key
+flushall
+```
 # commit类型
 用于说明 commit 的类别，只允许使用下面7个标识。
 feat：新功能（feature）</br>
@@ -89,7 +115,8 @@ merge：代码合并 </br>
 sync：同步主线或分支的Bug </br>
 
 # 参考资料
-
-https://go-zero.dev/cn/docs/quick-start/monolithic-service
-https://go-zero.dev/cn/docs/goctl/goctl/
-https://go-zero.dev/cn/docs/goctl/goctl/
+[Goctl 简介]https://go-zero.dev/cn/docs/goctl/goctl/
+[go-redis]https://redis.uptrace.dev/zh/guide/
+[使用redis实现关注和粉丝列表 ｜ 青训营笔记]https://juejin.cn/post/7103869225260810277
+[go-redis文档]https://juejin.cn/post/7027347979065360392#heading-20
+[redis的五种数据结构和应用场景【如微博微信点赞/共同关注/加购物车】]https://juejin.cn/post/6895185457110319118#heading-21
