@@ -44,8 +44,9 @@ func (l *RelationFriendListLogic) RelationFriendList(req *types.RelationFriendLi
 			StatusMsg:  "Token校验出错",
 		}, nil
 	}
+
 	resultJson := &types.RelationFriendListHandlerResponse{}
-	rflhr, err := l.svcCtx.MySQLManageRpc.RelationFollowList(l.ctx, &mysqlmanageserver.RelationFollowListRequest{
+	rflhr, err := l.svcCtx.MySQLManageRpc.RelationFriendList(l.ctx, &mysqlmanageserver.RelationFriendListRequest{
 		LoginUserID: int64(id),
 		UserID:      req.UserId,
 	})

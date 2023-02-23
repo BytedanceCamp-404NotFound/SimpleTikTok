@@ -160,6 +160,13 @@ message RelationFollowListRequest{
 message RelationFollowListResponse{
     repeated RelationUser RelationUser = 1;
 }
+message RelationFriendListRequest{
+    int64 LoginUserID = 1;
+    int64 UserID = 2;
+}
+message RelationFriendListResponse{
+    repeated RelationUser RelationUser = 1;
+}
 
 message RelationUser  {
     int64 Id            =1;
@@ -238,7 +245,10 @@ service MySQLManageServer {
     rpc RelationFollowerList(RelationFollowerListRequest) returns(RelationFollowerListResponse);
     //关注列表
     rpc RelationFollowList(RelationFollowListRequest) returns(RelationFollowListResponse);
-    
+
+    //读取好友列表
+    rpc RelationFriendList(RelationFriendListRequest) returns(RelationFriendListResponse);
+
 
     //喜欢视频数量
     rpc FavoriteVideoNum(FavoriteVideoNumRequest) returns(FavoriteVideoNumResponse);

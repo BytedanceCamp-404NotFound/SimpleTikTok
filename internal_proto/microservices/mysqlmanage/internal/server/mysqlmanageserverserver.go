@@ -100,6 +100,12 @@ func (s *MySQLManageServerServer) RelationFollowList(ctx context.Context, in *my
 	return l.RelationFollowList(in)
 }
 
+// 读取好友列表
+func (s *MySQLManageServerServer) RelationFriendList(ctx context.Context, in *mysqlmanageserver.RelationFriendListRequest) (*mysqlmanageserver.RelationFriendListResponse, error) {
+	l := logic.NewRelationFriendListLogic(ctx, s.svcCtx)
+	return l.RelationFriendList(in)
+}
+
 // 喜欢视频数量
 func (s *MySQLManageServerServer) FavoriteVideoNum(ctx context.Context, in *mysqlmanageserver.FavoriteVideoNumRequest) (*mysqlmanageserver.FavoriteVideoNumResponse, error) {
 	l := logic.NewFavoriteVideoNumLogic(ctx, s.svcCtx)
